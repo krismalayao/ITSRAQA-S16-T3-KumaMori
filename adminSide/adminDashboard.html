@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KumaMori - Admin Dashboard</title>
+  <link rel="icon" type="image/png" sizes="48x48" href="../images/kumamoriFavicon.png">
+
+  <!-- Google Fonts: Fredoka -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --admin-bg: #faf6f4;
+      --sidebar-bg: #f9e2e6;
+      --sidebar-border: #e8bdc5;
+      --card-bg: #ffffff;
+      --card-border: #f0c2cb;
+      --text-brown: #5c3214;
+      --text-muted: #8c6853;
+      --highlight-active: #eed1d7;
+
+      /* Status Colors */
+      --status-approved: #8be397;
+      --status-pending: #fde68a;
+      --status-canceled: #fca5a5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--admin-bg);
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /* Sidebar Navigation                                                         */
+    /* -------------------------------------------------------------------------- */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      border-right: 2px solid var(--sidebar-border);
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+      box-shadow: 4px 0 20px rgba(92, 50, 20, 0.06);
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .logo-img {
+      max-width: 150px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: var(--text-brown);
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .nav-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      border-radius: 20px;
+      color: var(--text-brown);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item a:hover {
+      background-color: var(--highlight-active);
+    }
+
+    .nav-item.active a {
+      background-color: var(--text-brown);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(92, 50, 20, 0.2);
+    }
+
+    .logout-btn {
+      color: #d9534f !important;
+    }
+
+    .logout-btn:hover {
+      background-color: #fce8e8 !important;
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /* Main Content Area                                                          */
+    /* -------------------------------------------------------------------------- */
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      max-width: 1200px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .header-title {
+      font-size: 2rem;
+      color: var(--text-brown);
+      font-weight: 700;
+    }
+
+    /* KPI Summary Cards Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      width: 100%;
+    }
+
+    .kpi-card {
+      background-color: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 25px;
+      padding: 22px 20px;
+      box-shadow: 0 8px 20px rgba(92, 50, 20, 0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(92, 50, 20, 0.08);
+    }
+
+    .kpi-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 1.6rem;
+      color: var(--text-brown);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .kpi-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .kpi-subtitle.positive {
+      color: #2e7d32;
+    }
+
+    /* Analytics Charts Section */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 25px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .chart-card {
+      background-color: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 28px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(92, 50, 20, 0.05);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .chart-title {
+      font-size: 1.2rem;
+      color: var(--text-brown);
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      max-width: 100%;
+    }
+
+    /* Order Status Progress Component */
+    .status-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .status-label {
+      width: 80px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-brown);
+    }
+
+    .status-bar-bg {
+      flex: 1;
+      height: 26px;
+      background-color: #f7e8eb;
+      border-radius: 13px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .status-bar-fill {
+      height: 100%;
+      border-radius: 13px;
+      transition: width 0.6s ease-in-out;
+    }
+
+    .status-bar-fill.approved { background-color: var(--status-approved); }
+    .status-bar-fill.pending { background-color: var(--status-pending); }
+    .status-bar-fill.canceled { background-color: var(--status-canceled); }
+
+    .status-count {
+      width: 75px;
+      text-align: right;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Mobile Breakpoints */
+    @media (max-width: 900px) {
+      .analytics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 2px solid var(--sidebar-border);
+        padding: 15px 20px;
+      }
+
+      .brand-section {
+        margin-bottom: 0;
+      }
+
+      .logo-img {
+        max-width: 120px;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav-container {
+        display: none;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--sidebar-border);
+      }
+
+      .nav-container.open {
+        display: flex;
+      }
+
+      .main-content {
+        padding: 20px 15px;
+        gap: 20px;
+      }
+
+      .header-title {
+        font-size: 1.6rem;
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .kpi-card {
+        padding: 16px 14px;
+        border-radius: 20px;
+      }
+
+      .kpi-value {
+        font-size: 1.3rem;
+      }
+
+      .chart-card {
+        padding: 18px;
+        border-radius: 22px;
+      }
+
+      .chart-container {
+        height: 200px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .status-item {
+        gap: 10px;
+      }
+
+      .status-label {
+        width: 70px;
+        font-size: 0.85rem;
+      }
+
+      .status-count {
+        width: 60px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Responsive Header / Sidebar -->
+  <aside class="sidebar">
+    <div class="brand-section">
+      <img src="../images/publicPages.png" alt="KumaMori Logo" class="logo-img">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation">☰</button>
+    </div>
+
+    <div class="nav-container" id="navContainer">
+      <ul class="nav-menu">
+        <li class="nav-item active"><a href="adminDashboard.html">Analytics</a></li>
+        <li class="nav-item"><a href="inventoryManagement.html">Inventory</a></li>
+        <li class="nav-item"><a href="productManagement.html">Products</a></li>
+        <li class="nav-item"><a href="salesManagement.html">Sales</a></li>
+        <li class="nav-item"><a href="profilePage.html">Profile</a></li>
+      </ul>
+
+      <ul class="nav-menu" style="margin-top: 15px;">
+        <li class="nav-item"><a href="loginPage.html" class="logout-btn">Log Out</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <h1 class="header-title">Dashboard Analytics</h1>
+
+    <!-- KPI Overview Cards -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-title">Total Sales</span>
+        <span class="kpi-value">PHP 18.4k</span>
+        <span class="kpi-subtitle positive">+12% this month</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-title">Orders</span>
+        <span class="kpi-value">43</span>
+        <span class="kpi-subtitle">5 pending</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-title">Low Stock</span>
+        <span class="kpi-value">2</span>
+        <span class="kpi-subtitle" style="color: #d9534f;">Needs restock</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-title">Top Product</span>
+        <span class="kpi-value" style="font-size: 1.2rem;">Plush Bear</span>
+        <span class="kpi-subtitle">PHP 699 item</span>
+      </div>
+    </section>
+
+    <!-- Charts & Status Grid -->
+    <section class="analytics-grid">
+      <!-- Daily Sales Bar Chart -->
+      <div class="chart-card">
+        <h2 class="chart-title">Daily Sales</h2>
+        <div class="chart-container">
+          <canvas id="dailySalesChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Order Status Progress Overview -->
+      <div class="chart-card">
+        <h2 class="chart-title">Order Status</h2>
+        <div class="status-list">
+
+          <div class="status-item">
+            <span class="status-label">Approved</span>
+            <div class="status-bar-bg">
+              <div class="status-bar-fill approved" style="width: 70%;"></div>
+            </div>
+            <span class="status-count">30 Orders</span>
+          </div>
+
+          <div class="status-item">
+            <span class="status-label">Pending</span>
+            <div class="status-bar-bg">
+              <div class="status-bar-fill pending" style="width: 40%;"></div>
+            </div>
+            <span class="status-count">5 Orders</span>
+          </div>
+
+          <div class="status-item">
+            <span class="status-label">Canceled</span>
+            <div class="status-bar-bg">
+              <div class="status-bar-fill canceled" style="width: 25%;"></div>
+            </div>
+            <span class="status-count">7 Orders</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Interactive Scripts -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Mobile Navigation Drawer Toggle
+      const menuToggle = document.getElementById('menuToggle');
+      const navContainer = document.getElementById('navContainer');
+
+      menuToggle.addEventListener('click', () => {
+        navContainer.classList.toggle('open');
+      });
+
+      // Chart.js Mobile Fix Configuration
+      const ctx = document.getElementById('dailySalesChart').getContext('2d');
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [{
+            label: 'Sales (PHP)',
+            data: [2800, 3400, 1900, 3100, 4800, 3600, 2200],
+            backgroundColor: [
+              '#c48b78',
+              '#c48b78',
+              '#c48b78',
+              '#c48b78',
+              '#5c3214',
+              '#c48b78',
+              '#c48b78'
+            ],
+            borderRadius: 8,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          resizeDelay: 100,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: '#5c3214', font: { family: 'Fredoka', weight: '600', size: 11 } }
+            },
+            y: {
+              display: false,
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
