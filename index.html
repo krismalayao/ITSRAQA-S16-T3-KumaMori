@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="48x48" href="../images/kumamoriFavicon.png">
+    <title>Proposed System for KumaMori</title>
+    
+    <!-- Google Fonts: Fredoka -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-stripe-light: #fce8eb;
+            --bg-stripe-dark: #fcdde3;
+            --text-brown: #5c3214;
+            --bear-color: #A97155;
+            --bear-dark: #6F4E37;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--bg-stripe-light),
+                var(--bg-stripe-light) 65px,
+                var(--bg-stripe-dark) 65px,
+                var(--bg-stripe-dark) 130px
+            );
+        }
+
+        .scene {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            padding: 20px;
+        }
+
+        /* Logo Styling */
+        .logo-img {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+            object-fit: contain;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--text-brown);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .team-section {
+            margin: 5px 0 25px 0;
+            padding: 8px;
+            width: 100%;
+        }
+
+        .sub-line {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-brown);
+            opacity: 0.85;
+            letter-spacing: 0.3px;
+        }
+
+        /* Clickable Cute Bear Button at the Bottom */
+        .bear-btn {
+            position: relative;
+            width: 90px;
+            height: 75px;
+            margin-top: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            outline: none;
+            transition: transform 0.2s ease;
+        }
+
+        .bear-btn:hover {
+            transform: scale(1.08);
+        }
+
+        .bear-btn:active {
+            transform: scale(0.95);
+        }
+
+        .bear-head {
+            position: relative;
+            width: 75px;
+            height: 65px;
+            background-color: var(--bear-color);
+            border-radius: 50% 50% 45% 45%;
+            margin: 0 auto;
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1), 0 4px 10px rgba(92, 50, 20, 0.15);
+        }
+
+        .ear {
+            position: absolute;
+            width: 23px;
+            height: 23px;
+            background-color: var(--bear-color);
+            border-radius: 50%;
+            top: -4px;
+        }
+
+        .ear.left { left: 4px; }
+        .ear.right { right: 4px; }
+
+        .ear::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #fce8eb;
+            border-radius: 50%;
+            top: 5px;
+            left: 5px;
+        }
+
+        .face {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 45px;
+            height: 30px;
+        }
+
+        .eye {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            background-color: var(--bear-dark);
+            border-radius: 50%;
+            top: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .eye.left { left: 7px; }
+        .eye.right { right: 7px; }
+
+        /* Wink State Animation */
+        .bear-btn.wink .eye.right {
+            height: 2px;
+            border-radius: 0;
+            background-color: transparent;
+            border-bottom: 2px solid var(--bear-dark);
+            transform: translateY(3px);
+        }
+
+        .snout {
+            position: absolute;
+            bottom: 1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 22px;
+            height: 14px;
+            background-color: #fef6f7;
+            border-radius: 50%;
+        }
+
+        .nose {
+            position: absolute;
+            top: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 7px;
+            height: 5px;
+            background-color: var(--bear-dark);
+            border-radius: 50%;
+        }
+
+        .mouth {
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 3px;
+            border-bottom: 2px solid var(--bear-dark);
+            border-radius: 0 0 50% 50%;
+        }
+
+        .hint-text {
+            font-size: 0.85rem;
+            color: var(--text-brown);
+            margin-top: 10px;
+            opacity: 0.7;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scene">
+        <!-- KumaMori Logo -->
+        <img src="images/publicPages.png" alt="KumaMori Logo" class="logo-img">
+
+        <h1>This is a Proposed System for KumaMori</h1>
+        
+        <div class="team-section">
+            <div class="sub-line">Presented by Fortea, Guevarra, Lorenzo, Malayao, Velasquez</div>
+        </div>
+
+        <!-- Clickable Cute Bear Button at the Bottom -->
+        <button class="bear-btn" id="bearBtn" onclick="winkAndRedirect()" title="Click bear to login">
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+            <div class="bear-head">
+                <div class="face">
+                    <div class="eye left"></div>
+                    <div class="eye right"></div>
+                    <div class="snout">
+                        <div class="nose"></div>
+                        <div class="mouth"></div>
+                    </div>
+                </div>
+            </div>
+        </button>
+        <div class="hint-text">(Click bear to log in)</div>
+    </div>
+
+    <script>
+        function winkAndRedirect() {
+            const bear = document.getElementById('bearBtn');
+            
+            // Triggers bear wink animation
+            bear.classList.add('wink');
+            
+            // Delays redirection slightly so you can see the wink
+            setTimeout(() => {
+                window.location.href = 'publicPages/loginPage.html';
+            }, 600);
+        }
+    </script>
+
+</body>
+</html>
