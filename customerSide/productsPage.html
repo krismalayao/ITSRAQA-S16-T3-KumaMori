@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kuma Mori - Products</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+    --text-brown:#5c3214;
+    --text-brown-light:#7a5335;
+    --card-img-bg:#fdf3dd;
+    --button-bg:#5c3214;
+    --button-hover:#45240c;
+    --price:#C69866;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka',sans-serif;}
+body{background:#fff;color:var(--text-brown);}
+
+.page-wrap{max-width:1000px;margin:0 auto;padding:60px 40px 90px;}
+
+.page-title{
+    text-align:center;
+    font-size:2.8rem;
+    font-weight:700;
+    margin-bottom:20px;
+}
+.title-divider{
+    width:100%;
+    height:2px;
+    background:var(--text-brown);
+    opacity:.4;
+    margin-bottom:50px;
+}
+
+.product-card{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:40px;
+    background:#fff;
+    border-radius:24px;
+    box-shadow:0 12px 30px rgba(92,50,20,0.1);
+    padding:28px 34px;
+    margin-bottom:36px;
+    transition:transform .25s, box-shadow .25s;
+    overflow:hidden;
+}
+.product-card::before{
+    content:'';
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:5px;
+    background:var(--price);
+    opacity:0;
+    transition:opacity .25s;
+}
+.product-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 38px rgba(92,50,20,0.14);
+}
+.product-card:hover::before{opacity:1;}
+
+.badge{
+    position:absolute;
+    top:18px;
+    left:-38px;
+    background:var(--button-bg);
+    color:#fff;
+    font-size:.72rem;
+    font-weight:700;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+    padding:5px 40px;
+    transform:rotate(-45deg);
+    box-shadow:0 3px 8px rgba(0,0,0,0.2);
+}
+
+.product-img{
+    flex-shrink:0;
+    width:220px;
+    height:200px;
+    border-radius:18px;
+    background:var(--card-img-bg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+.product-img img{
+    max-width:85%;
+    max-height:85%;
+    object-fit:contain;
+    transition:transform .35s ease;
+}
+.product-card:hover .product-img img{transform:scale(1.06) rotate(-2deg);}
+
+.product-info{flex:1;}
+.product-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    padding-bottom:14px;
+    border-bottom:2px solid #eee0d8;
+    margin-bottom:14px;
+}
+.product-info h2{
+    font-size:1.5rem;
+    font-weight:700;
+    line-height:1.25;
+}
+.product-price{
+    flex-shrink:0;
+    color:var(--price);
+    font-weight:700;
+    font-size:.95rem;
+    white-space:nowrap;
+    padding-top:6px;
+}
+.product-info p{
+    color:var(--text-brown-light);
+    font-size:.92rem;
+    line-height:1.55;
+    margin-bottom:20px;
+}
+
+.btn-brown{
+    background:var(--button-bg);
+    color:#fff;
+    border:none;
+    padding:12px 28px;
+    border-radius:22px;
+    font-weight:600;
+    font-size:.9rem;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:background-color .2s, transform .15s, box-shadow .2s;
+    box-shadow:0 6px 14px rgba(92,50,20,0.18);
+}
+.btn-brown:hover{background:var(--button-hover);transform:translateY(-2px);box-shadow:0 10px 18px rgba(92,50,20,0.24);}
+.btn-brown:active{transform:translateY(0);}
+
+@media (max-width:650px){
+    .product-card{flex-direction:column;align-items:stretch;}
+    .product-img{width:100%;height:220px;}
+}
+</style>
+</head>
+<body>
+
+<script>window.CURRENT_PAGE = 'product';</script>
+<script src="navigationBar.js"></script>
+
+<div class="page-wrap">
+
+    <h1 class="page-title">Products</h1>
+    <div class="title-divider"></div>
+
+    <div class="product-card">
+        <span class="badge">Bestseller</span>
+        <div class="product-img">
+            <img src="../images/bear.png" alt="PLACEHOLDER: Plush Bear Self-Defense Keychain">
+        </div>
+        <div class="product-info">
+            <div class="product-top">
+                <h2>Plush Bear Self-Defense Keychain</h2>
+                <span class="product-price">699.00 PHP</span>
+            </div>
+            <p>A plush companion with a hidden self-defense tool, combining comfort, style, and everyday protection.</p>
+            <button class="btn-brown" id="add-bear-btn"><i class="fa-solid fa-cart-plus"></i> Add To Cart</button>
+        </div>
+    </div>
+
+    <div class="product-card">
+        <div class="product-img">
+            <img src="../images/leather.png" alt="PLACEHOLDER: Leather Keychain">
+        </div>
+        <div class="product-info">
+            <div class="product-top">
+                <h2>Leather Keychain</h2>
+                <span class="product-price">145.00 PHP</span>
+            </div>
+            <p>Create a personalized leather keychain with your name, favorite colors, and charms for a timeless everyday accessory.</p>
+            <button class="btn-brown" onclick="window.location.href='customizePage.html?type=leather'"><i class="fa-solid fa-wand-magic-sparkles"></i> Customize</button>
+        </div>
+    </div>
+
+    <div class="product-card">
+        <div class="product-img">
+            <img src="../images/beaded.png" alt="PLACEHOLDER: Beaded Keychain">
+        </div>
+        <div class="product-info">
+            <div class="product-top">
+                <h2>Beaded Keychain</h2>
+                <span class="product-price">140.00 PHP</span>
+            </div>
+            <p>Express your personality with colorful beads, custom names, and unique designs made to match your style.</p>
+            <button class="btn-brown" onclick="window.location.href='customizePage.html?type=beaded'"><i class="fa-solid fa-wand-magic-sparkles"></i> Customize</button>
+        </div>
+    </div>
+
+    <div class="product-card">
+        <div class="product-img">
+            <img src="../images/charm.png" alt="PLACEHOLDER: Charm Keychain">
+        </div>
+        <div class="product-info">
+            <div class="product-top">
+                <h2>Charm Keychain</h2>
+                <span class="product-price">110.00 PHP</span>
+            </div>
+            <p>Mix and match adorable charms, colors, and accessories to create a one-of-a-kind keychain that's uniquely yours.</p>
+            <button class="btn-brown" onclick="window.location.href='customizePage.html?type=charm'"><i class="fa-solid fa-wand-magic-sparkles"></i> Customize</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="footer.js"></script>
+
+<script>
+function getCart(){
+    return JSON.parse(sessionStorage.getItem('kumamori_cart') || '[]');
+}
+function saveCart(cart){
+    sessionStorage.setItem('kumamori_cart', JSON.stringify(cart));
+}
+function addToCart(item){
+    const cart = getCart();
+    const existing = cart.find(i => i.id === item.id);
+    if(existing){ existing.qty += 1; }
+    else { cart.push({...item, qty:1}); }
+    saveCart(cart);
+}
+
+document.getElementById('add-bear-btn').addEventListener('click', () => {
+    addToCart({
+        id:'plush-bear',
+        name:'Plush Bear Self-Defense Keychain',
+        price:699,
+        customizable:false
+    });
+    window.location.href = 'cartPage.html';
+});
+</script>
+
+</body>
+</html>

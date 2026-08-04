@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking - Kumamori</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Fredoka', sans-serif; }
+        body { background-color: #ffffff; color: #5c3214; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        .page-wrap { flex: 1; width: 100%; }
+
+        .page-title {
+            text-align: center;
+            font-size: 2.8rem;
+            color: #5c3214;
+            margin: 30px 0 10px 0;
+            font-weight: 700;
+        }
+
+        .title-divider {
+            width: 80%;
+            max-width: 700px;
+            height: 2px;
+            background-color: #5c3214;
+            margin: 0 auto 30px auto;
+            opacity: 0.3;
+        }
+
+        /* Master Layout */
+        .orders-container {
+            max-width: 1100px;
+            margin: 0 auto 50px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 30px;
+            width: 100%;
+        }
+
+        /* Left Sidebar: Order History List */
+        .sidebar {
+            width: 300px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar-header {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f9e2e6;
+        }
+
+        .order-card-item {
+            background: #fff;
+            border: 2px solid #f9e2e6;
+            border-radius: 14px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
+        }
+
+        .order-card-item:hover {
+            border-color: #5c3214;
+            transform: translateY(-2px);
+        }
+
+        .order-card-item.active {
+            background: #fdf6f2;
+            border-color: #5c3214;
+            box-shadow: 0 4px 12px rgba(92, 50, 20, 0.1);
+        }
+
+        .card-top { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px; }
+        .card-bottom { display: flex; justify-content: space-between; font-size: 0.85rem; color: #8c6b54; }
+
+        /* Right Panel: Tracking & Item Breakdown */
+        .main-tracking-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .order-number-badge {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 12px 36px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .order-number-badge span { font-weight: 500; margin-left: 8px; }
+
+        /* Timeline Card */
+        .tracking-card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(92, 50, 20, 0.08);
+            padding: 35px 45px;
+            width: 100%;
+            max-width: 550px;
+            margin-bottom: 30px;
+        }
+
+        .timeline { position: relative; display: flex; flex-direction: column; gap: 28px; }
+
+        .timeline-step { display: flex; align-items: flex-start; gap: 24px; position: relative; z-index: 2; }
+
+        .node-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 4px solid #5c3214;
+            background: #ffffff;
+            flex-shrink: 0;
+            transition: background 0.3s;
+        }
+
+        /* Connected Vertical Line */
+        .timeline-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 32px;
+            left: 14px;
+            width: 4px;
+            height: calc(100% + 4px);
+            background: #5c3214;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .timeline-step.completed:not(:last-child)::after { opacity: 1; }
+
+        .timeline-step.completed .node-icon,
+        .timeline-step.active .node-icon {
+            background: #5c3214;
+        }
+
+        .step-info h4 { font-size: 1.15rem; font-weight: 700; color: #5c3214; margin-bottom: 2px; }
+        .step-info p { font-size: 0.9rem; color: #8c6b54; }
+
+        /* Purchased Items & Summary Panel */
+        .details-card {
+            background: #fdf6f2;
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .details-card h3 { font-size: 1.1rem; margin-bottom: 14px; border-bottom: 1px solid #f9e2e6; padding-bottom: 8px; }
+
+        .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.95rem; }
+        .summary-row { display: flex; justify-content: space-between; font-weight: 700; margin-top: 14px; border-top: 1px dashed #5c3214; padding-top: 10px; }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            width: 100%;
+        }
+
+        .empty-state h2 { font-size: 1.8rem; margin-bottom: 10px; }
+        .empty-state p { color: #8c6b54; margin-bottom: 20px; }
+        .btn-shop { background: #5c3214; color: #fff; padding: 12px 28px; border-radius: 20px; text-decoration: none; font-weight: 700; display: inline-block; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <script>window.CURRENT_PAGE = 'orders';</script>
+    <script src="navigationBar.js"></script>
+
+    <div class="page-wrap">
+        <h1 class="page-title">Order Tracking</h1>
+        <div class="title-divider"></div>
+
+        <!-- Active Orders View -->
+        <div id="tracking-view" class="orders-container hidden">
+            <!-- Left: User Session Order History -->
+            <aside class="sidebar">
+                <h2 class="sidebar-header">My Orders</h2>
+                <div id="order-history-list"></div>
+            </aside>
+
+            <!-- Right: Dynamic Timeline & Details -->
+            <main class="main-tracking-panel">
+                <div class="order-number-badge">
+                    Order Number: <span id="target-order-id">--</span>
+                </div>
+
+                <!-- Visual Timeline -->
+                <div class="tracking-card">
+                    <div class="timeline" id="timeline-container">
+                        <div class="timeline-step" data-step="1">
+                            <div class="node-icon"></div>
+                            <div class="step-info">
+                                <h4>Pending</h4>
+                                <p>Waiting for order to be confirmed.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-step" data-step="2">
+                            <div class="node-icon"></div>
+                            <div class="step-info">
+                                <h4>Order Confirmed</h4>
+                                <p>Order is ready to be made and packed.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-step" data-step="3">
+                            <div class="node-icon"></div>
+                            <div class="step-info">
+                                <h4>Packed & Processed</h4>
+                                <p>Awaiting for shipment.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-step" data-step="4">
+                            <div class="node-icon"></div>
+                            <div class="step-info">
+                                <h4>Shipped</h4>
+                                <p>Your order is on its way to you.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-step" data-step="5">
+                            <div class="node-icon"></div>
+                            <div class="step-info">
+                                <h4>Delivered</h4>
+                                <p>Package successfully delivered.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Itemized Order Items & Breakdown -->
+                <div class="details-card">
+                    <h3>Items Summary</h3>
+                    <div id="order-items-list"></div>
+                    <div class="summary-row">
+                        <span>Total Amount</span>
+                        <span id="order-total-price">₱0.00</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Fallback Empty State -->
+        <div id="empty-view" class="orders-container">
+            <div class="empty-state">
+                <h2>No Active Orders</h2>
+                <p>You haven't placed any orders yet.</p>
+                <a href="productsPage.html" class="btn-shop">Order Now</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="footer.js"></script>
+
+    <script>
+        const STATUS_MAP = {
+            "Pending": 1,
+            "Order Confirmed": 2,
+            "Packed & Processed": 3,
+            "Shipped": 4,
+            "Delivered": 5
+        };
+
+        function fetchSessionOrders() {
+            const currentSessionUser = sessionStorage.getItem('activeUser') || 'guest';
+            const allOrders = JSON.parse(localStorage.getItem('kumamori_orders') || '[]');
+            return allOrders.filter(o => o.user === currentSessionUser || currentSessionUser === 'guest');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sessionOrders = fetchSessionOrders();
+            const trackingView = document.getElementById('tracking-view');
+            const emptyView = document.getElementById('empty-view');
+            const historyContainer = document.getElementById('order-history-list');
+
+            if (!sessionOrders || sessionOrders.length === 0) {
+                trackingView.classList.add('hidden');
+                emptyView.classList.remove('hidden');
+                return;
+            }
+
+            trackingView.classList.remove('hidden');
+            emptyView.classList.add('hidden');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const activeId = urlParams.get('order');
+
+            let activeIndex = sessionOrders.findIndex(o => o.id === activeId);
+            if (activeIndex === -1) activeIndex = 0;
+
+            sessionOrders.forEach((order, index) => {
+                const card = document.createElement('div');
+                card.className = `order-card-item ${index === activeIndex ? 'active' : ''}`;
+                card.innerHTML = `
+                    <div class="card-top">
+                        <span>#${order.id}</span>
+                        <span>${order.total}</span>
+                    </div>
+                    <div class="card-bottom">
+                        <span>${order.date}</span>
+                        <span>${order.status}</span>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.order-card-item').forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                    loadOrderDetails(sessionOrders[index]);
+                });
+                historyContainer.appendChild(card);
+            });
+
+            loadOrderDetails(sessionOrders[activeIndex]);
+        });
+
+        function loadOrderDetails(order) {
+            document.getElementById('target-order-id').innerText = order.id;
+
+            const currentStep = STATUS_MAP[order.status] || 1;
+            const steps = document.querySelectorAll('.timeline-step');
+            
+            steps.forEach(step => {
+                const stepNum = parseInt(step.dataset.step, 10);
+                step.classList.remove('completed', 'active');
+                if (stepNum < currentStep) {
+                    step.classList.add('completed');
+                } else if (stepNum === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+
+            const itemsContainer = document.getElementById('order-items-list');
+            itemsContainer.innerHTML = order.items.map(item => `
+                <div class="item-row">
+                    <span>${item.qty}x ${item.name}</span>
+                    <span>₱${(item.price * item.qty).toFixed(2)}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('order-total-price').innerText = order.total;
+        }
+    </script>
+</body>
+</html>

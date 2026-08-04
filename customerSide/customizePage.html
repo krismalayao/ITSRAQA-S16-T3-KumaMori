@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kuma Mori - Customize</title>
+<link rel="icon" type="image/png" sizes="48x48" href="../images/kumamoriFavicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+    --text-brown:#5c3214;
+    --text-brown-light:#7a5335;
+    --card-border:#c48b78;
+    --accent:#C69866;
+    --danger:#e8607a;
+    --error-red:#d9534f;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka',sans-serif;}
+body{background:#fff;color:var(--text-brown);}
+
+.page-wrap{max-width:900px;margin:0 auto;padding:60px 40px 90px;}
+
+/* Header */
+.page-header{
+    display:flex;align-items:center;position:relative;
+    margin-bottom:40px;
+}
+.back-btn {
+    background: #fff;
+    border: 1.5px solid var(--text-brown);
+    color: var(--text-brown);
+    padding: 10px 22px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    flex-shrink: 0;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: var(--text-brown);
+    color: #fff;
+}
+
+.back-btn i {
+    transition: transform 0.2s ease;
+}
+
+.back-btn:hover i {
+    transform: translateX(-3px);
+}
+
+.page-title{
+    position:absolute;left:50%;transform:translateX(-50%);
+    text-align:center;font-size:2.4rem;font-weight:700;margin:0;
+}
+
+.customize-card{
+    background:#fff;border-radius:24px;box-shadow:0 12px 30px rgba(92,50,20,0.1);
+    padding:34px 40px;
+}
+.customize-top{
+    display:flex;justify-content:space-between;align-items:center;
+    padding-bottom:18px;border-bottom:2px solid #eee0d8;margin-bottom:26px;
+}
+.customize-top h2{font-size:1.5rem;font-weight:700;display:inline;}
+.customize-top .price{color:var(--accent);font-weight:600;margin-left:12px;font-size:1rem;}
+.btn-brown{
+    background:var(--text-brown);color:#fff;border:none;padding:12px 26px;
+    border-radius:20px;font-weight:600;cursor:pointer;transition:background .2s;
+}
+.btn-brown:hover{background:#45240c;}
+
+.customize-body{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+
+/* LEFT COLUMN */
+.field-box{
+    border:1.5px solid var(--card-border);border-radius:16px;
+    padding:14px 20px;margin-bottom:14px;display:flex;align-items:center;
+    justify-content:space-between;transition:border-color .2s, background-color .2s;
+}
+.field-box.invalid{border-color:var(--error-red);background-color:rgba(217, 83, 79, 0.04);}
+.field-box label{font-weight:700;font-size:.95rem;}
+.field-box input[type="text"]{
+    border:none;outline:none;text-align:right;font-family:'Fredoka',sans-serif;
+    color:var(--text-brown);font-size:.9rem;width:110px;background:transparent;
+}
+.field-box input[type="text"].over-limit{color:var(--error-red);font-weight:700;}
+.field-box .count{font-weight:700;font-size:.9rem;margin-left:8px;}
+.field-box .count.over-limit{color:var(--error-red);}
+.field-box select{
+    border:none;outline:none;font-family:'Fredoka',sans-serif;
+    color:var(--text-brown);font-weight:600;background:transparent;cursor:pointer;
+}
+.field-box .field-right{display:flex;align-items:center;gap:6px;}
+.remove-field-btn{
+    background:none;border:none;color:var(--danger);font-size:.95rem;
+    cursor:pointer;padding:4px 6px;line-height:1;
+}
+.remove-field-btn:hover{color:#c94b5f;}
+
+.add-more{
+    background:none;border:none;color:var(--accent);font-weight:700;
+    font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+    margin-bottom:14px;padding:4px 0;
+}
+.add-more:hover{text-decoration:underline;}
+
+.addons{margin-top:22px;}
+.addons h4{color:var(--accent);font-size:.85rem;font-weight:700;text-transform:uppercase;margin-bottom:10px;}
+.addons p{font-size:.85rem;color:var(--text-brown-light);margin-bottom:6px;}
+
+/* RIGHT COLUMN */
+.swatch-group{margin-bottom:26px;}
+.swatch-group h4{font-weight:700;font-size:.95rem;margin-bottom:12px;transition:color .2s;}
+.swatch-row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px;}
+.swatch{
+    width:34px;height:34px;border-radius:50%;cursor:pointer;
+    border:2px solid rgba(92,50,20,0.15);position:relative;
+    transition:transform .15s;
+    flex-shrink:0;
+}
+.swatch:hover{transform:scale(1.1);}
+.swatch.selected{border-color:var(--text-brown);}
+.swatch.selected::after{
+    content:'\f00c';font-family:'Font Awesome 6 Free';font-weight:900;
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:.7rem;color:#fff;text-shadow:0 0 2px rgba(0,0,0,.4);
+}
+.swatch.white-swatch{background:#fff;}
+.swatch.white-swatch.selected::after{color:var(--text-brown);text-shadow:none;}
+
+.swatch-image-placeholder {
+    overflow: hidden;
+    background: #f2ede6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.swatch-image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+    display: block;
+    transform: scale(2.2);
+    transform-origin: center;
+}
+
+.swatch-group.invalid h4{color:var(--error-red);}
+
+/* Palette rows */
+.palette-group{display:flex;flex-direction:column;gap:10px;}
+.palette-row{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    background:#fff;border-radius:14px;padding:12px 18px;
+    box-shadow:0 4px 12px rgba(92,50,20,0.1);width:100%;
+    border:2px solid transparent;cursor:pointer;
+    transition:border-color .15s, background .2s;
+}
+.palette-row:hover{border-color:rgba(92,50,20,0.3);}
+.palette-row.selected{border-color:var(--text-brown);background:#fdf6f2;}
+.palette-swatch{
+    width:34px;height:34px;border-radius:50%;
+    border:2px solid rgba(92,50,20,0.12);
+    pointer-events:none;
+    flex-shrink:0;
+}
+
+.font-style-group{margin-top:4px;}
+.font-style-row{display:flex;gap:12px;}
+.font-style-btn{
+    border:1.5px solid var(--text-brown);background:#fff;color:var(--text-brown);
+    padding:10px 0;border-radius:16px;font-weight:700;cursor:pointer;transition:background .2s,color .2s;
+    width:130px;text-align:center;
+}
+.font-style-btn.selected,.font-style-btn:hover{background:var(--text-brown);color:#fff;}
+
+.total-row{
+    display:flex;justify-content:space-between;align-items:center;
+    border-top:2px solid #eee0d8;margin-top:30px;padding-top:20px;
+}
+.total-row .label{font-size:.85rem;color:var(--text-brown-light);font-weight:600;}
+.total-row .amount{font-size:1.5rem;font-weight:700;}
+
+/* -------------------------------------------------------------------------- */
+/* Toast Notification Style                                                   */
+/* -------------------------------------------------------------------------- */
+.toast-notification {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background-color: var(--error-red);
+    color: #ffffff;
+    padding: 14px 22px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(217, 83, 79, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width:700px){
+    .customize-body{grid-template-columns:1fr;}
+    .toast-notification {
+        left: 50%;
+        transform: translate(-50%, 20px);
+        width: 90%;
+        justify-content: center;
+    }
+    .toast-notification.show {
+        transform: translate(-50%, 0);
+    }
+}
+</style>
+</head>
+<body>
+
+<script>window.CURRENT_PAGE = 'product';</script>
+<script src="navigationBar.js"></script>
+
+<div class="page-wrap">
+    <div class="page-header">
+        <a href="productsPage.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        <h1 class="page-title">Customization</h1>
+    </div>
+
+    <div class="customize-card">
+
+        <div class="customize-top">
+            <div><h2 id="product-name">Leather Keychain</h2><span class="price" id="product-price">145.00 PHP</span></div>
+            <button class="btn-brown" id="add-cart-btn">Add to Cart</button>
+        </div>
+
+        <div class="customize-body">
+
+            <!-- LEFT: inputs -->
+            <div class="customize-left">
+
+                <div class="field-box" id="letters-field-box">
+                    <label id="letters-label">Letters (max 5):</label>
+                    <div style="display:flex;align-items:center;">
+                        <input type="text" id="letters-input" placeholder="Type here...">
+                        <span class="count" id="letters-count">0/5</span>
+                    </div>
+                </div>
+
+                <!-- Charm field (leather only) -->
+                <div id="charm-field-wrap">
+                    <div class="field-box">
+                        <label>Charm:</label>
+                        <select id="charm-select-main">
+                            <option>Select...</option>
+                            <option>Star</option>
+                            <option>Heart</option>
+                            <option>Moon</option>
+                            <option>Flower</option>
+                        </select>
+                    </div>
+                    <button class="add-more" id="add-charm-btn"><i class="fa-solid fa-plus"></i> Add another charm (+₱20)</button>
+                </div>
+
+                <!-- Pendant field (leather only) -->
+                <div id="pendant-field-wrap">
+                    <button class="add-more" id="add-pendant-btn"><i class="fa-solid fa-plus"></i> Add a pendant (+₱30)</button>
+                </div>
+
+                <!-- Figurine field (beaded + charm) -->
+                <div id="figurine-field-wrap" style="display:none;">
+                    <div class="field-box">
+                        <label>Figurine:</label>
+                        <select id="figurine-select-main">
+                            <option>Select...</option>
+                            <option>Bear</option>
+                            <option>Star</option>
+                            <option>Heart</option>
+                            <option>Cloud</option>
+                        </select>
+                    </div>
+                    <button class="add-more" id="add-figurine-btn"><i class="fa-solid fa-plus"></i> Add another figurine (+₱25)</button>
+                </div>
+
+                <div class="addons">
+                    <h4>Add-Ons</h4>
+                    <div id="addons-list"></div>
+                </div>
+            </div>
+
+            <!-- RIGHT: swatches -->
+            <div class="customize-right" id="customize-right"></div>
+
+        </div>
+
+        <div class="total-row">
+            <span class="label">TOTAL</span>
+            <span class="amount" id="total-amount">₱145.00</span>
+        </div>
+
+    </div>
+</div>
+
+<!-- Red Toast Notification Container -->
+<div id="toast" class="toast-notification">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <span id="toast-message">Please make all required selections before continuing.</span>
+</div>
+
+<script src="footer.js"></script>
+
+<script>
+/* ===== Colors & Labels ===== */
+const leatherColors = ['#e8607a','#f0a068','#e8dc6a','#7cc576','#7ab8e0','#c9a8e0','#ffffff','#b8b8b8','#4a4a4a','#000000','#6b4226','#d4b896'];
+const letterColors  = [
+    '#f0b892','#f0e090','#a8d0ec','#d4b8ec',
+    {image:'../images/gold.png', alt:'PLACEHOLDER: Gold Letter Color'},
+    {image:'../images/silver.png', alt:'PLACEHOLDER: Silver Letter Color'}
+];
+const beadColors    = ['#e8607a','#e8dc6a','#7ab8e0','#c9a8e0','#f0b8c8','#ffffff','#000000'];
+const spacerRow1    = ['#e8829a','#e8a888','#d4dc7a','#9cd490','#5ca868','#f0e090'];
+const spacerRow2    = ['#e0e0e0','#f0b8c8','#d46868','#7ab8b0','#b8dc9c','#c9a8e0'];
+const spacerRow3    = ['#e8dc7a','#f0a8b8','#8cbce0','#b89ce0','#7ac488','#f0a068'];
+const moonColors    = ['#f0c8c8','#f0d4b8','#f08c9c','#c9a8e0','#b8e0c8','#a8d8ec'];
+
+const colorNames = {
+    leather: ['Pink', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'White', 'Light Grey', 'Dark Grey', 'Black', 'Brown', 'Beige'],
+    letter: ['Peach', 'Light Yellow', 'Light Blue', 'Light Lavender', 'Gold', 'Silver'],
+    bead: ['Pink', 'Yellow', 'Blue', 'Purple', 'Pastel Pink', 'White', 'Black'],
+    spacer: ['Pastel Palette', 'Soft Palette', 'Warm Palette'],
+    moon: ['Blush', 'Cream', 'Rose', 'Lilac', 'Mint', 'Sky Blue']
+};
+
+/* Flat add-on rates */
+const CHARM_ADDON_COST = 20;
+const PENDANT_ADDON_COST = 30;
+const FIGURINE_ADDON_COST = 25;
+const BEAD_ADDON_COST = 10;
+const SPACER_ADDON_COST = 5;
+const SPACER_BASE = 1;
+
+/* ===== Product configs ===== */
+const products = {
+    leather: {
+        name:'Leather Keychain', price:145, lettersMax:5, letterAddonCost:5,
+        addons:['₱5.00 - per additional letter','₱20.00 - per additional charm','₱30.00 - per additional pendant'],
+        hasCharm:true, hasFigurine:false, hasPendant:true, hasBead:false, hasSpacer:false, hasFont:false, hasMoon:false,
+        rightSwatches:['leather','letter']
+    },
+    beaded: {
+        name:'Beaded Keychain', price:140, lettersMax:5, letterAddonCost:15, beadBase:3,
+        addons:['₱15.00 - per additional letter','₱5.00 - per additional spacer','₱10.00 - per additional bead','₱25.00 - per additional figurine'],
+        hasCharm:false, hasFigurine:true, hasPendant:false, hasBead:true, hasSpacer:true, hasFont:true, hasMoon:false,
+        rightSwatches:['bead','spacer']
+    },
+    charm: {
+        name:'Charm Keychain', price:110, lettersMax:1, letterAddonCost:15, beadBase:2,
+        addons:['₱15.00 - per additional letter','₱5.00 - per additional spacer','₱10.00 - per additional bead','₱25.00 - per additional figurine'],
+        hasCharm:false, hasFigurine:true, hasPendant:false, hasBead:true, hasSpacer:true, hasFont:false, hasMoon:true,
+        rightSwatches:['bead','spacer','moon']
+    }
+};
+
+const params = new URLSearchParams(window.location.search);
+const type = params.get('type') || 'leather';
+const editId = params.get('editId');
+const config = products[type] || products.leather;
+
+/* Toast helper */
+let toastTimeout;
+function showErrorToast(msg) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    toastMessage.textContent = msg;
+    clearTimeout(toastTimeout);
+    toast.classList.add('show');
+    toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3500);
+}
+
+/* ===== Header & UI setup ===== */
+document.getElementById('product-name').textContent = config.name;
+document.getElementById('product-price').textContent = config.price.toFixed(2) + ' PHP';
+
+const lettersInput = document.getElementById('letters-input');
+const lettersCount = document.getElementById('letters-count');
+document.getElementById('letters-label').textContent = config.lettersMax === 1 ? 'Letter:' : `Letters (max ${config.lettersMax}):`;
+lettersCount.textContent = `0/${config.lettersMax}`;
+
+lettersInput.addEventListener('input', function(){
+    const len = this.value.length;
+    const over = len > config.lettersMax;
+    lettersCount.textContent = `${len}/${config.lettersMax}`;
+    this.classList.toggle('over-limit', over);
+    lettersCount.classList.toggle('over-limit', over);
+    if(this.value.trim().length > 0) {
+        document.getElementById('letters-field-box').classList.remove('invalid');
+    }
+    recalcTotal();
+});
+
+document.getElementById('charm-field-wrap').style.display = config.hasCharm ? 'block' : 'none';
+document.getElementById('pendant-field-wrap').style.display = config.hasPendant ? 'block' : 'none';
+document.getElementById('figurine-field-wrap').style.display = config.hasFigurine ? 'block' : 'none';
+
+const addonsList = document.getElementById('addons-list');
+config.addons.forEach(text => {
+    const p = document.createElement('p');
+    p.textContent = text;
+    addonsList.appendChild(p);
+});
+
+/* Helper: removable field */
+function createExtraField(labelText, options, onRemove){
+    const box = document.createElement('div');
+    box.className = 'field-box';
+
+    const label = document.createElement('label');
+    label.textContent = labelText;
+
+    const right = document.createElement('div');
+    right.className = 'field-right';
+
+    const select = document.createElement('select');
+    select.innerHTML = '<option>Select...</option>' + options.map(o => `<option>${o}</option>`).join('');
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'remove-field-btn';
+    removeBtn.title = 'Remove';
+    removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    removeBtn.addEventListener('click', () => {
+        box.remove();
+        onRemove();
+        recalcTotal();
+    });
+
+    right.appendChild(select);
+    right.appendChild(removeBtn);
+    box.appendChild(label);
+    box.appendChild(right);
+    return box;
+}
+
+let charmCount = 1;
+document.getElementById('add-charm-btn').addEventListener('click', function(){
+    charmCount++;
+    const box = createExtraField(`Charm ${charmCount}:`, ['Star','Heart','Moon','Flower'], () => { charmCount--; });
+    this.parentNode.insertBefore(box, this);
+    recalcTotal();
+});
+
+let pendantCount = 0;
+const addPendantBtn = document.getElementById('add-pendant-btn');
+if(addPendantBtn){
+    addPendantBtn.addEventListener('click', function(){
+        pendantCount++;
+        const box = createExtraField(`Pendant ${pendantCount}:`, ['Bear Paw','Bell','Ribbon','Cloud'], () => { pendantCount--; });
+        this.parentNode.insertBefore(box, this);
+        recalcTotal();
+    });
+}
+
+let figurineCount = 1;
+const figBtn = document.getElementById('add-figurine-btn');
+if(figBtn){
+    figBtn.addEventListener('click', function(){
+        figurineCount++;
+        const box = createExtraField(`Figurine ${figurineCount}:`, ['Bear','Star','Heart','Cloud'], () => { figurineCount--; });
+        this.parentNode.insertBefore(box, this);
+        recalcTotal();
+    });
+}
+
+/* Swatch builder */
+function buildSwatchGroup(colors, whiteIndexes = [], perRow = colors.length, multiSelect = false){
+    const container = document.createElement('div');
+    const allSwatches = [];
+    for(let i = 0; i < colors.length; i += perRow){
+        const rowColors = colors.slice(i, i + perRow);
+        const row = document.createElement('div');
+        row.className = 'swatch-row';
+        rowColors.forEach((c, j) => {
+            const idx = i + j;
+            const div = document.createElement('div');
+            div.className = 'swatch' + (whiteIndexes.includes(idx) ? ' white-swatch' : '');
+
+            if(typeof c === 'object' && c.image){
+                div.classList.add('swatch-image-placeholder');
+                const img = document.createElement('img');
+                img.src = c.image;
+                img.alt = c.alt || 'PLACEHOLDER';
+                div.appendChild(img);
+            } else {
+                div.style.background = c;
+            }
+
+            div.addEventListener('click', () => {
+                if(multiSelect){
+                    div.classList.toggle('selected');
+                } else {
+                    allSwatches.forEach(s => s.classList.remove('selected'));
+                    div.classList.add('selected');
+                }
+                recalcTotal();
+            });
+            allSwatches.push(div);
+            row.appendChild(div);
+        });
+        container.appendChild(row);
+    }
+    return container;
+}
+
+function buildPaletteGroup(rowsOfColors){
+    const container = document.createElement('div');
+    container.className = 'palette-group';
+    rowsOfColors.forEach(colors => {
+        const row = document.createElement('div');
+        row.className = 'palette-row';
+        colors.forEach(c => {
+            const sw = document.createElement('div');
+            sw.className = 'palette-swatch';
+            sw.style.background = c;
+            row.appendChild(sw);
+        });
+        row.addEventListener('click', () => {
+            row.classList.toggle('selected');
+            recalcTotal();
+        });
+        container.appendChild(row);
+    });
+    return container;
+}
+
+/* Build right column */
+const rightCol = document.getElementById('customize-right');
+
+if(config.rightSwatches.includes('leather')){
+    const group = document.createElement('div');
+    group.className = 'swatch-group';
+    group.id = 'group-leather';
+    group.innerHTML = '<h4>Leather Color</h4>';
+    group.appendChild(buildSwatchGroup(leatherColors, [6], 6));
+    rightCol.appendChild(group);
+}
+if(config.rightSwatches.includes('letter')){
+    const group = document.createElement('div');
+    group.className = 'swatch-group';
+    group.id = 'group-letter';
+    group.innerHTML = '<h4>Letter Color</h4>';
+    group.appendChild(buildSwatchGroup(letterColors, []));
+    rightCol.appendChild(group);
+}
+if(config.rightSwatches.includes('bead')){
+    const group = document.createElement('div');
+    group.className = 'swatch-group';
+    group.id = 'group-bead';
+    group.innerHTML = '<h4>Bead Color</h4>';
+    group.appendChild(buildSwatchGroup(beadColors, [5], undefined, true));
+    rightCol.appendChild(group);
+}
+if(config.rightSwatches.includes('spacer')){
+    const group = document.createElement('div');
+    group.className = 'swatch-group';
+    group.id = 'group-spacer';
+    group.innerHTML = '<h4>Spacers</h4>';
+    group.appendChild(buildPaletteGroup([spacerRow1, spacerRow2, spacerRow3]));
+    rightCol.appendChild(group);
+}
+if(config.rightSwatches.includes('moon')){
+    const group = document.createElement('div');
+    group.className = 'swatch-group';
+    group.id = 'group-moon';
+    group.innerHTML = '<h4>Moon Color</h4>';
+    group.appendChild(buildSwatchGroup(moonColors, []));
+    rightCol.appendChild(group);
+}
+if(config.hasFont){
+    const group = document.createElement('div');
+    group.className = 'font-style-group';
+    group.innerHTML = `
+        <h4 style="font-weight:700;font-size:.95rem;margin-bottom:12px;">Font Style</h4>
+        <div class="font-style-row">
+            <button class="font-style-btn selected">Iridescent</button>
+            <button class="font-style-btn">Bold</button>
+        </div>
+    `;
+    rightCol.appendChild(group);
+    group.querySelectorAll('.font-style-btn').forEach(btn => {
+        btn.addEventListener('click', function(){
+            group.querySelectorAll('.font-style-btn').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+}
+
+/* Price calculation */
+function computeTotal(){
+    let total = config.price;
+    const overLetters = Math.max(0, lettersInput.value.length - config.lettersMax);
+    total += overLetters * config.letterAddonCost;
+    total += Math.max(0, charmCount - 1) * CHARM_ADDON_COST;
+    total += pendantCount * PENDANT_ADDON_COST;
+    total += Math.max(0, figurineCount - 1) * FIGURINE_ADDON_COST;
+
+    if(config.rightSwatches.includes('bead')){
+        const selectedBeads = document.querySelectorAll('#group-bead .swatch.selected').length;
+        total += Math.max(0, selectedBeads - config.beadBase) * BEAD_ADDON_COST;
+    }
+    if(config.rightSwatches.includes('spacer')){
+        const selectedSpacers = document.querySelectorAll('#group-spacer .palette-row.selected').length;
+        total += Math.max(0, selectedSpacers - SPACER_BASE) * SPACER_ADDON_COST;
+    }
+    return total;
+}
+function recalcTotal(){
+    document.getElementById('total-amount').textContent = '₱' + computeTotal().toFixed(2);
+}
+
+/* Validation */
+function validateRequiredFields(){
+    const missing = [];
+    document.querySelectorAll('.swatch-group, .field-box')
+        .forEach(el => el.classList.remove('invalid'));
+
+    // Validate letters input
+    if(!lettersInput.value.trim()){
+        missing.push(config.lettersMax === 1 ? 'Letter' : 'Letters');
+        document.getElementById('letters-field-box').classList.add('invalid');
+    }
+
+    if(config.hasCharm){
+        const sel = document.getElementById('charm-select-main');
+        if(sel && sel.selectedIndex === 0){ missing.push('Charm'); sel.closest('.field-box').classList.add('invalid'); }
+    }
+    if(config.hasFigurine){
+        const sel = document.getElementById('figurine-select-main');
+        if(sel && sel.selectedIndex === 0){ missing.push('Figurine'); sel.closest('.field-box').classList.add('invalid'); }
+    }
+    if(config.rightSwatches.includes('leather') && !document.querySelector('#group-leather .swatch.selected')){
+        missing.push('Leather Color'); document.getElementById('group-leather').classList.add('invalid');
+    }
+    if(config.rightSwatches.includes('letter') && !document.querySelector('#group-letter .swatch.selected')){
+        missing.push('Letter Color'); document.getElementById('group-letter').classList.add('invalid');
+    }
+    if(config.rightSwatches.includes('bead') && !document.querySelector('#group-bead .swatch.selected')){
+        missing.push('Bead Color'); document.getElementById('group-bead').classList.add('invalid');
+    }
+    if(config.rightSwatches.includes('spacer') && !document.querySelector('#group-spacer .palette-row.selected')){
+        missing.push('Spacers'); document.getElementById('group-spacer').classList.add('invalid');
+    }
+    if(config.rightSwatches.includes('moon') && !document.querySelector('#group-moon .swatch.selected')){
+        missing.push('Moon Color'); document.getElementById('group-moon').classList.add('invalid');
+    }
+    return missing;
+}
+
+/* Build Customization Object & Display List */
+function buildCustomizationData(){
+    const edits = [];
+    const customData = {
+        letters: lettersInput.value.trim(),
+        charms: [],
+        pendants: [],
+        figurines: [],
+        leatherColorIdx: null,
+        letterColorIdx: null,
+        beadColorIdxs: [],
+        spacerRowIdxs: [],
+        moonColorIdx: null,
+        fontStyle: null
+    };
+
+    if(customData.letters){
+        edits.push(`Letters: ${customData.letters}`);
+    }
+
+    if(config.hasCharm){
+        document.querySelectorAll('#charm-field-wrap select').forEach((sel, i) => {
+            if(sel.value && sel.value !== 'Select...'){
+                customData.charms.push(sel.value);
+                edits.push(`Charm ${i + 1}: ${sel.value}`);
+            }
+        });
+    }
+
+    if(config.hasPendant){
+        document.querySelectorAll('#pendant-field-wrap select').forEach((sel, i) => {
+            if(sel.value && sel.value !== 'Select...'){
+                customData.pendants.push(sel.value);
+                edits.push(`Pendant ${i + 1}: ${sel.value}`);
+            }
+        });
+    }
+
+    if(config.hasFigurine){
+        document.querySelectorAll('#figurine-field-wrap select').forEach((sel, i) => {
+            if(sel.value && sel.value !== 'Select...'){
+                customData.figurines.push(sel.value);
+                edits.push(`Figurine ${i + 1}: ${sel.value}`);
+            }
+        });
+    }
+
+    if(config.rightSwatches.includes('leather')){
+        document.querySelectorAll('#group-leather .swatch').forEach((sw, idx) => {
+            if(sw.classList.contains('selected')){
+                customData.leatherColorIdx = idx;
+                edits.push(`Leather Color: ${colorNames.leather[idx] || 'Selected'}`);
+            }
+        });
+    }
+
+    if(config.rightSwatches.includes('letter')){
+        document.querySelectorAll('#group-letter .swatch').forEach((sw, idx) => {
+            if(sw.classList.contains('selected')){
+                customData.letterColorIdx = idx;
+                edits.push(`Letter Color: ${colorNames.letter[idx] || 'Selected'}`);
+            }
+        });
+    }
+
+    if(config.rightSwatches.includes('bead')){
+        const names = [];
+        document.querySelectorAll('#group-bead .swatch').forEach((sw, idx) => {
+            if(sw.classList.contains('selected')){
+                customData.beadColorIdxs.push(idx);
+                names.push(colorNames.bead[idx]);
+            }
+        });
+        if(names.length) edits.push(`Bead Colors: ${names.join(', ')}`);
+    }
+
+    if(config.rightSwatches.includes('spacer')){
+        const names = [];
+        document.querySelectorAll('#group-spacer .palette-row').forEach((r, idx) => {
+            if(r.classList.contains('selected')){
+                customData.spacerRowIdxs.push(idx);
+                names.push(colorNames.spacer[idx]);
+            }
+        });
+        if(names.length) edits.push(`Spacers: ${names.join(', ')}`);
+    }
+
+    if(config.rightSwatches.includes('moon')){
+        document.querySelectorAll('#group-moon .swatch').forEach((sw, idx) => {
+            if(sw.classList.contains('selected')){
+                customData.moonColorIdx = idx;
+                edits.push(`Moon Color: ${colorNames.moon[idx] || 'Selected'}`);
+            }
+        });
+    }
+
+    if(config.hasFont){
+        const fontBtn = document.querySelector('.font-style-btn.selected');
+        if(fontBtn){
+            customData.fontStyle = fontBtn.textContent.trim();
+            edits.push(`Font Style: ${customData.fontStyle}`);
+        }
+    }
+
+    return { edits, customData };
+}
+
+/* Load existing selections if editing */
+if(editId){
+    document.getElementById('add-cart-btn').textContent = 'Update Cart';
+    const cart = JSON.parse(sessionStorage.getItem('kumamori_cart') || '[]');
+    const existing = cart.find(i => i.id === editId);
+
+    if(existing && existing.customData){
+        const cd = existing.customData;
+        if(cd.letters){
+            lettersInput.value = cd.letters;
+            lettersInput.dispatchEvent(new Event('input'));
+        }
+
+        if(cd.charms && cd.charms.length){
+            const mainSel = document.getElementById('charm-select-main');
+            if(mainSel) mainSel.value = cd.charms[0];
+            for(let i = 1; i < cd.charms.length; i++){
+                document.getElementById('add-charm-btn').click();
+                const selects = document.querySelectorAll('#charm-field-wrap select');
+                if(selects[i]) selects[i].value = cd.charms[i];
+            }
+        }
+
+        if(cd.pendants && cd.pendants.length){
+            for(let i = 0; i < cd.pendants.length; i++){
+                document.getElementById('add-pendant-btn').click();
+                const selects = document.querySelectorAll('#pendant-field-wrap select');
+                if(selects[i]) selects[i].value = cd.pendants[i];
+            }
+        }
+
+        if(cd.figurines && cd.figurines.length){
+            const mainSel = document.getElementById('figurine-select-main');
+            if(mainSel) mainSel.value = cd.figurines[0];
+            for(let i = 1; i < cd.figurines.length; i++){
+                document.getElementById('add-figurine-btn').click();
+                const selects = document.querySelectorAll('#figurine-field-wrap select');
+                if(selects[i]) selects[i].value = cd.figurines[i];
+            }
+        }
+
+        if(cd.leatherColorIdx !== null && cd.leatherColorIdx !== undefined){
+            const sws = document.querySelectorAll('#group-leather .swatch');
+            if(sws[cd.leatherColorIdx]) sws[cd.leatherColorIdx].click();
+        }
+
+        if(cd.letterColorIdx !== null && cd.letterColorIdx !== undefined){
+            const sws = document.querySelectorAll('#group-letter .swatch');
+            if(sws[cd.letterColorIdx]) sws[cd.letterColorIdx].click();
+        }
+
+        if(cd.beadColorIdxs && cd.beadColorIdxs.length){
+            const sws = document.querySelectorAll('#group-bead .swatch');
+            cd.beadColorIdxs.forEach(idx => { if(sws[idx]) sws[idx].click(); });
+        }
+
+        if(cd.spacerRowIdxs && cd.spacerRowIdxs.length){
+            const rows = document.querySelectorAll('#group-spacer .palette-row');
+            cd.spacerRowIdxs.forEach(idx => { if(rows[idx]) rows[idx].click(); });
+        }
+
+        if(cd.moonColorIdx !== null && cd.moonColorIdx !== undefined){
+            const sws = document.querySelectorAll('#group-moon .swatch');
+            if(sws[cd.moonColorIdx]) sws[cd.moonColorIdx].click();
+        }
+
+        if(cd.fontStyle){
+            document.querySelectorAll('.font-style-btn').forEach(b => {
+                if(b.textContent.trim() === cd.fontStyle) b.click();
+            });
+        }
+    }
+}
+
+/* Save / Add to Cart */
+document.getElementById('add-cart-btn').addEventListener('click', () => {
+    const missing = validateRequiredFields();
+    if(missing.length){
+        showErrorToast('Please select: ' + missing.join(', '));
+        return;
+    }
+
+    function getCart(){ return JSON.parse(sessionStorage.getItem('kumamori_cart') || '[]'); }
+    function saveCart(cart){ sessionStorage.setItem('kumamori_cart', JSON.stringify(cart)); }
+
+    const { edits, customData } = buildCustomizationData();
+    const cart = getCart();
+
+    if(editId){
+        const idx = cart.findIndex(i => i.id === editId);
+        if(idx !== -1){
+            cart[idx].price = computeTotal();
+            cart[idx].edits = edits;
+            cart[idx].customData = customData;
+        }
+    } else {
+        cart.push({
+            id: type + '-' + Date.now(),
+            name: config.name,
+            price: computeTotal(),
+            qty: 1,
+            customizable: true,
+            type: type,
+            edits: edits,
+            customData: customData
+        });
+    }
+
+    saveCart(cart);
+    window.location.href = 'cartPage.html';
+});
+
+recalcTotal();
+</script>
+
+</body>
+</html>

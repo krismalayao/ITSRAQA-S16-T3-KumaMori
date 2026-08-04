@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuma Mori - Payment Plan</title>
+<link rel="icon" type="image/png" sizes="48x48" href="../images/kumamoriFavicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+    --text-brown:#5c3214;
+    --text-brown-light:#7a5335;
+    --card-border:#c48b78;
+    --border-soft:#e6d2c4;
+    --accent:#C69866;
+    --danger:#e8607a;
+    --error-red:#d9534f;
+    --bg-soft:#fdf6f2;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka',sans-serif;}
+body{background:#fff;color:var(--text-brown);}
+
+.page-wrap{max-width:900px;margin:0 auto;padding:60px 40px 90px;}
+
+/* Header */
+.page-header{
+    display:flex;align-items:center;position:relative;
+    margin-bottom:30px;
+}
+.back-btn {
+    background: #fff;
+    border: 1.5px solid var(--text-brown);
+    color: var(--text-brown);
+    padding: 10px 22px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    flex-shrink: 0;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: var(--text-brown);
+    color: #fff;
+}
+
+.back-btn i {
+    transition: transform 0.2s ease;
+}
+
+.back-btn:hover i {
+    transform: translateX(-3px);
+}
+
+.page-title{
+    position:absolute;left:50%;transform:translateX(-50%);
+    text-align:center;font-size:2.4rem;font-weight:700;margin:0;
+    color:var(--text-brown);
+}
+
+.divider{
+    height:2px;background:var(--text-brown);
+    margin-bottom:35px;border-radius:2px;opacity:0.85;
+}
+
+/* Selector Pill Container */
+.pill-card{
+    background:#fff;border-radius:30px;
+    box-shadow:0 8px 24px rgba(92,50,20,0.08);
+    padding:16px 28px;margin-bottom:30px;
+    display:flex;align-items:center;justify-content:space-between;
+    border:1px solid #f2e6de;
+}
+.pill-card .pill-title{
+    font-size:1.25rem;font-weight:700;color:var(--text-brown);
+}
+.pill-options{
+    display:flex;gap:16px;align-items:center;
+}
+.pill-btn{
+    display:flex;align-items:center;gap:12px;
+    padding:8px 20px 8px 10px;border-radius:25px;
+    background:transparent;border:none;cursor:pointer;
+    font-size:1rem;font-weight:600;color:var(--text-brown-light);
+    transition:all 0.2s ease;
+}
+.pill-btn .radio-circle{
+    width:28px;height:28px;border-radius:50%;
+    border:2px solid #d0b8a8;display:flex;align-items:center;
+    justify-content:center;background:#fff;color:transparent;
+    font-size:0.75rem;transition:all 0.2s ease;
+}
+.pill-btn.active{
+    color:var(--text-brown);font-weight:700;
+}
+.pill-btn.active .radio-circle{
+    background:var(--text-brown);border-color:var(--text-brown);
+    color:#fff;
+}
+.pill-btn:hover:not(.active) .radio-circle{
+    border-color:var(--text-brown);
+}
+
+/* GCash Logo Styling inside Pill */
+.gcash-logo-img {
+    height: 24px;
+    width: auto;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+/* Cards Section */
+.content-card{
+    background:#fff;border-radius:24px;
+    box-shadow:0 10px 28px rgba(92,50,20,0.08);
+    padding:32px 36px;margin-bottom:30px;
+    border:1px solid #f2e6de;
+}
+.card-header-title{
+    font-size:1.25rem;font-weight:700;color:var(--text-brown);
+    padding-bottom:14px;border-bottom:2px solid #f2e3d8;margin-bottom:22px;
+}
+
+/* Input Fields */
+.form-group{
+    margin-bottom:20px;
+}
+.form-group:last-child{margin-bottom:0;}
+.input-field{
+    width:100%;border:1.5px solid var(--border-soft);
+    border-radius:18px;padding:14px 20px;
+    font-size:1rem;color:var(--text-brown);
+    outline:none;background:#fff;
+    transition:border-color 0.2s, box-shadow 0.2s;
+}
+.input-field:focus{
+    border-color:var(--text-brown);
+    box-shadow:0 0 0 3px rgba(92,50,20,0.1);
+}
+.input-field.invalid{
+    border-color:var(--error-red);
+    background-color:rgba(217, 83, 79, 0.03);
+}
+.field-hint{
+    font-size:0.85rem;color:var(--text-brown-light);
+    font-weight:500;margin-top:6px;margin-left:14px;
+}
+
+.grid-2-col{
+    display:grid;grid-template-columns:1fr 1fr;gap:20px;
+}
+
+/* Pickup Store Card */
+.pickup-info-box{
+    background:var(--bg-soft);border-radius:18px;
+    padding:20px;border:1.5px dashed var(--card-border);
+    color:var(--text-brown);
+}
+.pickup-info-box h3{font-size:1.05rem;margin-bottom:8px;}
+.pickup-info-box p{font-size:0.9rem;color:var(--text-brown-light);line-height:1.5;}
+
+/* GCash Card Styling */
+.gcash-container {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    align-items: center;
+}
+
+.gcash-qr-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--bg-soft);
+    padding: 20px;
+    border-radius: 20px;
+    border: 1.5px dashed var(--card-border);
+    text-align: center;
+}
+
+.qr-placeholder {
+    width: 150px;
+    height: 150px;
+    background: #fff;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-soft);
+    color: #005ce6;
+    margin-bottom: 14px;
+}
+
+.qr-placeholder i {
+    font-size: 4.5rem;
+}
+
+.gcash-account-info {
+    font-size: 0.9rem;
+    color: var(--text-brown);
+    line-height: 1.6;
+    width: 100%;
+}
+
+.gcash-account-info p {
+    white-space: nowrap;
+}
+
+.instruction-step {
+    font-size: 0.95rem;
+    color: var(--text-brown-light);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Summary Details Card */
+.order-summary-list{
+    display:flex;flex-direction:column;gap:12px;margin-bottom:16px;
+}
+.summary-item{
+    display:flex;justify-content:space-between;
+    font-size:0.95rem;color:var(--text-brown-light);
+}
+.summary-item.total-item{
+    font-size:1.1rem;font-weight:700;color:var(--text-brown);
+    border-top:1px dashed var(--border-soft);padding-top:12px;margin-top:4px;
+}
+
+/* Bottom Bar */
+.checkout-bar{
+    background:#fff;border-radius:24px;
+    box-shadow:0 12px 30px rgba(92,50,20,0.1);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 40px;margin-top:20px;
+    border:1px solid #f2e6de;
+}
+.checkout-bar .total-label{
+    font-size:1rem;font-weight:700;color:var(--text-brown-light);
+    letter-spacing:0.5px;
+}
+.checkout-bar .total-val{
+    font-size:1.8rem;font-weight:700;color:var(--text-brown);
+    margin-left:12px;
+}
+.btn-place-order{
+    background:var(--text-brown);color:#fff;border:none;
+    padding:16px 40px;border-radius:22px;font-size:1.2rem;
+    font-weight:700;cursor:pointer;transition:all 0.2s ease;
+    box-shadow:0 4px 14px rgba(92,50,20,0.2);
+}
+.btn-place-order:hover{
+    background:#45240c;transform:translateY(-2px);
+    box-shadow:0 6px 18px rgba(92,50,20,0.25);
+}
+
+/* Toast Notification */
+.toast-notification {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background-color: var(--error-red);
+    color: #ffffff;
+    padding: 14px 22px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(217, 83, 79, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+.toast-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Modal Overlay */
+.modal-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,0.5);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity 0.3s ease;
+    z-index:2000;padding:20px;
+}
+.modal-overlay.active{
+    opacity:1;pointer-events:auto;
+}
+.modal-card{
+    background:#fff;border-radius:28px;padding:40px;
+    max-width:480px;width:100%;text-align:center;
+    box-shadow:0 15px 40px rgba(0,0,0,0.2);
+    transform:scale(0.9);transition:transform 0.3s ease;
+}
+.modal-overlay.active .modal-card{
+    transform:scale(1);
+}
+.modal-icon{
+    width:70px;height:70px;background:#e8f5e9;color:#2e7d32;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:2.2rem;margin:0 auto 20px;
+}
+.modal-title{font-size:1.8rem;font-weight:700;margin-bottom:10px;color:var(--text-brown);}
+.modal-desc{font-size:0.95rem;color:var(--text-brown-light);line-height:1.5;margin-bottom:25px;}
+
+@media (max-width:768px){
+    .page-wrap{padding:30px 20px 60px;}
+    .page-title{font-size:1.8rem;}
+    .pill-card{flex-direction:column;gap:14px;align-items:flex-start;}
+    .grid-2-col{grid-template-columns:1fr;}
+    .gcash-container{grid-template-columns:1fr;}
+    .checkout-bar{flex-direction:column;gap:16px;text-align:center;}
+    .toast-notification {
+        left: 50%;
+        transform: translate(-50%, 20px);
+        width: 90%;
+        justify-content: center;
+    }
+    .toast-notification.show {
+        transform: translate(-50%, 0);
+    }
+}
+</style>
+</head>
+<body>
+
+<script>window.CURRENT_PAGE = 'cart';</script>
+<script src="navigationBar.js"></script>
+
+<div class="page-wrap">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <a href="cartPage.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        <h1 class="page-title">Payment Plan</h1>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Contact Info Card -->
+    <div class="content-card">
+        <h2 class="card-header-title">Contact Information</h2>
+        <div class="grid-2-col">
+            <div class="form-group">
+                <input type="text" id="contact-name" class="input-field" placeholder="Full Name">
+                <div class="field-hint">Full Name</div>
+            </div>
+            <div class="form-group">
+                <input type="text" id="contact-phone" class="input-field" placeholder="0912 345 6789">
+                <div class="field-hint">Mobile Number</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delivery Method Selector -->
+    <div class="pill-card">
+        <span class="pill-title">Delivery Method</span>
+        <div class="pill-options">
+            <button type="button" class="pill-btn" id="btn-pickup" onclick="setDeliveryMethod('pickup')">
+                <span class="radio-circle"><i class="fa-solid fa-check"></i></span>
+                Pick Up
+            </button>
+            <button type="button" class="pill-btn active" id="btn-delivery" onclick="setDeliveryMethod('delivery')">
+                <span class="radio-circle"><i class="fa-solid fa-check"></i></span>
+                Delivery
+            </button>
+        </div>
+    </div>
+
+    <!-- Delivery Address Card -->
+    <div class="content-card" id="address-card">
+        <h2 class="card-header-title">Delivery Address</h2>
+        
+        <div class="form-group">
+            <input type="text" id="addr-street" class="input-field" placeholder="House/Unit #, Building, Street, Barangay">
+            <div class="field-hint">#(Unit), Street, Brgy</div>
+        </div>
+
+        <div class="form-group">
+            <input type="text" id="addr-city" class="input-field" placeholder="City / Municipality">
+            <div class="field-hint">City</div>
+        </div>
+
+        <div class="form-group">
+            <input type="text" id="addr-zip" class="input-field" placeholder="Postal / Zip Code">
+            <div class="field-hint">Postal / Zip Code</div>
+        </div>
+    </div>
+
+    <!-- Pick Up Location Card -->
+    <div class="content-card" id="pickup-card" style="display:none;">
+        <h2 class="card-header-title">Pick Up Location</h2>
+        <div class="pickup-info-box">
+            <h3><i class="fa-solid fa-store" style="color:var(--accent);"></i> Kuma Mori Main Workshop</h3>
+            <p>123 Bear Forest Lane, Katipunan Ave, Quezon City, Metro Manila</p>
+            <p style="margin-top:8px;"><strong>Operating Hours:</strong> Mon - Sat | 10:00 AM - 6:00 PM</p>
+            <p style="margin-top:4px;"><em>*Please present your order confirmation upon pick up.</em></p>
+        </div>
+    </div>
+
+    <!-- Payment Method Selector -->
+    <div class="pill-card">
+        <span class="pill-title">Payment Method</span>
+        <div class="pill-options">
+            <button type="button" class="pill-btn" id="btn-cod" onclick="setPaymentMethod('cod')">
+                <span class="radio-circle"><i class="fa-solid fa-check"></i></span>
+                Cash on Delivery
+            </button>
+            <button type="button" class="pill-btn active" id="btn-gcash" onclick="setPaymentMethod('gcash')">
+                <span class="radio-circle"><i class="fa-solid fa-check"></i></span>
+                <img src="../images/gcash-logo.png" alt="GCash" class="gcash-logo-img" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/5/52/GCash_logo.svg';">
+            </button>
+        </div>
+    </div>
+
+    <!-- GCash Payment Details Card -->
+    <div class="content-card" id="gcash-details-card">
+        <h2 class="card-header-title">GCash Payment Details</h2>
+        <div class="gcash-container">
+            
+            <div class="gcash-qr-box">
+                <div class="qr-placeholder">
+                    <i class="fa-solid fa-qrcode"></i>
+                </div>
+                <div class="gcash-account-info">
+                    <p><strong>Account Name:</strong> Kuma Mori</p>
+                    <p><strong>GCash Number:</strong> 0917 123 4567</p>
+                </div>
+            </div>
+
+            <div class="gcash-instructions">
+                <p class="instruction-step"><i class="fa-solid fa-circle-1" style="color:var(--accent);"></i> Scan the QR code or send payment to the GCash number.</p>
+                <p class="instruction-step"><i class="fa-solid fa-circle-2" style="color:var(--accent);"></i> Enter the 13-digit GCash Reference Number below.</p>
+                
+                <div class="form-group" style="margin-top: 16px;">
+                    <input type="text" id="gcash-ref-number" class="input-field" placeholder="e.g. 1001 2345 67890" maxlength="13">
+                    <div class="field-hint">GCash Reference Number</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Order Items Breakdown -->
+    <div class="content-card">
+        <h2 class="card-header-title">Order Summary</h2>
+        <div class="order-summary-list" id="summary-items-list"></div>
+        <div class="summary-item">
+            <span>Subtotal</span>
+            <span id="subtotal-val">₱0.00</span>
+        </div>
+        <div class="summary-item">
+            <span>Delivery Fee</span>
+            <span id="shipping-val">₱60.00</span>
+        </div>
+        <div class="summary-item total-item">
+            <span>Total</span>
+            <span id="summary-total-val">₱0.00</span>
+        </div>
+    </div>
+
+    <!-- Bottom Action Bar -->
+    <div class="checkout-bar">
+        <div>
+            <span class="total-label">TOTAL</span>
+            <span class="total-val" id="bar-total-val">₱0.00</span>
+        </div>
+        <button class="btn-place-order" id="place-order-btn" onclick="handlePlaceOrder()">Place Order</button>
+    </div>
+
+</div>
+
+<!-- Toast Notification Container -->
+<div id="toast" class="toast-notification">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <span id="toast-message">Please fill in all required fields.</span>
+</div>
+
+<!-- Order Confirmation Modal -->
+<div class="modal-overlay" id="success-modal">
+    <div class="modal-card">
+        <div class="modal-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <h2 class="modal-title">Order Placed!</h2>
+        <p class="modal-desc">Thank you for ordering with Kuma Mori! We have received your order and are preparing your items with love.</p>
+        <button class="btn-place-order" style="width:100%;" onclick="finishOrder()">Track My Order</button>
+    </div>
+</div>
+
+<script src="footer.js"></script>
+
+<script>
+let currentDeliveryMethod = 'delivery';
+let currentPaymentMethod = 'gcash';
+let cartData = [];
+let subtotalAmount = 0;
+const SHIPPING_FEE = 60;
+
+/* Toast helper */
+let toastTimeout;
+function showErrorToast(msg) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    toastMessage.textContent = msg;
+    clearTimeout(toastTimeout);
+    toast.classList.add('show');
+    toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3500);
+}
+
+/* Toggle Delivery Method */
+function setDeliveryMethod(method) {
+    currentDeliveryMethod = method;
+    const btnPickup = document.getElementById('btn-pickup');
+    const btnDelivery = document.getElementById('btn-delivery');
+    const addressCard = document.getElementById('address-card');
+    const pickupCard = document.getElementById('pickup-card');
+
+    if (method === 'delivery') {
+        btnDelivery.classList.add('active');
+        btnPickup.classList.remove('active');
+        addressCard.style.display = 'block';
+        pickupCard.style.display = 'none';
+    } else {
+        btnPickup.classList.add('active');
+        btnDelivery.classList.remove('active');
+        addressCard.style.display = 'none';
+        pickupCard.style.display = 'block';
+    }
+    updateTotals();
+}
+
+/* Toggle Payment Method */
+function setPaymentMethod(method) {
+    currentPaymentMethod = method;
+    const btnCod = document.getElementById('btn-cod');
+    const btnGcash = document.getElementById('btn-gcash');
+    const gcashCard = document.getElementById('gcash-details-card');
+
+    if (method === 'gcash') {
+        btnGcash.classList.add('active');
+        btnCod.classList.remove('active');
+        gcashCard.style.display = 'block';
+    } else {
+        btnCod.classList.add('active');
+        btnGcash.classList.remove('active');
+        gcashCard.style.display = 'none';
+    }
+}
+
+/* Load cart from Session Storage */
+function loadCart() {
+    cartData = JSON.parse(sessionStorage.getItem('kumamori_cart') || '[]');
+    const summaryList = document.getElementById('summary-items-list');
+    summaryList.innerHTML = '';
+
+    subtotalAmount = 0;
+
+    if (cartData.length === 0) {
+        summaryList.innerHTML = '<div class="summary-item"><span>No items in cart</span><span>₱0.00</span></div>';
+    } else {
+        cartData.forEach(item => {
+            const itemTotal = (item.price || 0) * (item.qty || 1);
+            subtotalAmount += itemTotal;
+
+            const div = document.createElement('div');
+            div.className = 'summary-item';
+            div.innerHTML = `
+                <span>${item.name} (${item.qty || 1}x)</span>
+                <span>₱${itemTotal.toFixed(2)}</span>
+            `;
+            summaryList.appendChild(div);
+        });
+    }
+
+    updateTotals();
+}
+
+/* Calculate Totals */
+function updateTotals() {
+    const deliveryCost = currentDeliveryMethod === 'delivery' ? SHIPPING_FEE : 0;
+    const finalTotal = subtotalAmount + deliveryCost;
+
+    document.getElementById('subtotal-val').textContent = '₱' + subtotalAmount.toFixed(2);
+    document.getElementById('shipping-val').textContent = '₱' + deliveryCost.toFixed(2);
+    document.getElementById('summary-total-val').textContent = '₱' + finalTotal.toFixed(2);
+    document.getElementById('bar-total-val').textContent = '₱' + finalTotal.toFixed(2);
+}
+
+/* Validation & Form Submit */
+function handlePlaceOrder() {
+    const inputs = document.querySelectorAll('.input-field');
+    inputs.forEach(input => input.classList.remove('invalid'));
+
+    const nameInput = document.getElementById('contact-name');
+    const phoneInput = document.getElementById('contact-phone');
+    let hasError = false;
+
+    if (!nameInput.value.trim()) {
+        nameInput.classList.add('invalid');
+        hasError = true;
+    }
+    if (!phoneInput.value.trim()) {
+        phoneInput.classList.add('invalid');
+        hasError = true;
+    }
+
+    if (currentDeliveryMethod === 'delivery') {
+        const streetInput = document.getElementById('addr-street');
+        const cityInput = document.getElementById('addr-city');
+        const zipInput = document.getElementById('addr-zip');
+
+        if (!streetInput.value.trim()) { streetInput.classList.add('invalid'); hasError = true; }
+        if (!cityInput.value.trim()) { cityInput.classList.add('invalid'); hasError = true; }
+        if (!zipInput.value.trim()) { zipInput.classList.add('invalid'); hasError = true; }
+    }
+
+    if (currentPaymentMethod === 'gcash') {
+        const refInput = document.getElementById('gcash-ref-number');
+        if (!refInput.value.trim()) {
+            refInput.classList.add('invalid');
+            hasError = true;
+        }
+    }
+
+    if (hasError) {
+        showErrorToast('Please fill out all required details before submitting.');
+        return;
+    }
+
+    if (cartData.length === 0) {
+        showErrorToast('Your cart is empty!');
+        return;
+    }
+
+    // Generate Order ID
+    const generatedOrderId = 'K' + Math.floor(100000 + Math.random() * 900000);
+    const deliveryCost = currentDeliveryMethod === 'delivery' ? SHIPPING_FEE : 0;
+    const finalTotal = subtotalAmount + deliveryCost;
+
+    // Save order into localStorage so orderTrackingPage.html can load it
+    const existingOrders = JSON.parse(localStorage.getItem('kumamori_orders') || '[]');
+    const newOrder = {
+        id: generatedOrderId,
+        user: sessionStorage.getItem('activeUser') || 'guest',
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+        status: 'Pending',
+        items: cartData.map(item => ({
+            name: item.name,
+            qty: item.qty || 1,
+            price: parseFloat(item.price || 0)
+        })),
+        total: '₱' + finalTotal.toFixed(2)
+    };
+
+    existingOrders.unshift(newOrder);
+    localStorage.setItem('kumamori_orders', JSON.stringify(existingOrders));
+
+    // Save temporary session state
+    sessionStorage.setItem('kumamori_latest_order', generatedOrderId);
+    sessionStorage.setItem('kumamori_order_data', JSON.stringify({
+        paymentMethod: currentPaymentMethod,
+        deliveryMethod: currentDeliveryMethod,
+        address: document.getElementById('addr-street')?.value || 'Pickup at Workshop'
+    }));
+
+    document.getElementById('success-modal').classList.add('active');
+}
+
+function finishOrder() {
+    const orderId = sessionStorage.getItem('kumamori_latest_order') || 'K071626';
+    sessionStorage.removeItem('kumamori_cart');
+    window.location.href = `orderTrackingPage.html?order=${orderId}`;
+}
+
+// Remove invalid styling on input
+document.querySelectorAll('.input-field').forEach(input => {
+    input.addEventListener('input', function() {
+        if (this.value.trim().length > 0) {
+            this.classList.remove('invalid');
+        }
+    });
+});
+
+/* Init */
+loadCart();
+</script>
+
+</body>
+</html>

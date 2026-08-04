@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kuma Mori - Home</title>
+<link rel="icon" type="image/png" sizes="48x48" href="../images/kumamoriFavicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+    --bg-stripe-light:#fce8eb;
+    --bg-stripe-dark:#fcdde3;
+    --card-bg:#f9e2e6;
+    --card-border:#c48b78;
+    --text-brown:#5c3214;
+    --button-bg:#5c3214;
+    --button-hover:#45240c;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka',sans-serif;}
+body{background:#ffffff;color:var(--text-brown);}
+
+.brand-hero{
+    background-image:url('../images/banner.png');
+    background-size:cover;
+    background-position:center;
+    height:635px;
+    max-height:44vw;
+}
+
+.hero-content{
+    position:relative;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    gap:100px;
+    padding:30px 80px 60px;
+    background:#fff;
+    max-width:1300px;
+    margin:0 auto;
+}
+.hero-bear{
+    position:relative;
+    width:420px;
+    max-width:38vw;
+    z-index:5;
+    margin-bottom:-60px;
+}
+.hero-bear::after{
+    content:'';
+    position:absolute;
+    left:50%;
+    bottom:110px;
+    transform:translateX(-50%);
+    width:70%;
+    height:24px;
+    background:radial-gradient(ellipse at center, rgba(92,50,20,0.22), transparent 70%);
+    filter:blur(4px);
+    z-index:-1;
+}
+.hero-bear img{
+    width:100%;
+    display:block;
+    filter:drop-shadow(0 15px 12px rgba(92,50,20,0.15));
+}
+.hero-text{max-width:600px;padding-bottom:100px;}
+.hero-text h1{font-size:2.2rem;font-weight:700;margin-bottom:16px;line-height:1.25;}
+.hero-text p{margin-bottom:28px;color:#7a5335;font-size:1.05rem;}
+
+.btn-brown{
+    background:var(--button-bg);color:#fff;border:none;
+    padding:14px 32px;border-radius:25px;font-weight:600;
+    cursor:pointer;text-decoration:none;display:inline-block;
+    transition:background-color .2s, transform .15s, box-shadow .2s;
+    box-shadow:0 6px 15px rgba(92,50,20,0.25);
+}
+.btn-brown:hover{background:var(--button-hover);transform:translateY(-2px);box-shadow:0 10px 20px rgba(92,50,20,0.3);}
+.btn-brown:active{transform:translateY(0);}
+
+.banner-strip{
+    background:#C69866;
+    color:#fff;
+    text-align:center;
+    padding:24px;
+    font-weight:600;
+    letter-spacing:.5px;
+    position:relative;
+    z-index:1;
+}
+
+.customizable{text-align:center;padding:70px 80px;background:#fff;}
+.customizable h2{margin-bottom:45px;font-size:1.9rem;font-weight:700;}
+.customizable-imgs{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;margin-bottom:40px;}
+.customizable-imgs img{
+    max-width:260px;width:100%;border-radius:14px;
+    box-shadow:0 10px 20px rgba(92,50,20,0.12);
+    transition:transform .25s, box-shadow .25s;
+}
+.customizable-imgs img:hover{transform:translateY(-6px);box-shadow:0 16px 26px rgba(92,50,20,0.18);}
+
+.reviews{padding:70px 0;overflow:hidden;background:#fdf6f4;}
+.reviews h2{text-align:center;margin-bottom:40px;font-size:1.9rem;font-weight:700;}
+.reviews-track{display:flex;gap:20px;width:max-content;animation:scrollReviews 35s linear infinite;}
+.reviews-track:hover{animation-play-state:paused;}
+.review-card{
+    background:var(--card-bg);border:2px dashed var(--card-border);
+    border-radius:20px;padding:22px;width:260px;flex-shrink:0;
+    transition:transform .25s, box-shadow .25s;
+}
+.review-card:hover{transform:translateY(-5px) scale(1.02);box-shadow:0 12px 22px rgba(92,50,20,0.15);}
+.review-card .stars{color:#e8607a;margin-bottom:10px;letter-spacing:2px;}
+.review-card p{font-size:.9rem;margin-bottom:15px;line-height:1.4;}
+.review-card span{font-weight:600;font-size:.85rem;}
+
+@keyframes scrollReviews{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-50%);}
+}
+</style>
+</head>
+<body>
+
+<script>window.CURRENT_PAGE = 'home';</script>
+
+<script src="navigationBar.js"></script>
+
+<div class="brand-hero"></div>
+
+<div class="banner-strip" style="background:#f9e2e6"></div>
+
+<section class="hero-content">
+    <div class="hero-bear">
+        <img src="../images/croppedBear.png" alt="PLACEHOLDER: hero bear keychain">
+    </div>
+    <div class="hero-text">
+        <h1>Plush Bear Self-Defense Keychain</h1>
+        <p>Carry comfort and confidence wherever you go.</p>
+        <a href="productsPage.html" class="btn-brown">Browse the Collection</a>
+    </div>
+</section>
+
+<div class="banner-strip">Your style. Your safety. Always within reach.</div>
+
+<section class="customizable">
+    <h2>Customizable Keychains</h2>
+    <div class="customizable-imgs">
+        <img src="../images/leather.png" alt="PLACEHOLDER: keychain set 1">
+        <img src="../images/beaded.png" alt="PLACEHOLDER: keychain set 2">
+        <img src="../images/charm.png" alt="PLACEHOLDER: keychain set 3">
+    </div>
+    <a href="productsPage.html" class="btn-brown">Browse the Collection</a>
+</section>
+
+<section class="reviews">
+    <h2>Product Reviews</h2>
+    <div class="reviews-track">
+        <div class="review-card"><div class="stars">★★★★★</div><p>Ang cute ng bear AND super legit, effective siya! 'Di halatang self-defense tool.</p><span>- Peter P.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>Love the variety in the customization options!</p><span>- Nat R.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>I ordered the beaded key chain, it was well-packed. Pick up at DLSU was smooth and fast.</p><span>- Clark K.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>Exceeded my expectations! The product felt premium but very affordable!</p><span>- Steve R.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>Overall, happy with the product! I'd definitely buy it again.</p><span>- Tony S.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>It's a decent product and it works reasonably well. Definitely worth buying!</p><span>- Wanda M.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>10/10! Would recommend! I've already recommended it to a couple of friends.</p><span>- Bruce B.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>Quality is great! Packaging is great! Great! Great!</p><span>- Carol D.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>I LOVE KUMAMORI! I LOVE THEIR PRODUCTS!</p><span>- Diana P.</span></div>
+
+        <div class="review-card"><div class="stars">★★★★★</div><p>Ang cute ng bear AND super legit, effective siya! 'Di halatang self-defense tool.</p><span>- Peter P.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>Love the variety in the customization options!</p><span>- Nat R.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>I ordered the beaded key chain, it was well-packed. Pick up at DLSU was smooth and fast.</p><span>- Clark K.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>Exceeded my expectations! The product felt premium but very affordable!</p><span>- Steve R.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>Overall, happy with the product! I'd definitely buy it again.</p><span>- Tony S.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>It's a decent product and it works reasonably well. Definitely worth buying!</p><span>- Wanda M.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>10/10! Would recommend! I've already recommended it to a couple of friends.</p><span>- Bruce B.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>Quality is great! Packaging is great! Great! Great!</p><span>- Carol D.</span></div>
+        <div class="review-card"><div class="stars">★★★★★</div><p>I LOVE KUMAMORI! I LOVE THEIR PRODUCTS!</p><span>- Diana P.</span></div>
+    </div>
+</section>
+
+<script src="footer.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kuma Mori - About Us</title>
+<link rel="icon" type="image/png" sizes="48x48" href="../images/kumamoriFavicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+    --card-bg:#f9e2e6;
+    --card-border:#c48b78;
+    --text-brown:#5c3214;
+    --text-brown-light:#7a5335;
+    --button-bg:#5c3214;
+    --button-hover:#45240c;
+    --accent:#C69866;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka',sans-serif;}
+body{background:#fff;color:var(--text-brown);}
+
+.page-wrap{max-width:1100px;margin:0 auto;padding:70px 40px 90px;}
+
+/* Intro section */
+.intro{
+    display:flex;
+    align-items:center;
+    gap:60px;
+    background:linear-gradient(135deg, var(--card-bg), #fdeef0);
+    border-radius:28px;
+    padding:50px 60px;
+    box-shadow:0 15px 35px rgba(92,50,20,0.08);
+    margin-bottom:70px;
+}
+.intro-logo{
+    flex-shrink:0;
+    width:220px;
+}
+.intro-logo img{
+    width:100%;
+    filter:drop-shadow(0 10px 15px rgba(92,50,20,0.15));
+}
+.intro-text{flex:1;}
+.eyebrow{
+    font-size:1.1rem;
+    font-weight:600;
+    color:var(--accent);
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:2px;
+}
+.intro-text h1{
+    font-size:2.8rem;
+    font-weight:700;
+    color:var(--text-brown);
+    margin-bottom:6px;
+    line-height:1;
+}
+.tagline{
+    font-size:1.2rem;
+    font-weight:600;
+    color:var(--accent);
+    margin-bottom:20px;
+}
+.intro-text p{
+    color:var(--text-brown-light);
+    line-height:1.7;
+    margin-bottom:14px;
+    font-size:.98rem;
+}
+
+/* Vision / Mission */
+.vm-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    margin-bottom:70px;
+}
+.vm-card{
+    background:#fff;
+    border:2px solid var(--card-bg);
+    border-radius:22px;
+    padding:34px;
+    box-shadow:0 10px 25px rgba(92,50,20,0.06);
+    transition:transform .25s, box-shadow .25s;
+}
+.vm-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 16px 32px rgba(92,50,20,0.1);
+}
+.vm-icon{
+    width:48px;height:48px;
+    border-radius:50%;
+    background:var(--card-bg);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:16px;
+    font-size:1.3rem;
+    color:var(--text-brown);
+}
+.vm-card h3{
+    font-size:1.5rem;
+    font-weight:700;
+    margin-bottom:12px;
+}
+.vm-card p{
+    color:var(--text-brown-light);
+    line-height:1.7;
+    font-size:.95rem;
+}
+
+/* Contact section */
+.contact-section{
+    display:flex;
+    align-items:center;
+    gap:50px;
+}
+.contact-mascot{
+    flex-shrink:0;
+    width:260px;
+}
+.contact-mascot img{
+    width:100%;
+    filter:drop-shadow(0 12px 18px rgba(92,50,20,0.15));
+}
+.contact-card{
+    flex:1;
+    background:var(--card-bg);
+    border-radius:26px;
+    padding:40px 45px;
+    box-shadow:0 15px 30px rgba(92,50,20,0.1);
+}
+.contact-card h2{
+    font-size:1.7rem;
+    font-weight:700;
+    margin-bottom:26px;
+}
+.contact-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:26px;
+}
+.contact-item{
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+}
+.contact-item .icon-circle{
+    flex-shrink:0;
+    width:44px;height:44px;
+    border-radius:50%;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-brown);
+    font-size:1.1rem;
+    box-shadow:0 4px 10px rgba(92,50,20,0.12);
+}
+.contact-item .label{
+    font-weight:600;
+    margin-bottom:2px;
+}
+.contact-item .value{
+    color:var(--text-brown-light);
+    font-size:.92rem;
+}
+.contact-item a{
+    color:var(--text-brown);
+    text-decoration:none;
+    font-size:.92rem;
+    font-weight:500;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    transition:gap .2s;
+}
+.contact-item a:hover{gap:8px;}
+
+@media (max-width:800px){
+    .intro{flex-direction:column;text-align:center;}
+    .vm-grid{grid-template-columns:1fr;}
+    .contact-section{flex-direction:column;}
+    .contact-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<script>window.CURRENT_PAGE = 'about';</script>
+<script src="navigationBar.js"></script>
+
+<div class="page-wrap">
+
+    <section class="intro">
+        <div class="intro-logo">
+            <img src="../images/publicPages.png" alt="PLACEHOLDER: Kuma Mori logo">
+        </div>
+        <div class="intro-text">
+            <p class="eyebrow">Meet</p>
+            <h1>KumaMori</h1>
+            <p class="tagline">A Charm of Comfort and Protection</p>
+            <p>KumaMori is more than a brand. It is a community that celebrates kindness, creativity, and self-protection. Carry your charm proudly. Carry KumaMori with you.</p>
+            <p>Inspired by "Kuma" (bear) and "Omamori" (Japanese charm), we blend strength, warmth, and good energy into every product. Our pieces combine style, meaning, and everyday function to help you feel confident and cared for wherever you go.</p>
+        </div>
+    </section>
+
+    <section class="vm-grid">
+        <div class="vm-card">
+            <div class="vm-icon"><i class="fa-solid fa-eye"></i></div>
+            <h3>Vision</h3>
+            <p>KumaMori envisions building a trusted presence within campus communities and nearby areas in Metro Manila by offering stylish and functional self-defense keychains that promote personal safety and self-expression among female Gen Zs and LGBT commuters.</p>
+        </div>
+        <div class="vm-card">
+            <div class="vm-icon"><i class="fa-solid fa-bullseye"></i></div>
+            <h3>Mission</h3>
+            <p>KumaMori aims to empower commuters, especially Gen Z female and LGBT individuals, by promoting personal safety and self-expression through discreet self-defense tools. Over the course of its operations, the company seeks to build a trustworthy presence within its community, create meaningful connections, foster loyalty, and strengthen sustainable sales growth while making a positive impact on everyday lives.</p>
+        </div>
+    </section>
+
+    <section class="contact-section">
+        <div class="contact-mascot">
+            <img src="../images/mascot.png" alt="PLACEHOLDER: lounging bear mascot illustration">
+        </div>
+        <div class="contact-card">
+            <h2>Contact Details</h2>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <div class="icon-circle"><i class="fa-solid fa-phone"></i></div>
+                    <div>
+                        <div class="label">Hotline</div>
+                        <div class="value">+63 9171900777</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="icon-circle"><i class="fa-solid fa-envelope"></i></div>
+                    <div>
+                        <div class="label">Email</div>
+                        <div class="value">kumamori.info@gmail.com</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="icon-circle"><i class="fa-brands fa-facebook-messenger"></i></div>
+                    <div>
+                        <div class="label">Facebook</div>
+                        <a href="#">Send us a message →</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="icon-circle"><i class="fa-brands fa-instagram"></i></div>
+                    <div>
+                        <div class="label">Instagram</div>
+                        <a href="#">Send us a message →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script src="footer.js"></script>
+
+</body>
+</html>
