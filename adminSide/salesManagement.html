@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KumaMori - Sales Management</title>
+  <link rel="icon" type="image/png" sizes="48x48" href="../images/kumamoriFavicon.png">
+
+  <!-- Google Fonts: Fredoka -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --admin-bg: #faf6f4;
+      --sidebar-bg: #f9e2e6;
+      --sidebar-border: #e8bdc5;
+      --card-bg: #ffffff;
+      --card-border: #f0c2cb;
+      --text-brown: #5c3214;
+      --text-muted: #8c6853;
+      --highlight-active: #eed1d7;
+
+      /* Status Colors */
+      --status-pending-bg: #fef9c3;
+      --status-pending-text: #a16207;
+      --status-confirmed-bg: #dcfce7;
+      --status-confirmed-text: #15803d;
+      --status-packed-bg: #e0f2fe;
+      --status-packed-text: #0369a1;
+      --status-shipped-bg: #f3e8ff;
+      --status-shipped-text: #6b21a8;
+      --status-delivered-bg: #d1fae5;
+      --status-delivered-text: #065f46;
+      --status-cancelled-bg: #fee2e2;
+      --status-cancelled-text: #b91c1c;
+    }
+
+    /* Hide scrollbar for Chrome, Safari, Edge, Opera */
+    ::-webkit-scrollbar {
+    display: none;
+    }
+
+    /* Hide scrollbar for IE, Firefox */
+    html, body, * {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--admin-bg);
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      border-right: 2px solid var(--sidebar-border);
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+      box-shadow: 4px 0 20px rgba(92, 50, 20, 0.06);
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .logo-img {
+      max-width: 150px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: var(--text-brown);
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .nav-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      border-radius: 20px;
+      color: var(--text-brown);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item a:hover {
+      background-color: var(--highlight-active);
+    }
+
+    .nav-item.active a {
+      background-color: var(--text-brown);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(92, 50, 20, 0.2);
+    }
+
+    .logout-btn {
+      color: #d9534f !important;
+    }
+
+    .logout-btn:hover {
+      background-color: #d9534f !important;
+      color: #ffffff !important;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1200px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .header-title {
+      font-size: 2rem;
+      color: var(--text-brown);
+      font-weight: 700;
+    }
+
+    /* Search & Filter Controls */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-input, .filter-select {
+      padding: 10px 18px;
+      border-radius: 20px;
+      border: 2px solid var(--card-border);
+      background-color: var(--card-bg);
+      color: var(--text-brown);
+      font-weight: 500;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .search-input:focus, .filter-select:focus {
+      border-color: var(--text-brown);
+    }
+
+    /* Status Filter Pill Buttons */
+    .status-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill-btn {
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .pill-btn:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+
+    .pill-btn.active {
+      box-shadow: 0 0 0 2px var(--text-brown);
+    }
+
+    .pill-all { background-color: var(--text-brown); color: white; }
+    .pill-pending { background-color: #eab308; color: white; }
+    .pill-confirmed { background-color: #22c55e; color: white; }
+    .pill-shipped { background-color: #a855f7; color: white; }
+    .pill-cancelled { background-color: #ef4444; color: white; }
+
+    /* Sales Table */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .sales-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 12px;
+    }
+
+    .sales-table thead tr {
+      background-color: #f9e2e6;
+    }
+
+    .sales-table th {
+      padding: 16px 20px;
+      color: var(--text-brown);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .sales-table th:first-child {
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+    }
+
+    .sales-table th:last-child {
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+
+    .sales-table tbody tr {
+      background-color: var(--card-bg);
+      box-shadow: 0 4px 15px rgba(92, 50, 20, 0.05);
+      transition: transform 0.2s;
+    }
+
+    .sales-table tbody tr:hover {
+      transform: translateY(-2px);
+    }
+
+    .sales-table td {
+      padding: 18px 20px;
+      color: var(--text-brown);
+      font-weight: 500;
+      font-size: 0.95rem;
+      vertical-align: middle;
+      border-top: 1px solid var(--card-border);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .sales-table td:first-child {
+      border-left: 1px solid var(--card-border);
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+      font-weight: 700;
+    }
+
+    .sales-table td:last-child {
+      border-right: 1px solid var(--card-border);
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+
+    /* Badges */
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-badge.Pending { background-color: var(--status-pending-bg); color: var(--status-pending-text); }
+    .status-badge.Confirmed { background-color: var(--status-confirmed-bg); color: var(--status-confirmed-text); }
+    .status-badge.Packed { background-color: var(--status-packed-bg); color: var(--status-packed-text); }
+    .status-badge.Shipped { background-color: var(--status-shipped-bg); color: var(--status-shipped-text); }
+    .status-badge.Delivered { background-color: var(--status-delivered-bg); color: var(--status-delivered-text); }
+    .status-badge.Cancelled { background-color: var(--status-cancelled-bg); color: var(--status-cancelled-text); }
+
+    .btn-view {
+      background: none;
+      border: none;
+      color: var(--text-brown);
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 0.95rem;
+    }
+
+    .btn-view:hover {
+      color: #3b1d0a;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(92, 50, 20, 0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background-color: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 28px;
+      width: 100%;
+      max-width: 600px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px dashed var(--card-border);
+      padding-bottom: 12px;
+    }
+
+    .modal-title {
+      color: var(--text-brown);
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .order-info-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .info-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .info-label {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      color: var(--text-brown);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .customization-box {
+      background-color: #faf0f2;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 6px;
+    }
+
+    .custom-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      color: var(--text-brown);
+      padding: 4px 0;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn-approve {
+      flex: 1;
+      background-color: #22c55e;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-approve:hover {
+      background-color: #16a34a;
+    }
+
+    .btn-cancel-order {
+      flex: 1;
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-cancel-order:hover {
+      background-color: #dc2626;
+    }
+
+    /* Mobile Breakpoints */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 2px solid var(--sidebar-border);
+        padding: 15px 20px;
+      }
+
+      .brand-section {
+        margin-bottom: 0;
+      }
+
+      .logo-img {
+        max-width: 120px;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav-container {
+        display: none;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--sidebar-border);
+      }
+
+      .nav-container.open {
+        display: flex;
+      }
+
+      .main-content {
+        padding: 20px 15px;
+      }
+
+      .header-title {
+        font-size: 1.6rem;
+      }
+
+      .filter-bar {
+        width: 100%;
+      }
+
+      .search-input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Responsive Sidebar -->
+  <aside class="sidebar">
+    <div class="brand-section">
+      <img src="../images/publicPages.png" alt="KumaMori Logo" class="logo-img">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation">☰</button>
+    </div>
+
+    <div class="nav-container" id="navContainer">
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="adminDashboard.html">Analytics</a></li>
+        <li class="nav-item"><a href="inventoryManagement.html">Inventory</a></li>
+        <li class="nav-item"><a href="productManagement.html">Products</a></li>
+        <li class="nav-item active"><a href="salesManagement.html">Sales</a></li>
+        <li class="nav-item"><a href="profilePage.html">Profile</a></li>
+      </ul>
+
+      <ul class="nav-menu" style="margin-top: 15px;">
+        <li class="nav-item"><a href="loginPage.html" class="logout-btn">Log Out</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    
+    <div class="top-bar">
+      <h1 class="header-title">Sales Management</h1>
+      
+      <!-- Top Quick Status Filter Pills -->
+      <div class="status-pills">
+        <button class="pill-btn pill-all active" onclick="filterByPill('All', this)">All</button>
+        <button class="pill-btn pill-pending" onclick="filterByPill('Pending', this)">Pending</button>
+        <button class="pill-btn pill-confirmed" onclick="filterByPill('Confirmed', this)">Confirmed</button>
+        <button class="pill-btn pill-shipped" onclick="filterByPill('Shipped', this)">Shipped</button>
+        <button class="pill-btn pill-cancelled" onclick="filterByPill('Cancelled', this)">Cancelled</button>
+      </div>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div class="filter-bar">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search order ID, customer name, or product...">
+      <select id="paymentFilter" class="filter-select">
+        <option value="All">All Payments</option>
+        <option value="GCash">GCash</option>
+        <option value="COD">COD</option>
+        <option value="BDO">BDO</option>
+      </select>
+      <select id="deliveryFilter" class="filter-select">
+        <option value="All">All Delivery</option>
+        <option value="Delivery">Delivery</option>
+        <option value="Pickup">Pickup</option>
+      </select>
+    </div>
+
+    <!-- Sales Orders Table -->
+    <div class="table-container">
+      <table class="sales-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Total</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="salesTableBody">
+          
+          <!-- Order 1 -->
+          <tr data-order-id="K071626"
+              data-customer="Kris Malayao"
+              data-email="kris@example.com"
+              data-address="Taft Ave, Malate, Manila City"
+              data-product="Plush Bear (x1)"
+              data-payment="GCash"
+              data-ref="0924-7718-26"
+              data-delivery="Delivery"
+              data-shipping="PHP 50.00"
+              data-total="PHP 699.00"
+              data-status="Pending"
+              data-customs='[{"category":"None", "name":"No customizations applied", "cost":"PHP 0.00"}]'>
+            <td>K071626</td>
+            <td>Kris M.</td>
+            <td>Plush Bear</td>
+            <td>PHP 699.00</td>
+            <td>GCash</td>
+            <td><span class="status-badge Pending">Pending</span></td>
+            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
+          </tr>
+
+          <!-- Order 2 -->
+          <tr data-order-id="K071627"
+              data-customer="Klein V."
+              data-email="klein@example.com"
+              data-address="Diliman, Quezon City"
+              data-product="Leather Strap (x1)"
+              data-payment="GCash"
+              data-ref="0811-9923-11"
+              data-delivery="Delivery"
+              data-shipping="PHP 50.00"
+              data-total="PHP 145.00"
+              data-status="Confirmed"
+              data-customs='[{"category":"Letter", "name":"Initials: K.V.", "cost":"PHP 20.00"}, {"category":"Charm", "name":"Star Charm", "cost":"PHP 15.00"}]'>
+            <td>K071627</td>
+            <td>Klein V.</td>
+            <td>Leather Strap</td>
+            <td>PHP 145.00</td>
+            <td>GCash</td>
+            <td><span class="status-badge Confirmed">Confirmed</span></td>
+            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
+          </tr>
+
+          <!-- Order 3 -->
+          <tr data-order-id="K071628"
+              data-customer="Casey G."
+              data-email="casey@example.com"
+              data-address="Poblacion, Makati City"
+              data-product="Beaded Strap (x1)"
+              data-payment="GCash"
+              data-ref="0722-1102-44"
+              data-delivery="Pickup"
+              data-shipping="PHP 0.00"
+              data-total="PHP 140.00"
+              data-status="Packed"
+              data-customs='[{"category":"Spacer", "name":"Gold Spacers x2", "cost":"PHP 10.00"}]'>
+            <td>K071628</td>
+            <td>Casey G.</td>
+            <td>Beaded Strap</td>
+            <td>PHP 140.00</td>
+            <td>GCash</td>
+            <td><span class="status-badge Packed">Packed</span></td>
+            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
+          </tr>
+
+          <!-- Order 4 -->
+          <tr data-order-id="K071629"
+              data-customer="Andrea L."
+              data-email="andrea@example.com"
+              data-address="Kapitolyo, Pasig City"
+              data-product="Charm Keyring (x1)"
+              data-payment="GCash"
+              data-ref="0988-3341-99"
+              data-delivery="Delivery"
+              data-shipping="PHP 50.00"
+              data-total="PHP 110.00"
+              data-status="Cancelled"
+              data-customs='[{"category":"Figurine", "name":"Mini Bear Figurine", "cost":"PHP 30.00"}]'>
+            <td>K071629</td>
+            <td>Andrea L.</td>
+            <td>Charm Keyring</td>
+            <td>PHP 110.00</td>
+            <td>GCash</td>
+            <td><span class="status-badge Cancelled">Cancelled</span></td>
+            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
+          </tr>
+
+          <!-- Order 5 -->
+          <tr data-order-id="K071630"
+              data-customer="Marco Santos"
+              data-email="marco.s@gmail.com"
+              data-address="Alabang, Muntinlupa City"
+              data-product="Custom Plush Bear (x2)"
+              data-payment="BDO"
+              data-ref="BDO-8839201"
+              data-delivery="Delivery"
+              data-shipping="PHP 60.00"
+              data-total="PHP 1,350.00"
+              data-status="Shipped"
+              data-customs='[{"category":"Letter", "name":"Letter Tag: M&S", "cost":"PHP 25.00"}, {"category":"Charm", "name":"Heart Charm", "cost":"PHP 15.00"}]'>
+            <td>K071630</td>
+            <td>Marco S.</td>
+            <td>Plush Bear (x2)</td>
+            <td>PHP 1,350.00</td>
+            <td>BDO</td>
+            <td><span class="status-badge Shipped">Shipped</span></td>
+            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
+          </tr>
+
+          <!-- Order 6 -->
+          <tr data-order-id="K071631"
+              data-customer="Samantha Reyes"
+              data-email="sam.reyes@yahoo.com"
+              data-address="BGC, Taguig City"
+              data-product="Beaded Strap (x1)"
+              data-payment="COD"
+              data-ref="N/A (Cash on Delivery)"
+              data-delivery="Delivery"
+              data-shipping="PHP 50.00"
+              data-total="PHP 220.00"
+              data-status="Pending"
+              data-customs='[{"category":"Figurine", "name":"Bunny Figurine", "cost":"PHP 35.00"}, {"category":"Spacer", "name":"Pearl Spacer x4", "cost":"PHP 20.00"}]'>
+            <td>K071631</td>
+            <td>Samantha R.</td>
+            <td>Beaded Strap</td>
+            <td>PHP 220.00</td>
+            <td>COD</td>
+            <td><span class="status-badge Pending">Pending</span></td>
+            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Order Detail Modal View -->
+  <div class="modal-overlay" id="orderModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalOrderId">Order Details</h2>
+        <button class="btn-close" id="closeModalBtn">&times;</button>
+      </div>
+
+      <div class="order-info-section">
+        <div class="info-group">
+          <span class="info-label">Customer Info</span>
+          <span class="info-value" id="modalCustomerName">-</span>
+          <span class="info-value" id="modalCustomerAddress" style="font-weight: 400; font-size: 0.88rem;">-</span>
+        </div>
+
+        <div class="info-group">
+          <span class="info-label">Order Item(s)</span>
+          <span class="info-value" id="modalProduct">-</span>
+        </div>
+
+        <div class="info-group">
+          <span class="info-label">Customizations (Order Customizations)</span>
+          <div class="customization-box" id="modalCustomizations">
+            <!-- Dynamic Customizations Rendering -->
+          </div>
+        </div>
+
+        <div class="info-group">
+          <span class="info-label">Payment & Shipping</span>
+          <span class="info-value" id="modalPayment">-</span>
+          <span class="info-value" id="modalShipping" style="font-weight: 400; font-size: 0.88rem;">-</span>
+        </div>
+
+        <div class="info-group">
+          <span class="info-label">Current Status</span>
+          <div><span id="modalStatusBadge" class="status-badge Pending">Pending</span></div>
+        </div>
+      </div>
+
+      <!-- Actions container (hidden for Confirmed/Packed/Shipped/Delivered/Cancelled) -->
+      <div class="modal-actions" id="modalActionButtons">
+        <button type="button" class="btn-approve" id="approveOrderBtn">Approve Order</button>
+        <button type="button" class="btn-cancel-order" id="cancelOrderBtn">Cancel Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Scripts -->
+  <script>
+    let activeSelectedRow = null;
+    let activePillFilter = 'All';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Mobile Drawer Toggle
+      const menuToggle = document.getElementById('menuToggle');
+      const navContainer = document.getElementById('navContainer');
+      menuToggle.addEventListener('click', () => {
+        navContainer.classList.toggle('open');
+      });
+
+      // Modal Elements
+      const orderModal = document.getElementById('orderModal');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      const approveOrderBtn = document.getElementById('approveOrderBtn');
+      const cancelOrderBtn = document.getElementById('cancelOrderBtn');
+
+      const closeModal = () => orderModal.classList.remove('open');
+      closeModalBtn.addEventListener('click', closeModal);
+
+      // Approve Action
+      approveOrderBtn.addEventListener('click', () => {
+        if (activeSelectedRow) {
+          updateOrderStatus(activeSelectedRow, 'Confirmed');
+          closeModal();
+        }
+      });
+
+      // Cancel Action
+      cancelOrderBtn.addEventListener('click', () => {
+        if (activeSelectedRow) {
+          updateOrderStatus(activeSelectedRow, 'Cancelled');
+          closeModal();
+        }
+      });
+
+      // Search and Filter Listeners
+      const searchInput = document.getElementById('searchInput');
+      const paymentFilter = document.getElementById('paymentFilter');
+      const deliveryFilter = document.getElementById('deliveryFilter');
+
+      searchInput.addEventListener('input', applyFilters);
+      paymentFilter.addEventListener('change', applyFilters);
+      deliveryFilter.addEventListener('change', applyFilters);
+    });
+
+    // Populate and Open Order Detail Modal
+    function openOrderModal(btn) {
+      activeSelectedRow = btn.closest('tr');
+      const data = activeSelectedRow.dataset;
+
+      document.getElementById('modalOrderId').textContent = `Order #${data.orderId}`;
+      document.getElementById('modalCustomerName').textContent = `${data.customer} (${data.email})`;
+      document.getElementById('modalCustomerAddress').textContent = `Delivery Address: ${data.address}`;
+      document.getElementById('modalProduct').textContent = `${data.product} — Total: ${data.total}`;
+      document.getElementById('modalPayment').textContent = `${data.payment} (Ref: ${data.ref})`;
+      document.getElementById('modalShipping').textContent = `Method: ${data.delivery} | Fee: ${data.shipping}`;
+
+      // Status Badge Update
+      const badge = document.getElementById('modalStatusBadge');
+      badge.className = `status-badge ${data.status}`;
+      badge.textContent = data.status;
+
+      // Customizations Parser
+      const customBox = document.getElementById('modalCustomizations');
+      customBox.innerHTML = '';
+      try {
+        const customs = JSON.parse(data.customs);
+        customs.forEach(c => {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'custom-item';
+          itemDiv.innerHTML = `<span><strong>[${c.category}]</strong> ${c.name}</span><span>+${c.cost}</span>`;
+          customBox.appendChild(itemDiv);
+        });
+      } catch (e) {
+        customBox.innerHTML = '<div class="custom-item">No customization details found.</div>';
+      }
+
+      // Hide Action Buttons if order is Confirmed, Cancelled, Packed, Shipped, or Delivered
+      const actionContainer = document.getElementById('modalActionButtons');
+      if (data.status === 'Pending') {
+        actionContainer.style.display = 'flex';
+      } else {
+        actionContainer.style.display = 'none';
+      }
+
+      document.getElementById('orderModal').classList.add('open');
+    }
+
+    // Dynamic Status Update
+    function updateOrderStatus(row, newStatus) {
+      row.dataset.status = newStatus;
+      const statusTd = row.cells[5];
+      statusTd.innerHTML = `<span class="status-badge ${newStatus}">${newStatus}</span>`;
+      applyFilters();
+    }
+
+    // Pill Filtering Logic
+    function filterByPill(status, btnElement) {
+      activePillFilter = status;
+      document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      applyFilters();
+    }
+
+    // Unified Search and Multi-Filter Logic
+    function applyFilters() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const paymentVal = document.getElementById('paymentFilter').value;
+      const deliveryVal = document.getElementById('deliveryFilter').value;
+      const rows = document.querySelectorAll('#salesTableBody tr');
+
+      rows.forEach(row => {
+        const orderId = row.dataset.orderId.toLowerCase();
+        const customer = row.dataset.customer.toLowerCase();
+        const product = row.dataset.product.toLowerCase();
+        const status = row.dataset.status;
+        const payment = row.dataset.payment;
+        const delivery = row.dataset.delivery;
+
+        const matchesSearch = orderId.includes(query) || customer.includes(query) || product.includes(query);
+        const matchesPill = (activePillFilter === 'All' || status === activePillFilter);
+        const matchesPayment = (paymentVal === 'All' || payment === paymentVal);
+        const matchesDelivery = (deliveryVal === 'All' || delivery === deliveryVal);
+
+        row.style.display = (matchesSearch && matchesPill && matchesPayment && matchesDelivery) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
