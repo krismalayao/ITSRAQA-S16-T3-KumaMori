@@ -89,6 +89,11 @@
       cursor: pointer;
     }
 
+    /* Desktop version hidden/shown helpers for mobile bottom placement */
+    .login-mobile {
+      display: none;
+    }
+
     .card-right {
       flex: 1.2;
       display: flex;
@@ -213,7 +218,7 @@
     }
 
     /* -------------------------------------------------------------------------- */
-    /* Bottom-Left Toast Notification Styles                                       */
+    /* Bottom-Left Toast Notification Styles                                      */
     /* -------------------------------------------------------------------------- */
     .toast-notification {
       position: fixed;
@@ -246,6 +251,18 @@
         flex-direction: column;
         padding: 30px 20px;
         margin: 20px;
+      }
+
+      /* Hide desktop login link on left */
+      .card-left .login-text {
+        display: none;
+      }
+
+      /* Show login link at the bottom of the form on mobile */
+      .login-mobile {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
       }
 
       .toast-notification {
@@ -313,6 +330,11 @@
 
         <button type="submit" class="submit-btn">Register</button>
       </form>
+
+      <!-- Mobile-only Login text at the bottom of the form -->
+      <div class="login-text login-mobile">
+        Already have an account? <a href="loginPage.html">Login Here</a>
+      </div>
     </section>
   </main>
 
@@ -322,7 +344,6 @@
   </div>
 
   <script>
-    // Registered Users list to check duplicates against
     const existingUsers = [
       "admin@kumamori.com",
       "jane@email.com"
@@ -357,7 +378,6 @@
         });
       });
 
-      // Check if email is already registered
       function checkDuplicateEmail() {
         const enteredEmail = emailInput.value.trim().toLowerCase();
 
@@ -400,7 +420,6 @@
       passwordInput.addEventListener('input', checkPasswordsMatch);
       confirmPasswordInput.addEventListener('input', checkPasswordsMatch);
 
-      // Handle Form Submit & Toast Notification
       registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -426,10 +445,8 @@
         const newUserJSON = JSON.stringify(newUserObj, null, 2);
         console.log('New User Registered (JSON Format):', newUserJSON);
 
-        // Slide up the Toast Notification
         toast.classList.add('show');
 
-        // Redirect to loginPage.html after 2 seconds
         setTimeout(() => {
           window.location.href = 'loginPage.html';
         }, 2000);

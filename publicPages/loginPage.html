@@ -88,6 +88,11 @@
       cursor: pointer;
     }
 
+    /* Desktop version hidden/shown helpers */
+    .register-mobile {
+      display: none;
+    }
+
     .card-right {
       flex: 1.2;
       display: flex;
@@ -206,9 +211,7 @@
       transform: scale(0.99);
     }
 
-    /* -------------------------------------------------------------------------- */
-    /* Red Toast Notification (Bottom Left)                                       */
-    /* -------------------------------------------------------------------------- */
+    /* Red Toast Notification (Bottom Left) */
     .toast-notification {
       position: fixed;
       bottom: 25px;
@@ -240,6 +243,18 @@
         flex-direction: column;
         padding: 30px 20px;
         margin: 20px;
+      }
+
+      /* Hide desktop register block on the left side */
+      .card-left .register-text {
+        display: none;
+      }
+
+      /* Show register text at the bottom */
+      .register-mobile {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
       }
 
       .toast-notification {
@@ -289,6 +304,11 @@
         <a href="#" class="forgot-pass" id="forgot-password">Forgot password?</a>
         <button type="submit" class="submit-btn">Log In</button>
       </form>
+
+      <!-- Mobile-only Register text shown at the bottom of the form -->
+      <div class="register-text register-mobile">
+        New to Kumamori? <a href="registerPage.html">Register Now</a>
+      </div>
     </section>
   </main>
 
@@ -298,9 +318,6 @@
   </div>
 
   <script>
-    // -------------------------------------------------------------------------
-    // EMBEDDED JSON USER DATABASE (Added "role" field)
-    // -------------------------------------------------------------------------
     const usersJSON = `[
       {
         "id": 1,
@@ -318,7 +335,6 @@
       }
     ]`;
 
-    // Parse the JSON string into a usable JavaScript Array
     const usersDatabase = JSON.parse(usersJSON);
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -353,27 +369,23 @@
         }
       });
 
-      // Login handler checking inputs against usersDatabase
       loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
         const enteredEmail = emailInput.value.trim().toLowerCase();
         const enteredPassword = passwordInput.value;
 
-        // Search in JSON array
         const userFound = usersDatabase.find(
           user => user.email.toLowerCase() === enteredEmail && user.password === enteredPassword
         );
 
         if (userFound) {
-          // Check role to decide dashboard path
           if (userFound.role === 'admin') {
-            window.location.href = 'adminDashboard.html';
+            window.location.href = '../adminSide/adminDashboard.html';
           } else {
-            window.location.href = 'customerDashboard.html';
+            window.location.href = '../customerSide/customerDashboard.html';
           }
         } else {
-          // Failure: Trigger the red bottom-left toast notification
           showErrorToast();
         }
       });
