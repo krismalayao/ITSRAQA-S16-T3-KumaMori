@@ -282,6 +282,7 @@
         <div class="form-group">
           <label for="email">Email</label>
           <input type="email" id="email" placeholder="Type your email address" required>
+          <span id="email-error-message" class="match-message error"></span>
         </div>
 
         <div class="form-group">
@@ -320,8 +321,16 @@
   </div>
 
   <script>
+    // Registered Users list to check duplicates against
+    const existingUsers = [
+      "admin@kumamori.com",
+      "jane@example.com"
+    ];
+
     document.addEventListener('DOMContentLoaded', () => {
       const registerForm = document.getElementById('register-form');
+      const emailInput = document.getElementById('email');
+      const emailErrorMessage = document.getElementById('email-error-message');
       const passwordInput = document.getElementById('password');
       const confirmPasswordInput = document.getElementById('confirm-password');
       const matchMessage = document.getElementById('match-message');
@@ -347,6 +356,21 @@
         });
       });
 
+      // Check if email is already registered
+      function checkDuplicateEmail() {
+        const enteredEmail = emailInput.value.trim().toLowerCase();
+
+        if (existingUsers.includes(enteredEmail)) {
+          emailErrorMessage.textContent = '✕ Email is already taken';
+          emailInput.classList.add('invalid-border');
+          return false;
+        } else {
+          emailErrorMessage.textContent = '';
+          emailInput.classList.remove('invalid-border');
+          return true;
+        }
+      }
+
       function checkPasswordsMatch() {
         const passVal = passwordInput.value;
         const confirmVal = confirmPasswordInput.value;
@@ -371,6 +395,7 @@
         }
       }
 
+      emailInput.addEventListener('input', checkDuplicateEmail);
       passwordInput.addEventListener('input', checkPasswordsMatch);
       confirmPasswordInput.addEventListener('input', checkPasswordsMatch);
 
@@ -378,14 +403,22 @@
       registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        if (!checkPasswordsMatch()) {
+        const isEmailValid = checkDuplicateEmail();
+        const isPasswordValid = checkPasswordsMatch();
+
+        if (!isEmailValid) {
+          emailInput.focus();
+          return;
+        }
+
+        if (!isPasswordValid) {
           confirmPasswordInput.focus();
           return;
         }
 
         const newUserObj = {
           name: document.getElementById('name').value,
-          email: document.getElementById('email').value,
+          email: emailInput.value,
           password: passwordInput.value
         };
 
