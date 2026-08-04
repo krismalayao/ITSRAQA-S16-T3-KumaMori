@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kumamori Login</title>
+  <title>KumaMori - Login Page</title>
   
   <!-- Google Fonts: Fredoka -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -258,7 +258,7 @@
 
   <main class="login-card">
     <section class="card-left">
-      <img src="your-logo-image.png" alt="Kumamori Logo" class="logo-img">
+      <img src="../images/publicPages.png" alt="Kumamori Logo" class="logo-img">
       <p class="register-text">
         New to Kumamori? <a href="registerPage.html" id="register-link">Register Now</a>
       </p>
@@ -298,20 +298,22 @@
 
   <script>
     // -------------------------------------------------------------------------
-    // EMBEDDED JSON USER DATABASE
+    // EMBEDDED JSON USER DATABASE (Added "role" field)
     // -------------------------------------------------------------------------
     const usersJSON = `[
       {
         "id": 1,
-        "name": "Kumamori Admin",
+        "name": "KumaMori Admin",
         "email": "admin@kumamori.com",
-        "password": "password123"
+        "password": "kumamori_123_dbest",
+        "role": "admin"
       },
       {
         "id": 2,
-        "name": "Jane Doe",
-        "email": "jane@example.com",
-        "password": "secretpassword"
+        "name": "Kris Malayao",
+        "email": "kris@email.com",
+        "password": "secretpassword",
+        "role": "customer"
       }
     ]`;
 
@@ -332,12 +334,8 @@
       let toastTimeout;
 
       function showErrorToast() {
-        // Clear active timeout if user clicks submit multiple times quickly
         clearTimeout(toastTimeout);
-        
         toast.classList.add('show');
-
-        // Automatically hide the toast after 3 seconds
         toastTimeout = setTimeout(() => {
           toast.classList.remove('show');
         }, 3000);
@@ -367,8 +365,12 @@
         );
 
         if (userFound) {
-          // Success: Immediately redirect to Customer Dashboard
-          window.location.href = 'customerDashboard.html';
+          // Check role to decide dashboard path
+          if (userFound.role === 'admin') {
+            window.location.href = 'adminDashboard.html';
+          } else {
+            window.location.href = 'customerDashboard.html';
+          }
         } else {
           // Failure: Trigger the red bottom-left toast notification
           showErrorToast();
