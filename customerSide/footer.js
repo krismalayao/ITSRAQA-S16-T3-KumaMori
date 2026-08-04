@@ -27,13 +27,13 @@ document.write(`
     <div class="footer-social">
         <p>Social Media</p>
         <div class="social-icons">
-            <a href="https://facebook.com/kumamori" target="_blank">
+            <a href="https://www.facebook.com/profile.php?id=61579283878324" target="_blank">
                 <i class="fa-brands fa-facebook"></i>
             </a>
-            <a href="https://instagram.com/kumamori" target="_blank">
+            <a href="https://www.instagram.com/kumamori.ph/" target="_blank">
                 <i class="fa-brands fa-instagram"></i>
             </a>
-            <a href="https://tiktok.com/@kumamori" target="_blank">
+            <a href="https://www.tiktok.com/@kumamori.ph?is_from_webapp=1&sender_device=pc" target="_blank">
                 <i class="fa-brands fa-tiktok"></i>
             </a>
         </div>
