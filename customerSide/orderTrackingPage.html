@@ -29,7 +29,6 @@
             opacity: 0.3;
         }
 
-        /* Master Layout */
         .orders-container {
             max-width: 1100px;
             margin: 0 auto 50px auto;
@@ -39,7 +38,6 @@
             width: 100%;
         }
 
-        /* Left Sidebar: Order History List */
         .sidebar {
             width: 300px;
             flex-shrink: 0;
@@ -80,7 +78,6 @@
         .card-top { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px; }
         .card-bottom { display: flex; justify-content: space-between; font-size: 0.85rem; color: #8c6b54; }
 
-        /* Right Panel: Tracking & Item Breakdown */
         .main-tracking-panel {
             flex: 1;
             display: flex;
@@ -101,7 +98,6 @@
 
         .order-number-badge span { font-weight: 500; margin-left: 8px; }
 
-        /* Timeline Card */
         .tracking-card {
             background: #ffffff;
             border-radius: 24px;
@@ -126,7 +122,6 @@
             transition: background 0.3s;
         }
 
-        /* Connected Vertical Line */
         .timeline-step:not(:last-child)::after {
             content: '';
             position: absolute;
@@ -149,7 +144,6 @@
         .step-info h4 { font-size: 1.15rem; font-weight: 700; color: #5c3214; margin-bottom: 2px; }
         .step-info p { font-size: 0.9rem; color: #8c6b54; }
 
-        /* Purchased Items & Summary Panel */
         .details-card {
             background: #fdf6f2;
             border-radius: 20px;
@@ -163,7 +157,6 @@
         .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.95rem; }
         .summary-row { display: flex; justify-content: space-between; font-weight: 700; margin-top: 14px; border-top: 1px dashed #5c3214; padding-top: 10px; }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -186,21 +179,17 @@
         <h1 class="page-title">Order Tracking</h1>
         <div class="title-divider"></div>
 
-        <!-- Active Orders View -->
         <div id="tracking-view" class="orders-container hidden">
-            <!-- Left: User Session Order History -->
             <aside class="sidebar">
                 <h2 class="sidebar-header">My Orders</h2>
                 <div id="order-history-list"></div>
             </aside>
 
-            <!-- Right: Dynamic Timeline & Details -->
             <main class="main-tracking-panel">
                 <div class="order-number-badge">
                     Order Number: <span id="target-order-id">--</span>
                 </div>
 
-                <!-- Visual Timeline -->
                 <div class="tracking-card">
                     <div class="timeline" id="timeline-container">
                         <div class="timeline-step" data-step="1">
@@ -241,7 +230,6 @@
                     </div>
                 </div>
 
-                <!-- Itemized Order Items & Breakdown -->
                 <div class="details-card">
                     <h3>Items Summary</h3>
                     <div id="order-items-list"></div>
@@ -253,7 +241,6 @@
             </main>
         </div>
 
-        <!-- Fallback Empty State -->
         <div id="empty-view" class="orders-container">
             <div class="empty-state">
                 <h2>No Active Orders</h2>
@@ -266,91 +253,117 @@
     <script src="footer.js"></script>
 
     <script>
-        const STATUS_MAP = {
-            "Pending": 1,
-            "Order Confirmed": 2,
-            "Packed & Processed": 3,
-            "Shipped": 4,
-            "Delivered": 5
-        };
+    const STATUS_MAP = {
+        "Pending": 1,
+        "Order Confirmed": 2,
+        "Packed & Processed": 3,
+        "Shipped": 4,
+        "Delivered": 5
+    };
 
-        function fetchSessionOrders() {
-            const currentSessionUser = sessionStorage.getItem('activeUser') || 'guest';
-            const allOrders = JSON.parse(localStorage.getItem('kumamori_orders') || '[]');
-            return allOrders.filter(o => o.user === currentSessionUser || currentSessionUser === 'guest');
+    function fetchSessionOrders() {
+        // Fetch strictly scoped user orders via navigationBar.js
+        let rawOrders = [];
+        if (typeof getUserOrders === 'function') {
+            rawOrders = getUserOrders();
+        } else {
+            const session = JSON.parse(localStorage.getItem('km_session') || '{}');
+            const userId = session.id || session.email || 'guest';
+            rawOrders = JSON.parse(localStorage.getItem(`km_orders_${userId}`) || '[]');
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const sessionOrders = fetchSessionOrders();
-            const trackingView = document.getElementById('tracking-view');
-            const emptyView = document.getElementById('empty-view');
-            const historyContainer = document.getElementById('order-history-list');
+        // Filter and deduplicate active user's orders
+        return rawOrders.filter((order, index, self) => {
+            if (!order || typeof order !== 'object') return false;
+            const orderId = order.id || order.orderId;
+            if (!orderId) return false;
+            return self.findIndex(o => (o.id || o.orderId) === orderId) === index;
+        });
+    }
 
-            if (!sessionOrders || sessionOrders.length === 0) {
-                trackingView.classList.add('hidden');
-                emptyView.classList.remove('hidden');
-                return;
-            }
+    document.addEventListener('DOMContentLoaded', () => {
+        const sessionOrders = fetchSessionOrders();
+        const trackingView = document.getElementById('tracking-view');
+        const emptyView = document.getElementById('empty-view');
+        const historyContainer = document.getElementById('order-history-list');
 
-            trackingView.classList.remove('hidden');
-            emptyView.classList.add('hidden');
+        if (!sessionOrders || sessionOrders.length === 0) {
+            trackingView.classList.add('hidden');
+            emptyView.classList.remove('hidden');
+            return;
+        }
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const activeId = urlParams.get('order');
+        trackingView.classList.remove('hidden');
+        emptyView.classList.add('hidden');
 
-            let activeIndex = sessionOrders.findIndex(o => o.id === activeId);
-            if (activeIndex === -1) activeIndex = 0;
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeId = urlParams.get('order');
 
-            sessionOrders.forEach((order, index) => {
-                const card = document.createElement('div');
-                card.className = `order-card-item ${index === activeIndex ? 'active' : ''}`;
-                card.innerHTML = `
-                    <div class="card-top">
-                        <span>#${order.id}</span>
-                        <span>${order.total}</span>
-                    </div>
-                    <div class="card-bottom">
-                        <span>${order.date}</span>
-                        <span>${order.status}</span>
-                    </div>
-                `;
-                card.addEventListener('click', () => {
-                    document.querySelectorAll('.order-card-item').forEach(c => c.classList.remove('active'));
-                    card.classList.add('active');
-                    loadOrderDetails(sessionOrders[index]);
-                });
-                historyContainer.appendChild(card);
+        let activeIndex = sessionOrders.findIndex(o => (o.id || o.orderId) === activeId);
+        if (activeIndex === -1) activeIndex = 0;
+
+        sessionOrders.forEach((order, index) => {
+            const card = document.createElement('div');
+            card.className = `order-card-item ${index === activeIndex ? 'active' : ''}`;
+            const displayId = order.id || order.orderId;
+            const displayTotal = typeof order.total === 'number' ? `₱${order.total.toFixed(2)}` : (order.total || '₱0.00');
+
+            card.innerHTML = `
+                <div class="card-top">
+                    <span>#${displayId}</span>
+                    <span>${displayTotal}</span>
+                </div>
+                <div class="card-bottom">
+                    <span>${order.date || ''}</span>
+                    <span>${order.status || 'Pending'}</span>
+                </div>
+            `;
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.order-card-item').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                loadOrderDetails(sessionOrders[index]);
             });
-
-            loadOrderDetails(sessionOrders[activeIndex]);
+            historyContainer.appendChild(card);
         });
 
-        function loadOrderDetails(order) {
-            document.getElementById('target-order-id').innerText = order.id;
+        loadOrderDetails(sessionOrders[activeIndex]);
+    });
 
-            const currentStep = STATUS_MAP[order.status] || 1;
-            const steps = document.querySelectorAll('.timeline-step');
-            
-            steps.forEach(step => {
-                const stepNum = parseInt(step.dataset.step, 10);
-                step.classList.remove('completed', 'active');
-                if (stepNum < currentStep) {
-                    step.classList.add('completed');
-                } else if (stepNum === currentStep) {
-                    step.classList.add('active');
-                }
-            });
+    function loadOrderDetails(order) {
+        document.getElementById('target-order-id').innerText = order.id || order.orderId;
 
-            const itemsContainer = document.getElementById('order-items-list');
-            itemsContainer.innerHTML = order.items.map(item => `
-                <div class="item-row">
-                    <span>${item.qty}x ${item.name}</span>
-                    <span>₱${(item.price * item.qty).toFixed(2)}</span>
-                </div>
-            `).join('');
+        const currentStep = STATUS_MAP[order.status] || 1;
+        const steps = document.querySelectorAll('.timeline-step');
+        
+        steps.forEach(step => {
+            const stepNum = parseInt(step.dataset.step, 10);
+            step.classList.remove('completed', 'active');
+            if (stepNum < currentStep) {
+                step.classList.add('completed');
+            } else if (stepNum === currentStep) {
+                step.classList.add('active');
+            }
+        });
 
-            document.getElementById('order-total-price').innerText = order.total;
+        const itemsContainer = document.getElementById('order-items-list');
+        if (order.items && Array.isArray(order.items)) {
+            itemsContainer.innerHTML = order.items.map(item => {
+                const qty = item.qty || item.quantity || 1;
+                const price = parseFloat(item.price) || 0;
+                return `
+                    <div class="item-row">
+                        <span>${qty}x ${item.name}</span>
+                        <span>₱${(price * qty).toFixed(2)}</span>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            itemsContainer.innerHTML = '<p>No item details available.</p>';
         }
-    </script>
+
+        const displayTotal = typeof order.total === 'number' ? `₱${order.total.toFixed(2)}` : (order.total || '₱0.00');
+        document.getElementById('order-total-price').innerText = displayTotal;
+    }
+</script>
 </body>
 </html>

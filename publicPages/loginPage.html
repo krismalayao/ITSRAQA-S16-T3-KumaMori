@@ -88,7 +88,6 @@
       cursor: pointer;
     }
 
-    /* Desktop version hidden/shown helpers */
     .register-mobile {
       display: none;
     }
@@ -211,7 +210,6 @@
       transform: scale(0.99);
     }
 
-    /* Red Toast Notification (Bottom Left) */
     .toast-notification {
       position: fixed;
       bottom: 25px;
@@ -245,12 +243,10 @@
         margin: 20px;
       }
 
-      /* Hide desktop register block on the left side */
       .card-left .register-text {
         display: none;
       }
 
-      /* Show register text at the bottom */
       .register-mobile {
         display: block;
         text-align: center;
@@ -305,38 +301,18 @@
         <button type="submit" class="submit-btn">Log In</button>
       </form>
 
-      <!-- Mobile-only Register text shown at the bottom of the form -->
       <div class="register-text register-mobile">
         New to Kumamori? <a href="registerPage.html">Register Now</a>
       </div>
     </section>
   </main>
 
-  <!-- Red Toast Notification Container -->
   <div id="toast" class="toast-notification">
     <span id="toast-message">Incorrect email or password. Please try again.</span>
   </div>
 
+  <script src="../auth.js"></script>
   <script>
-    const usersJSON = `[
-      {
-        "id": 1,
-        "name": "KumaMori Admin",
-        "email": "admin@kumamori.com",
-        "password": "kumamori_123_dbest",
-        "role": "admin"
-      },
-      {
-        "id": 2,
-        "name": "Kris Malayao",
-        "email": "kris@email.com",
-        "password": "secretpassword",
-        "role": "customer"
-      }
-    ]`;
-
-    const usersDatabase = JSON.parse(usersJSON);
-
     document.addEventListener('DOMContentLoaded', () => {
       const loginForm = document.getElementById('login-form');
       const emailInput = document.getElementById('email');
@@ -375,11 +351,14 @@
         const enteredEmail = emailInput.value.trim().toLowerCase();
         const enteredPassword = passwordInput.value;
 
+        const usersDatabase = getUsers();
         const userFound = usersDatabase.find(
           user => user.email.toLowerCase() === enteredEmail && user.password === enteredPassword
         );
 
         if (userFound) {
+          setCurrentUser(userFound);
+
           if (userFound.role === 'admin') {
             window.location.href = '../adminSide/adminDashboard.html';
           } else {

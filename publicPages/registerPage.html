@@ -89,7 +89,6 @@
       cursor: pointer;
     }
 
-    /* Desktop version hidden/shown helpers for mobile bottom placement */
     .login-mobile {
       display: none;
     }
@@ -187,6 +186,10 @@
       min-height: 16px;
     }
 
+    .match-message:empty {
+      display: none;
+    }
+
     .match-message.error {
       color: var(--error-color);
     }
@@ -217,9 +220,6 @@
       transform: scale(0.99);
     }
 
-    /* -------------------------------------------------------------------------- */
-    /* Bottom-Left Toast Notification Styles                                      */
-    /* -------------------------------------------------------------------------- */
     .toast-notification {
       position: fixed;
       bottom: 25px;
@@ -253,12 +253,10 @@
         margin: 20px;
       }
 
-      /* Hide desktop login link on left */
       .card-left .login-text {
         display: none;
       }
 
-      /* Show login link at the bottom of the form on mobile */
       .login-mobile {
         display: block;
         text-align: center;
@@ -304,6 +302,11 @@
         </div>
 
         <div class="form-group">
+          <label for="contact">Contact Number</label>
+          <input type="tel" id="contact" placeholder="Type your contact number" required>
+        </div>
+
+        <div class="form-group">
           <label for="password">Password</label>
           <div class="password-wrapper">
             <input type="password" id="password" placeholder="Type your password" required>
@@ -331,24 +334,18 @@
         <button type="submit" class="submit-btn">Register</button>
       </form>
 
-      <!-- Mobile-only Login text at the bottom of the form -->
       <div class="login-text login-mobile">
         Already have an account? <a href="loginPage.html">Login Here</a>
       </div>
     </section>
   </main>
 
-  <!-- Bottom-Left Toast Notification Element -->
   <div id="toast" class="toast-notification">
     <span id="toast-message">Account created! Redirecting you to login...</span>
   </div>
 
+  <script src="../auth.js"></script>
   <script>
-    const existingUsers = [
-      "admin@kumamori.com",
-      "jane@email.com"
-    ];
-
     document.addEventListener('DOMContentLoaded', () => {
       const registerForm = document.getElementById('register-form');
       const emailInput = document.getElementById('email');
@@ -380,8 +377,10 @@
 
       function checkDuplicateEmail() {
         const enteredEmail = emailInput.value.trim().toLowerCase();
+        const users = getUsers();
+        const isDuplicate = users.some(u => u.email.toLowerCase() === enteredEmail);
 
-        if (existingUsers.includes(enteredEmail)) {
+        if (isDuplicate) {
           emailErrorMessage.textContent = '✕ Email is already taken';
           emailInput.classList.add('invalid-border');
           return false;
@@ -436,20 +435,25 @@
           return;
         }
 
-        const newUserObj = {
-          name: document.getElementById('name').value,
-          email: emailInput.value,
-          password: passwordInput.value
+        const users = getUsers();
+        const newUser = {
+          id: Date.now(),
+          name: document.getElementById('name').value.trim(),
+          email: emailInput.value.trim(),
+          contact: document.getElementById('contact').value.trim(),
+          password: passwordInput.value,
+          role: "customer",
+          avatar: "../images/noPFP.jpg"
         };
 
-        const newUserJSON = JSON.stringify(newUserObj, null, 2);
-        console.log('New User Registered (JSON Format):', newUserJSON);
+        users.push(newUser);
+        saveUsers(users);
 
         toast.classList.add('show');
 
         setTimeout(() => {
           window.location.href = 'loginPage.html';
-        }, 2000);
+        }, 1500);
       });
     });
   </script>

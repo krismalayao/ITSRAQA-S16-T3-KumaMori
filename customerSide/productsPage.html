@@ -17,6 +17,7 @@
     --button-bg:#5c3214;
     --button-hover:#45240c;
     --price:#C69866;
+    --success-color:#2e7d32;
 }
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka',sans-serif;}
 body{background:#fff;color:var(--text-brown);}
@@ -147,9 +148,45 @@ body{background:#fff;color:var(--text-brown);}
 .btn-brown:hover{background:var(--button-hover);transform:translateY(-2px);box-shadow:0 10px 18px rgba(92,50,20,0.24);}
 .btn-brown:active{transform:translateY(0);}
 
+/* Toast Notification (Styled like Register Page) */
+.toast-notification {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background-color: var(--success-color);
+    color: #ffffff;
+    padding: 14px 22px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(92, 50, 20, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 @media (max-width:650px){
     .product-card{flex-direction:column;align-items:stretch;}
     .product-img{width:100%;height:220px;}
+    .toast-notification {
+        left: 50%;
+        transform: translate(-50%, 20px);
+        width: 90%;
+        justify-content: center;
+    }
+    .toast-notification.show {
+        transform: translate(-50%, 0);
+    }
 }
 </style>
 </head>
@@ -222,31 +259,76 @@ body{background:#fff;color:var(--text-brown);}
 
 </div>
 
+<!-- Toast Notification Container -->
+<div id="toast" class="toast-notification">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toast-message">Item added to your cart!</span>
+</div>
+
 <script src="footer.js"></script>
 
 <script>
+function getActiveUserKey() {
+    const session = JSON.parse(localStorage.getItem('km_session') || '{}');
+    return session.username || sessionStorage.getItem('activeUser') || 'guest';
+}
+
 function getCart(){
-    return JSON.parse(sessionStorage.getItem('kumamori_cart') || '[]');
+    if (typeof getUserCart === 'function') return getUserCart();
+    const userKey = getActiveUserKey();
+    return JSON.parse(localStorage.getItem('kumamori_cart_' + userKey) || '[]');
 }
+
 function saveCart(cart){
-    sessionStorage.setItem('kumamori_cart', JSON.stringify(cart));
+    if (typeof saveUserCart === 'function') {
+        saveUserCart(cart);
+    } else {
+        const userKey = getActiveUserKey();
+        localStorage.setItem('kumamori_cart_' + userKey, JSON.stringify(cart));
+    }
 }
-function addToCart(item){
+
+let toastTimeout;
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-message');
+    if (toastMsg) toastMsg.textContent = message;
+    clearTimeout(toastTimeout);
+    toast.classList.add('show');
+    toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+function addToCart(product) {
     const cart = getCart();
-    const existing = cart.find(i => i.id === item.id);
-    if(existing){ existing.qty += 1; }
-    else { cart.push({...item, qty:1}); }
+    const existingIndex = cart.findIndex(item => item.id === product.id || item.name === product.name);
+    
+    if (existingIndex > -1) {
+        const currentQty = cart[existingIndex].qty || cart[existingIndex].quantity || 1;
+        cart[existingIndex].qty = currentQty + 1;
+        cart[existingIndex].quantity = currentQty + 1;
+    } else {
+        cart.push({
+            ...product,
+            qty: product.qty || product.quantity || 1,
+            quantity: product.qty || product.quantity || 1
+        });
+    }
+    
     saveCart(cart);
+    showToast(`${product.name} added to cart!`);
 }
 
 document.getElementById('add-bear-btn').addEventListener('click', () => {
     addToCart({
-        id:'plush-bear',
-        name:'Plush Bear Self-Defense Keychain',
-        price:699,
-        customizable:false
+        id: 'plush-bear',
+        name: 'Plush Bear Self-Defense Keychain',
+        price: 699,
+        qty: 1,
+        quantity: 1,
+        customizable: false
     });
-    window.location.href = 'cartPage.html';
 });
 </script>
 

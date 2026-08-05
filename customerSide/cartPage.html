@@ -46,7 +46,6 @@ body{
 .btn-brown:hover{background:var(--button-hover);transform:translateY(-2px);box-shadow:0 10px 20px rgba(92,50,20,0.3);}
 .btn-brown:active{transform:translateY(0);}
 
-/* Empty state */
 .cart-empty{
     background:#fff;
     border:2px dashed var(--card-border);
@@ -63,7 +62,6 @@ body{
 }
 .cart-empty p{font-weight:600;color:var(--text-brown-light);margin-bottom:20px;}
 
-/* Cart item card */
 .cart-item{
     background:#fff;
     border-radius:20px;
@@ -75,32 +73,6 @@ body{
 .cart-item:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(92,50,20,0.12);}
 .cart-item h3{font-size:1.1rem;font-weight:700;margin-bottom:14px;}
 .cart-item-divider{height:1px;background:#eee0d8;margin-bottom:16px;}
-
-/* Edits list */
-.cart-item-edits{
-    list-style:none;
-    margin-bottom:16px;
-    padding:14px 18px;
-    background:var(--card-bg);
-    border-radius:14px;
-    border:1.5px dashed var(--card-border);
-}
-.cart-item-edits li{
-    font-size:.85rem;
-    color:var(--text-brown-light);
-    padding:4px 0;
-    display:flex;
-    align-items:flex-start;
-    gap:8px;
-}
-.cart-item-edits li::before{
-    content:'\f00c';
-    font-family:'Font Awesome 6 Free';
-    font-weight:900;
-    font-size:.7rem;
-    color:var(--accent);
-    margin-top:3px;
-}
 
 .cart-item-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
 .cart-item-left{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
@@ -147,7 +119,6 @@ body{
 
 .cart-item-price{font-weight:700;color:var(--accent);font-size:1.05rem;}
 
-/* Summary bar */
 .cart-summary{
     display:flex;
     align-items:center;
@@ -166,6 +137,8 @@ body{
     font-weight:700;font-size:1rem;cursor:pointer;
     box-shadow:0 6px 14px rgba(92,50,20,0.2);
     transition:background-color .2s, transform .15s;
+    text-decoration:none;
+    display:inline-block;
 }
 .checkout-btn:hover{background:var(--button-hover);transform:translateY(-2px);}
 
@@ -195,7 +168,7 @@ body{
     <div class="cart-summary" id="cart-summary" style="display:none;">
         <div>
             <div class="total-label">TOTAL</div>
-            <div class="total-amount" id="cart-total">₱0</div>
+            <div class="total-amount" id="cart-total">₱0.00</div>
         </div>
         <a href="paymentPlanPage.html" class="checkout-btn">Checkout</a>
     </div>
@@ -205,97 +178,154 @@ body{
 <script src="footer.js"></script>
 
 <script>
-function getCart(){
-    return JSON.parse(sessionStorage.getItem('kumamori_cart') || '[]');
-}
-function saveCart(cart){
-    sessionStorage.setItem('kumamori_cart', JSON.stringify(cart));
+function getActiveUserKey() {
+    const session = JSON.parse(localStorage.getItem('km_session') || '{}');
+    return session.username || sessionStorage.getItem('activeUser') || 'guest';
 }
 
-function renderCart(){
-    const cart = getCart();
-    const container = document.getElementById('cart-items');
+function fetchCart() {
+    if (typeof getUserCart === 'function') {
+        const userCart = getUserCart();
+        if (userCart && Array.isArray(userCart)) return userCart;
+    }
+    const userKey = getActiveUserKey();
+    const keyedCartRaw = localStorage.getItem('kumamori_cart_' + userKey);
+    
+    // Check user-specific key first, returning empty array if set to []
+    if (keyedCartRaw !== null) {
+        try {
+            return JSON.parse(keyedCartRaw);
+        } catch (e) {
+            return [];
+        }
+    }
+
+    // Fallback to plain key ONLY when user-specific key is completely uninitialized
+    const fallbackRaw = localStorage.getItem('kumamori_cart') || sessionStorage.getItem('kumamori_cart');
+    if (fallbackRaw) {
+        try {
+            return JSON.parse(fallbackRaw);
+        } catch (e) {
+            return [];
+        }
+    }
+    return [];
+}
+
+function persistCart(cart) {
+    if (typeof saveUserCart === 'function') {
+        saveUserCart(cart);
+    }
+    const userKey = getActiveUserKey();
+    const jsonStr = JSON.stringify(cart);
+    localStorage.setItem('kumamori_cart_' + userKey, jsonStr);
+    localStorage.setItem('kumamori_cart', jsonStr);
+    sessionStorage.setItem('kumamori_cart', jsonStr);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    window.CURRENT_PAGE = 'cart';
+    renderCart();
+});
+
+function renderCart() {
     const emptyState = document.getElementById('cart-empty-state');
-    const summary = document.getElementById('cart-summary');
+    const itemsContainer = document.getElementById('cart-items');
+    const summaryBar = document.getElementById('cart-summary');
+    const totalEl = document.getElementById('cart-total');
 
-    container.innerHTML = '';
+    const cart = fetchCart();
 
-    if(cart.length === 0){
+    if (!cart || cart.length === 0) {
         emptyState.style.display = 'block';
-        summary.style.display = 'none';
+        itemsContainer.innerHTML = '';
+        summaryBar.style.display = 'none';
         return;
     }
 
     emptyState.style.display = 'none';
-    summary.style.display = 'flex';
+    summaryBar.style.display = 'flex';
 
     let total = 0;
 
-    cart.forEach(item => {
-        total += item.price * item.qty;
+    itemsContainer.innerHTML = cart.map((item, index) => {
+        const qty = item.qty || item.quantity || 1;
+        const price = parseFloat(item.price) || 0;
+        const itemTotal = price * qty;
+        total += itemTotal;
 
-        const editsHtml = (item.edits && item.edits.length)
-            ? `<ul class="cart-item-edits">${item.edits.map(e => `<li>${e}</li>`).join('')}</ul>`
-            : '';
+        let detailsList = [];
 
-        const el = document.createElement('div');
-        el.className = 'cart-item';
-        el.innerHTML = `
-            <h3>${item.name}</h3>
-            <div class="cart-item-divider"></div>
-            ${editsHtml}
-            <div class="cart-item-row">
-                <div class="cart-item-left">
-                    <div class="qty-control">
-                        <button class="qty-minus">−</button>
-                        <input type="text" value="${item.qty}" readonly>
-                        <button class="qty-plus">+</button>
-                    </div>
-                    ${item.customizable ? '<button class="edit-btn">Edit Customization</button>' : ''}
-                </div>
-                <div class="cart-item-price">₱ ${(item.price * item.qty).toFixed(2)}</div>
-            </div>
-        `;
-
-        el.querySelector('.qty-plus').addEventListener('click', () => {
-            item.qty += 1;
-            saveCart(cart);
-            renderCart();
-        });
-        el.querySelector('.qty-minus').addEventListener('click', () => {
-            item.qty -= 1;
-            if(item.qty <= 0){
-                const idx = cart.findIndex(i => i.id === item.id);
-                if(idx !== -1) cart.splice(idx, 1);
+        if (Array.isArray(item.edits) && item.edits.length > 0) {
+            detailsList = item.edits;
+        } 
+        else if (item.customizations || item.customData) {
+            const data = item.customizations || item.customData;
+            for (let key in data) {
+                if (data[key] && typeof data[key] !== 'object') {
+                    const label = key.charAt(0).toUpperCase() + key.slice(1);
+                    detailsList.push(`${label}: ${data[key]}`);
+                }
             }
-            saveCart(cart);
-            renderCart();
-        });
-
-        if(item.customizable){
-            el.querySelector('.edit-btn').addEventListener('click', () => {
-                window.location.href = `customizePage.html?type=${item.type}&editId=${item.id}`;
+        } 
+        else {
+            const keys = ['text', 'letter', 'charm', 'pendant', 'figurine', 'font', 'addon'];
+            keys.forEach(k => {
+                if (item[k]) detailsList.push(`${k.charAt(0).toUpperCase() + k.slice(1)}: ${item[k]}`);
             });
         }
 
-        container.appendChild(el);
-    });
+        let customHTML = '';
+        if (detailsList.length > 0) {
+            customHTML = `<div style="font-size:0.9rem; color:var(--text-brown-light); margin-bottom:12px; line-height:1.4;">
+                ${detailsList.join(' &bull; ')}
+            </div>`;
+        }
 
-    document.getElementById('cart-total').textContent = '₱' + total.toFixed(2);
+        return `
+            <div class="cart-item">
+                <h3>${item.name || 'Keychain'}</h3>
+                ${customHTML}
+                <div class="cart-item-divider"></div>
+                <div class="cart-item-row">
+                    <div class="cart-item-left">
+                        <div class="qty-control">
+                            <button onclick="changeQty(${index}, -1)">-</button>
+                            <input type="text" value="${qty}" readonly>
+                            <button onclick="changeQty(${index}, 1)">+</button>
+                        </div>
+                        <button class="edit-btn" onclick="removeItem(${index})"><i class="fa-solid fa-trash"></i> Remove</button>
+                    </div>
+                    <div class="cart-item-price">₱${itemTotal.toFixed(2)}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    totalEl.textContent = `₱${total.toFixed(2)}`;
 }
 
-renderCart();
-
-document.getElementById('checkout-btn')?.addEventListener('click', () => {
-    const cart = JSON.parse(sessionStorage.getItem('kumamori_cart') || '[]');
+function changeQty(index, delta) {
+    const cart = fetchCart();
+    if (!cart[index]) return;
     
-    if (cart.length === 0) {
-        alert('Your cart is empty!');
-        return;
+    let qty = (cart[index].qty || cart[index].quantity || 1) + delta;
+    if (qty <= 0) {
+        cart.splice(index, 1);
+    } else {
+        cart[index].qty = qty;
+        cart[index].quantity = qty;
     }
+    persistCart(cart);
+    renderCart();
+}
 
-    window.location.href = 'paymentPlanPage.html';
-});
+function removeItem(index) {
+    const cart = fetchCart();
+    cart.splice(index, 1);
+    persistCart(cart);
+    renderCart();
+}
 </script>
 
 </body>

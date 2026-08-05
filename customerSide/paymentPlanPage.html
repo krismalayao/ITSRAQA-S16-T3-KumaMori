@@ -27,7 +27,6 @@ body{background:#fff;color:var(--text-brown);}
 
 .page-wrap{max-width:900px;margin:0 auto;padding:60px 40px 90px;}
 
-/* Header */
 .page-header{
     display:flex;align-items:center;position:relative;
     margin-bottom:30px;
@@ -73,7 +72,6 @@ body{background:#fff;color:var(--text-brown);}
     margin-bottom:35px;border-radius:2px;opacity:0.85;
 }
 
-/* Selector Pill Container */
 .pill-card{
     background:#fff;border-radius:30px;
     box-shadow:0 8px 24px rgba(92,50,20,0.08);
@@ -111,7 +109,6 @@ body{background:#fff;color:var(--text-brown);}
     border-color:var(--text-brown);
 }
 
-/* GCash Logo Styling inside Pill */
 .gcash-logo-img {
     height: 24px;
     width: auto;
@@ -119,7 +116,6 @@ body{background:#fff;color:var(--text-brown);}
     vertical-align: middle;
 }
 
-/* Cards Section */
 .content-card{
     background:#fff;border-radius:24px;
     box-shadow:0 10px 28px rgba(92,50,20,0.08);
@@ -131,7 +127,6 @@ body{background:#fff;color:var(--text-brown);}
     padding-bottom:14px;border-bottom:2px solid #f2e3d8;margin-bottom:22px;
 }
 
-/* Input Fields */
 .form-group{
     margin-bottom:20px;
 }
@@ -156,11 +151,6 @@ body{background:#fff;color:var(--text-brown);}
     font-weight:500;margin-top:6px;margin-left:14px;
 }
 
-.grid-2-col{
-    display:grid;grid-template-columns:1fr 1fr;gap:20px;
-}
-
-/* Pickup Store Card */
 .pickup-info-box{
     background:var(--bg-soft);border-radius:18px;
     padding:20px;border:1.5px dashed var(--card-border);
@@ -169,7 +159,6 @@ body{background:#fff;color:var(--text-brown);}
 .pickup-info-box h3{font-size:1.05rem;margin-bottom:8px;}
 .pickup-info-box p{font-size:0.9rem;color:var(--text-brown-light);line-height:1.5;}
 
-/* GCash Card Styling */
 .gcash-container {
     display: grid;
     grid-template-columns: 240px 1fr;
@@ -225,7 +214,6 @@ body{background:#fff;color:var(--text-brown);}
     gap: 8px;
 }
 
-/* Summary Details Card */
 .order-summary-list{
     display:flex;flex-direction:column;gap:12px;margin-bottom:16px;
 }
@@ -238,7 +226,6 @@ body{background:#fff;color:var(--text-brown);}
     border-top:1px dashed var(--border-soft);padding-top:12px;margin-top:4px;
 }
 
-/* Bottom Bar */
 .checkout-bar{
     background:#fff;border-radius:24px;
     box-shadow:0 12px 30px rgba(92,50,20,0.1);
@@ -265,7 +252,6 @@ body{background:#fff;color:var(--text-brown);}
     box-shadow:0 6px 18px rgba(92,50,20,0.25);
 }
 
-/* Toast Notification */
 .toast-notification {
     position: fixed;
     bottom: 25px;
@@ -291,7 +277,6 @@ body{background:#fff;color:var(--text-brown);}
     transform: translateY(0);
 }
 
-/* Modal Overlay */
 .modal-overlay{
     position:fixed;inset:0;background:rgba(0,0,0,0.5);
     display:flex;align-items:center;justify-content:center;
@@ -322,7 +307,6 @@ body{background:#fff;color:var(--text-brown);}
     .page-wrap{padding:30px 20px 60px;}
     .page-title{font-size:1.8rem;}
     .pill-card{flex-direction:column;gap:14px;align-items:flex-start;}
-    .grid-2-col{grid-template-columns:1fr;}
     .gcash-container{grid-template-columns:1fr;}
     .checkout-bar{flex-direction:column;gap:16px;text-align:center;}
     .toast-notification {
@@ -344,7 +328,6 @@ body{background:#fff;color:var(--text-brown);}
 
 <div class="page-wrap">
     
-    <!-- Page Header -->
     <div class="page-header">
         <a href="cartPage.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
         <h1 class="page-title">Payment Plan</h1>
@@ -352,22 +335,6 @@ body{background:#fff;color:var(--text-brown);}
 
     <div class="divider"></div>
 
-    <!-- Contact Info Card -->
-    <div class="content-card">
-        <h2 class="card-header-title">Contact Information</h2>
-        <div class="grid-2-col">
-            <div class="form-group">
-                <input type="text" id="contact-name" class="input-field" placeholder="Full Name">
-                <div class="field-hint">Full Name</div>
-            </div>
-            <div class="form-group">
-                <input type="text" id="contact-phone" class="input-field" placeholder="0912 345 6789">
-                <div class="field-hint">Mobile Number</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delivery Method Selector -->
     <div class="pill-card">
         <span class="pill-title">Delivery Method</span>
         <div class="pill-options">
@@ -382,7 +349,6 @@ body{background:#fff;color:var(--text-brown);}
         </div>
     </div>
 
-    <!-- Delivery Address Card -->
     <div class="content-card" id="address-card">
         <h2 class="card-header-title">Delivery Address</h2>
         
@@ -402,7 +368,6 @@ body{background:#fff;color:var(--text-brown);}
         </div>
     </div>
 
-    <!-- Pick Up Location Card -->
     <div class="content-card" id="pickup-card" style="display:none;">
         <h2 class="card-header-title">Pick Up Location</h2>
         <div class="pickup-info-box">
@@ -413,7 +378,6 @@ body{background:#fff;color:var(--text-brown);}
         </div>
     </div>
 
-    <!-- Payment Method Selector -->
     <div class="pill-card">
         <span class="pill-title">Payment Method</span>
         <div class="pill-options">
@@ -428,7 +392,6 @@ body{background:#fff;color:var(--text-brown);}
         </div>
     </div>
 
-    <!-- GCash Payment Details Card -->
     <div class="content-card" id="gcash-details-card">
         <h2 class="card-header-title">GCash Payment Details</h2>
         <div class="gcash-container">
@@ -456,7 +419,6 @@ body{background:#fff;color:var(--text-brown);}
         </div>
     </div>
 
-    <!-- Order Items Breakdown -->
     <div class="content-card">
         <h2 class="card-header-title">Order Summary</h2>
         <div class="order-summary-list" id="summary-items-list"></div>
@@ -474,7 +436,6 @@ body{background:#fff;color:var(--text-brown);}
         </div>
     </div>
 
-    <!-- Bottom Action Bar -->
     <div class="checkout-bar">
         <div>
             <span class="total-label">TOTAL</span>
@@ -485,13 +446,11 @@ body{background:#fff;color:var(--text-brown);}
 
 </div>
 
-<!-- Toast Notification Container -->
 <div id="toast" class="toast-notification">
     <i class="fa-solid fa-circle-exclamation"></i>
     <span id="toast-message">Please fill in all required fields.</span>
 </div>
 
-<!-- Order Confirmation Modal -->
 <div class="modal-overlay" id="success-modal">
     <div class="modal-card">
         <div class="modal-icon">
@@ -512,7 +471,25 @@ let cartData = [];
 let subtotalAmount = 0;
 const SHIPPING_FEE = 60;
 
-/* Toast helper */
+function getActiveUserKey() {
+    const session = JSON.parse(localStorage.getItem('km_session') || '{}');
+    return session.id || session.email || sessionStorage.getItem('activeUser') || 'guest';
+}
+
+function fetchCart() {
+    if (typeof getUserCart === 'function') return getUserCart();
+    const userKey = getActiveUserKey();
+    const keyedCartRaw = localStorage.getItem('km_cart_' + userKey) || localStorage.getItem('kumamori_cart_' + userKey);
+    if (keyedCartRaw !== null) {
+        try { return JSON.parse(keyedCartRaw); } catch(e) { return []; }
+    }
+    const fallbackRaw = localStorage.getItem('kumamori_cart') || sessionStorage.getItem('kumamori_cart');
+    if (fallbackRaw) {
+        try { return JSON.parse(fallbackRaw); } catch(e) { return []; }
+    }
+    return [];
+}
+
 let toastTimeout;
 function showErrorToast(msg) {
     const toast = document.getElementById('toast');
@@ -525,7 +502,6 @@ function showErrorToast(msg) {
     }, 3500);
 }
 
-/* Toggle Delivery Method */
 function setDeliveryMethod(method) {
     currentDeliveryMethod = method;
     const btnPickup = document.getElementById('btn-pickup');
@@ -547,7 +523,6 @@ function setDeliveryMethod(method) {
     updateTotals();
 }
 
-/* Toggle Payment Method */
 function setPaymentMethod(method) {
     currentPaymentMethod = method;
     const btnCod = document.getElementById('btn-cod');
@@ -565,25 +540,26 @@ function setPaymentMethod(method) {
     }
 }
 
-/* Load cart from Session Storage */
 function loadCart() {
-    cartData = JSON.parse(sessionStorage.getItem('kumamori_cart') || '[]');
+    cartData = fetchCart();
     const summaryList = document.getElementById('summary-items-list');
     summaryList.innerHTML = '';
 
     subtotalAmount = 0;
 
-    if (cartData.length === 0) {
+    if (!cartData || cartData.length === 0) {
         summaryList.innerHTML = '<div class="summary-item"><span>No items in cart</span><span>₱0.00</span></div>';
     } else {
         cartData.forEach(item => {
-            const itemTotal = (item.price || 0) * (item.qty || 1);
+            const qty = item.qty || item.quantity || 1;
+            const price = parseFloat(item.price) || 0;
+            const itemTotal = price * qty;
             subtotalAmount += itemTotal;
 
             const div = document.createElement('div');
             div.className = 'summary-item';
             div.innerHTML = `
-                <span>${item.name} (${item.qty || 1}x)</span>
+                <span>${item.name} (${qty}x)</span>
                 <span>₱${itemTotal.toFixed(2)}</span>
             `;
             summaryList.appendChild(div);
@@ -593,7 +569,6 @@ function loadCart() {
     updateTotals();
 }
 
-/* Calculate Totals */
 function updateTotals() {
     const deliveryCost = currentDeliveryMethod === 'delivery' ? SHIPPING_FEE : 0;
     const finalTotal = subtotalAmount + deliveryCost;
@@ -604,23 +579,11 @@ function updateTotals() {
     document.getElementById('bar-total-val').textContent = '₱' + finalTotal.toFixed(2);
 }
 
-/* Validation & Form Submit */
 function handlePlaceOrder() {
     const inputs = document.querySelectorAll('.input-field');
     inputs.forEach(input => input.classList.remove('invalid'));
 
-    const nameInput = document.getElementById('contact-name');
-    const phoneInput = document.getElementById('contact-phone');
     let hasError = false;
-
-    if (!nameInput.value.trim()) {
-        nameInput.classList.add('invalid');
-        hasError = true;
-    }
-    if (!phoneInput.value.trim()) {
-        phoneInput.classList.add('invalid');
-        hasError = true;
-    }
 
     if (currentDeliveryMethod === 'delivery') {
         const streetInput = document.getElementById('addr-street');
@@ -645,52 +608,65 @@ function handlePlaceOrder() {
         return;
     }
 
-    if (cartData.length === 0) {
+    if (!cartData || cartData.length === 0) {
         showErrorToast('Your cart is empty!');
         return;
     }
 
-    // Generate Order ID
+    const activeUserKey = getActiveUserKey();
     const generatedOrderId = 'K' + Math.floor(100000 + Math.random() * 900000);
     const deliveryCost = currentDeliveryMethod === 'delivery' ? SHIPPING_FEE : 0;
     const finalTotal = subtotalAmount + deliveryCost;
 
-    // Save order into localStorage so orderTrackingPage.html can load it
-    const existingOrders = JSON.parse(localStorage.getItem('kumamori_orders') || '[]');
     const newOrder = {
         id: generatedOrderId,
-        user: sessionStorage.getItem('activeUser') || 'guest',
+        orderId: generatedOrderId,
+        user: activeUserKey,
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
         status: 'Pending',
         items: cartData.map(item => ({
             name: item.name,
-            qty: item.qty || 1,
+            qty: item.qty || item.quantity || 1,
             price: parseFloat(item.price || 0)
         })),
         total: '₱' + finalTotal.toFixed(2)
     };
 
-    existingOrders.unshift(newOrder);
-    localStorage.setItem('kumamori_orders', JSON.stringify(existingOrders));
+    // Retrieve active user's existing scoped orders
+    let userOrders = [];
+    if (typeof getUserOrders === 'function') {
+        userOrders = getUserOrders();
+    } else {
+        userOrders = JSON.parse(localStorage.getItem(`km_orders_${activeUserKey}`) || '[]');
+    }
 
-    // Save temporary session state
+    userOrders.unshift(newOrder);
+
+    // Save strictly to the active user's storage key
+    if (typeof saveUserOrders === 'function') {
+        saveUserOrders(userOrders);
+    } else {
+        localStorage.setItem(`km_orders_${activeUserKey}`, JSON.stringify(userOrders));
+    }
+
+    // Immediately wipe cart in local/session storage upon order submission
+    if (typeof saveUserCart === 'function') {
+        saveUserCart([]);
+    }
+    localStorage.setItem('km_cart_' + activeUserKey, '[]');
+    localStorage.setItem('kumamori_cart_' + activeUserKey, '[]');
+    localStorage.setItem('kumamori_cart', '[]');
+    sessionStorage.setItem('kumamori_cart', '[]');
+
     sessionStorage.setItem('kumamori_latest_order', generatedOrderId);
-    sessionStorage.setItem('kumamori_order_data', JSON.stringify({
-        paymentMethod: currentPaymentMethod,
-        deliveryMethod: currentDeliveryMethod,
-        address: document.getElementById('addr-street')?.value || 'Pickup at Workshop'
-    }));
-
     document.getElementById('success-modal').classList.add('active');
 }
 
 function finishOrder() {
     const orderId = sessionStorage.getItem('kumamori_latest_order') || 'K071626';
-    sessionStorage.removeItem('kumamori_cart');
     window.location.href = `orderTrackingPage.html?order=${orderId}`;
 }
 
-// Remove invalid styling on input
 document.querySelectorAll('.input-field').forEach(input => {
     input.addEventListener('input', function() {
         if (this.value.trim().length > 0) {
@@ -699,7 +675,6 @@ document.querySelectorAll('.input-field').forEach(input => {
     });
 });
 
-/* Init */
 loadCart();
 </script>
 
