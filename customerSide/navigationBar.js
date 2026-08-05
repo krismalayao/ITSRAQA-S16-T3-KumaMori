@@ -37,6 +37,18 @@ document.write(`
 .nav-icons > a > img { height: 24px; transition: transform .2s; }
 .nav-icons > a:hover > img { transform: scale(1.15); }
 
+/* Hamburger Menu Toggle Button */
+.nav-hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #5c3214;
+    padding: 5px;
+    z-index: 101;
+}
+
 /* Profile Dropdown */
 .profile-wrap { position: relative; }
 .profile-wrap img { height: 24px; cursor: pointer; transition: transform .2s; display: block; }
@@ -265,10 +277,45 @@ document.write(`
 .nav-toast.error {
     background-color: #d9534f;
 }
+
+/* Navbar Responsive Media Queries */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+        height: 75px;
+    }
+    .nav-hamburger {
+        display: block;
+    }
+    /* Hide regular horizontal links on mobile, slide down via hamburger toggle */
+    .nav-links {
+        position: absolute;
+        top: 75px;
+        left: 0;
+        width: 100%;
+        background: #f9e2e6;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 0;
+        box-shadow: 0 10px 15px rgba(92,50,20,0.1);
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+    }
+    .nav-links.active {
+        max-height: 350px;
+        padding: 25px 0;
+    }
+}
 </style>
 
 <header class="navbar">
-    <nav class="nav-links">
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <nav class="nav-links" id="navLinksContainer">
         <a href="userLandingPage.html" data-page="home">Home</a>
         <a href="productsPage.html" data-page="product">Product</a>
         <a href="aboutUsPage.html" data-page="about">About Us</a>
@@ -431,7 +478,7 @@ function navSetCurrentUser(user) {
     localStorage.setItem('km_session', JSON.stringify(user));
 }
 
-/* User-Scoped Storage Functions (Globally Available across all pages) */
+/* User-Scoped Storage Functions */
 function navGetActiveUserId() {
     const user = navGetCurrentUser();
     return (user && (user.id || user.email)) ? (user.id || user.email) : 'guest';
@@ -484,6 +531,21 @@ function closeChangePasswordModal() {
 
 /* Dynamic Event Listeners & Session Sync */
 document.addEventListener('DOMContentLoaded', () => {
+    // Hamburger Menu Toggle
+    const hamburgerBtn = document.getElementById('navHamburger');
+    const navLinksContainer = document.getElementById('navLinksContainer');
+    if (hamburgerBtn && navLinksContainer) {
+        hamburgerBtn.addEventListener('click', () => {
+            navLinksContainer.classList.toggle('active');
+            const icon = hamburgerBtn.querySelector('i');
+            if (navLinksContainer.classList.contains('active')) {
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                icon.className = 'fa-solid fa-bars';
+            }
+        });
+    }
+
     const current = window.CURRENT_PAGE || '';
     document.querySelectorAll('.nav-links a').forEach(link => {
         if (link.dataset.page === current) link.classList.add('active');

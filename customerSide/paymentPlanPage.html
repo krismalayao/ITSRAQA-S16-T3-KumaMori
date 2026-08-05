@@ -23,7 +23,7 @@
     --bg-soft:#fdf6f2;
 }
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka',sans-serif;}
-body{background:#fff;color:var(--text-brown);}
+body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
 
 .page-wrap{max-width:900px;margin:0 auto;padding:60px 40px 90px;}
 
@@ -46,6 +46,7 @@ body{background:#fff;color:var(--text-brown);}
     flex-shrink: 0;
     white-space: nowrap;
     transition: all 0.2s ease;
+    z-index: 2;
 }
 
 .back-btn:hover {
@@ -65,6 +66,8 @@ body{background:#fff;color:var(--text-brown);}
     position:absolute;left:50%;transform:translateX(-50%);
     text-align:center;font-size:2.4rem;font-weight:700;margin:0;
     color:var(--text-brown);
+    width: 100%;
+    pointer-events: none;
 }
 
 .divider{
@@ -83,7 +86,7 @@ body{background:#fff;color:var(--text-brown);}
     font-size:1.25rem;font-weight:700;color:var(--text-brown);
 }
 .pill-options{
-    display:flex;gap:16px;align-items:center;
+    display:flex;gap:16px;align-items:center;flex-wrap:wrap;
 }
 .pill-btn{
     display:flex;align-items:center;gap:12px;
@@ -96,7 +99,7 @@ body{background:#fff;color:var(--text-brown);}
     width:28px;height:28px;border-radius:50%;
     border:2px solid #d0b8a8;display:flex;align-items:center;
     justify-content:center;background:#fff;color:transparent;
-    font-size:0.75rem;transition:all 0.2s ease;
+    font-size:0.75rem;transition:all 0.2s ease;flex-shrink:0;
 }
 .pill-btn.active{
     color:var(--text-brown);font-weight:700;
@@ -202,7 +205,8 @@ body{background:#fff;color:var(--text-brown);}
 }
 
 .gcash-account-info p {
-    white-space: nowrap;
+    white-space: normal; /* Fixed overflow issue */
+    word-break: break-word;
 }
 
 .instruction-step {
@@ -210,8 +214,12 @@ body{background:#fff;color:var(--text-brown);}
     color: var(--text-brown-light);
     margin-bottom: 12px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
+}
+.instruction-step i {
+    margin-top: 3px;
+    flex-shrink: 0;
 }
 
 .order-summary-list{
@@ -220,6 +228,7 @@ body{background:#fff;color:var(--text-brown);}
 .summary-item{
     display:flex;justify-content:space-between;
     font-size:0.95rem;color:var(--text-brown-light);
+    gap: 15px;
 }
 .summary-item.total-item{
     font-size:1.1rem;font-weight:700;color:var(--text-brown);
@@ -246,6 +255,7 @@ body{background:#fff;color:var(--text-brown);}
     padding:16px 40px;border-radius:22px;font-size:1.2rem;
     font-weight:700;cursor:pointer;transition:all 0.2s ease;
     box-shadow:0 4px 14px rgba(92,50,20,0.2);
+    white-space: nowrap;
 }
 .btn-place-order:hover{
     background:#45240c;transform:translateY(-2px);
@@ -304,11 +314,18 @@ body{background:#fff;color:var(--text-brown);}
 .modal-desc{font-size:0.95rem;color:var(--text-brown-light);line-height:1.5;margin-bottom:25px;}
 
 @media (max-width:768px){
-    .page-wrap{padding:30px 20px 60px;}
-    .page-title{font-size:1.8rem;}
-    .pill-card{flex-direction:column;gap:14px;align-items:flex-start;}
-    .gcash-container{grid-template-columns:1fr;}
-    .checkout-bar{flex-direction:column;gap:16px;text-align:center;}
+    .page-wrap{padding:30px 16px 60px;}
+    .page-header{flex-direction:column;align-items:flex-start;gap:15px;margin-bottom:25px;}
+    .page-title{position:static;transform:none;text-align:left;font-size:1.8rem;}
+    .pill-card{flex-direction:column;align-items:flex-start;gap:14px;padding:20px 20px;}
+    .pill-options{width:100%;flex-direction:column;align-items:stretch;}
+    .pill-btn{justify-content:flex-start;width:100%;padding:10px 14px;}
+    .content-card{padding:24px 20px;}
+    .gcash-container{grid-template-columns:1fr;gap:20px;}
+    .checkout-bar{flex-direction:column;gap:16px;text-align:center;padding:20px;}
+    .checkout-bar > div {width: 100%;}
+    .btn-place-order{width:100%;text-align:center;padding:14px 20px;}
+    .modal-card{padding:25px 20px;}
     .toast-notification {
         left: 50%;
         transform: translate(-50%, 20px);
@@ -632,7 +649,6 @@ function handlePlaceOrder() {
         total: '₱' + finalTotal.toFixed(2)
     };
 
-    // Retrieve active user's existing scoped orders
     let userOrders = [];
     if (typeof getUserOrders === 'function') {
         userOrders = getUserOrders();
@@ -642,14 +658,12 @@ function handlePlaceOrder() {
 
     userOrders.unshift(newOrder);
 
-    // Save strictly to the active user's storage key
     if (typeof saveUserOrders === 'function') {
         saveUserOrders(userOrders);
     } else {
         localStorage.setItem(`km_orders_${activeUserKey}`, JSON.stringify(userOrders));
     }
 
-    // Immediately wipe cart in local/session storage upon order submission
     if (typeof saveUserCart === 'function') {
         saveUserCart([]);
     }

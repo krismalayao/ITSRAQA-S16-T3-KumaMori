@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KumaMori - Order Tracking</title>
+    <link rel="icon" type="image/png" sizes="48x48" href="../images/kumamoriFavicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Fredoka', sans-serif; }
-        body { background-color: #ffffff; color: #5c3214; min-height: 100vh; display: flex; flex-direction: column; }
+        body { background-color: #ffffff; color: #5c3214; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
         .page-wrap { flex: 1; width: 100%; }
 
@@ -75,14 +76,15 @@
             box-shadow: 0 4px 12px rgba(92, 50, 20, 0.1);
         }
 
-        .card-top { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px; }
-        .card-bottom { display: flex; justify-content: space-between; font-size: 0.85rem; color: #8c6b54; }
+        .card-top { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px; gap: 10px; }
+        .card-bottom { display: flex; justify-content: space-between; font-size: 0.85rem; color: #8c6b54; gap: 10px; }
 
         .main-tracking-panel {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
         }
 
         .order-number-badge {
@@ -94,6 +96,9 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.06);
             margin-bottom: 25px;
             text-align: center;
+            width: 100%;
+            max-width: 550px;
+            border: 1px solid #f9e2e6;
         }
 
         .order-number-badge span { font-weight: 500; margin-left: 8px; }
@@ -106,6 +111,7 @@
             width: 100%;
             max-width: 550px;
             margin-bottom: 30px;
+            border: 1px solid #f9e2e6;
         }
 
         .timeline { position: relative; display: flex; flex-direction: column; gap: 28px; }
@@ -142,7 +148,7 @@
         }
 
         .step-info h4 { font-size: 1.15rem; font-weight: 700; color: #5c3214; margin-bottom: 2px; }
-        .step-info p { font-size: 0.9rem; color: #8c6b54; }
+        .step-info p { font-size: 0.9rem; color: #8c6b54; word-break: break-word; }
 
         .details-card {
             background: #fdf6f2;
@@ -150,12 +156,13 @@
             padding: 24px;
             width: 100%;
             max-width: 550px;
+            border: 1px solid #f9e2e6;
         }
 
         .details-card h3 { font-size: 1.1rem; margin-bottom: 14px; border-bottom: 1px solid #f9e2e6; padding-bottom: 8px; }
 
-        .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.95rem; }
-        .summary-row { display: flex; justify-content: space-between; font-weight: 700; margin-top: 14px; border-top: 1px dashed #5c3214; padding-top: 10px; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.95rem; gap: 15px; }
+        .summary-row { display: flex; justify-content: space-between; font-weight: 700; margin-top: 14px; border-top: 1px dashed #5c3214; padding-top: 10px; gap: 15px; }
 
         .empty-state {
             text-align: center;
@@ -165,9 +172,30 @@
 
         .empty-state h2 { font-size: 1.8rem; margin-bottom: 10px; }
         .empty-state p { color: #8c6b54; margin-bottom: 20px; }
-        .btn-shop { background: #5c3214; color: #fff; padding: 12px 28px; border-radius: 20px; text-decoration: none; font-weight: 700; display: inline-block; }
+        .btn-shop { background: #5c3214; color: #fff; padding: 12px 28px; border-radius: 20px; text-decoration: none; font-weight: 700; display: inline-block; transition: background 0.2s; }
+        .btn-shop:hover { background: #45240c; }
 
         .hidden { display: none !important; }
+
+        /* Mobile Responsiveness Media Query */
+        @media (max-width: 850px) {
+            .page-title { font-size: 2rem; margin: 20px 0 10px 0; }
+            .orders-container {
+                flex-direction: column;
+                padding: 0 15px;
+                gap: 20px;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .tracking-card {
+                padding: 25px 20px;
+            }
+            .order-number-badge {
+                padding: 10px 20px;
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -262,7 +290,6 @@
     };
 
     function fetchSessionOrders() {
-        // Fetch strictly scoped user orders via navigationBar.js
         let rawOrders = [];
         if (typeof getUserOrders === 'function') {
             rawOrders = getUserOrders();
@@ -272,7 +299,6 @@
             rawOrders = JSON.parse(localStorage.getItem(`km_orders_${userId}`) || '[]');
         }
 
-        // Filter and deduplicate active user's orders
         return rawOrders.filter((order, index, self) => {
             if (!order || typeof order !== 'object') return false;
             const orderId = order.id || order.orderId;

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KumaMori - Home</title>
 <link rel="icon" type="image/png" sizes="48x48" href="../images/kumamoriFavicon.png">
 
@@ -21,7 +22,7 @@
     --button-hover:#45240c;
 }
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka',sans-serif;}
-body{background:#ffffff;color:var(--text-brown);}
+body{background:#ffffff;color:var(--text-brown);overflow-x:hidden;}
 
 .brand-hero{
     background-image:url('../images/banner.png');
@@ -118,6 +119,72 @@ body{background:#ffffff;color:var(--text-brown);}
 @keyframes scrollReviews{
     0%{transform:translateX(0);}
     100%{transform:translateX(-50%);}
+}
+
+@media (max-width: 992px) {
+    .brand-hero {
+        height: 450px;
+        max-height: 55vw;
+    }
+    .hero-content {
+        flex-direction: column-reverse;
+        align-items: center;
+        text-align: center;
+        gap: 30px;
+        padding: 40px 30px;
+    }
+    .hero-bear {
+        width: 320px;
+        max-width: 70vw;
+        margin-bottom: 0;
+    }
+    .hero-bear::after {
+        bottom: 70px;
+    }
+    .hero-text {
+        max-width: 100%;
+        padding-bottom: 0;
+    }
+    .customizable {
+        padding: 50px 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .brand-hero {
+        height: 280px;
+        max-height: 70vw;
+    }
+    .hero-text h1 {
+        font-size: 1.6rem;
+    }
+    .hero-text p {
+        font-size: 0.95rem;
+    }
+    .banner-strip {
+        font-size: 0.9rem;
+        padding: 18px 15px;
+    }
+    .customizable {
+        padding: 40px 20px;
+    }
+    .customizable h2, .reviews h2 {
+        font-size: 1.5rem;
+        margin-bottom: 25px;
+    }
+    .customizable-imgs {
+        gap: 15px;
+    }
+    .customizable-imgs img {
+        max-width: 100%;
+    }
+    .reviews {
+        padding: 40px 0;
+    }
+    .review-card {
+        width: 220px;
+        padding: 18px;
+    }
 }
 </style>
 </head>

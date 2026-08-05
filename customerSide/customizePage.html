@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KumaMori - Customize</title>
 <link rel="icon" type="image/png" sizes="48x48" href="../images/kumamoriFavicon.png">
 
@@ -21,7 +22,7 @@
     --success-green:#4a7c59;
 }
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka',sans-serif;}
-body{background:#fff;color:var(--text-brown);}
+body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
 
 .page-wrap{max-width:900px;margin:0 auto;padding:60px 40px 90px;}
 
@@ -44,6 +45,7 @@ body{background:#fff;color:var(--text-brown);}
     flex-shrink: 0;
     white-space: nowrap;
     transition: all 0.2s ease;
+    z-index: 2;
 }
 
 .back-btn:hover {
@@ -62,6 +64,8 @@ body{background:#fff;color:var(--text-brown);}
 .page-title{
     position:absolute;left:50%;transform:translateX(-50%);
     text-align:center;font-size:2.4rem;font-weight:700;margin:0;
+    width: 100%;
+    pointer-events: none;
 }
 
 .customize-card{
@@ -71,12 +75,15 @@ body{background:#fff;color:var(--text-brown);}
 .customize-top{
     display:flex;justify-content:space-between;align-items:center;
     padding-bottom:18px;border-bottom:2px solid #eee0d8;margin-bottom:26px;
+    gap: 15px;
 }
 .customize-top h2{font-size:1.5rem;font-weight:700;display:inline;}
 .customize-top .price{color:var(--accent);font-weight:600;margin-left:12px;font-size:1rem;}
 .btn-brown{
     background:var(--text-brown);color:#fff;border:none;padding:12px 26px;
     border-radius:20px;font-weight:600;cursor:pointer;transition:background .2s;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 .btn-brown:hover{background:#45240c;}
 
@@ -195,8 +202,17 @@ body{background:#fff;color:var(--text-brown);}
 }
 .toast-notification.show {opacity: 1;transform: translateY(0);}
 
-@media (max-width:700px){
-    .customize-body{grid-template-columns:1fr;}
+@media (max-width:768px){
+    .page-wrap{padding: 30px 16px 70px;}
+    .page-header{flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 25px;}
+    .page-title{position: static; transform: none; text-align: left; font-size: 1.8rem;}
+    .customize-card{padding: 20px 16px;}
+    .customize-top{flex-direction: column; align-items: stretch; gap: 12px;}
+    .customize-top .price{display: block; margin-left: 0; margin-top: 4px; font-size: 1.1rem;}
+    .btn-brown{width: 100%; text-align: center; padding: 14px 20px;}
+    .customize-body{grid-template-columns:1fr;gap: 20px;}
+    .font-style-row{flex-direction: column;}
+    .font-style-btn{width: 100%;}
     .toast-notification {left: 50%;transform: translate(-50%, 20px);width: 90%;justify-content: center;}
     .toast-notification.show {transform: translate(-50%, 0);}
 }
@@ -435,6 +451,9 @@ function createExtraField(labelText, options, onRemove){
 
     const select = document.createElement('select');
     select.innerHTML = '<option>Select...</option>' + options.map(o => `<option>${o}</option>`).join('');
+    select.addEventListener('change', () => {
+        if(select.selectedIndex > 0) box.classList.remove('invalid');
+    });
 
     const removeBtn = document.createElement('button');
     removeBtn.type = 'button';
@@ -513,6 +532,7 @@ function buildSwatchGroup(colors, whiteIndexes = [], perRow = colors.length, mul
                     allSwatches.forEach(s => s.classList.remove('selected'));
                     div.classList.add('selected');
                 }
+                container.closest('.swatch-group')?.classList.remove('invalid');
                 recalcTotal();
             });
             allSwatches.push(div);
@@ -537,6 +557,7 @@ function buildPaletteGroup(rowsOfColors){
         });
         row.addEventListener('click', () => {
             row.classList.toggle('selected');
+            container.closest('.swatch-group')?.classList.remove('invalid');
             recalcTotal();
         });
         container.appendChild(row);
@@ -663,235 +684,56 @@ function validateRequiredFields(){
     return missing;
 }
 
-function buildCustomizationData(){
-    const edits = [];
-    const customData = {
-        letters: lettersInput.value.trim(),
-        charms: [],
-        pendants: [],
-        figurines: [],
-        leatherColorIdx: null,
-        letterColorIdx: null,
-        beadColorIdxs: [],
-        spacerRowIdxs: [],
-        moonColorIdx: null,
-        fontStyle: null
-    };
-
-    if(customData.letters){
-        edits.push(`Letters: ${customData.letters}`);
-    }
-
-    if(config.hasCharm){
-        document.querySelectorAll('#charm-field-wrap select').forEach((sel, i) => {
-            if(sel.value && sel.value !== 'Select...'){
-                customData.charms.push(sel.value);
-                edits.push(`Charm ${i + 1}: ${sel.value}`);
-            }
-        });
-    }
-
-    if(config.hasPendant){
-        document.querySelectorAll('#pendant-field-wrap select').forEach((sel, i) => {
-            if(sel.value && sel.value !== 'Select...'){
-                customData.pendants.push(sel.value);
-                edits.push(`Pendant ${i + 1}: ${sel.value}`);
-            }
-        });
-    }
-
-    if(config.hasFigurine){
-        document.querySelectorAll('#figurine-field-wrap select').forEach((sel, i) => {
-            if(sel.value && sel.value !== 'Select...'){
-                customData.figurines.push(sel.value);
-                edits.push(`Figurine ${i + 1}: ${sel.value}`);
-            }
-        });
-    }
-
-    if(config.rightSwatches.includes('leather')){
-        document.querySelectorAll('#group-leather .swatch').forEach((sw, idx) => {
-            if(sw.classList.contains('selected')){
-                customData.leatherColorIdx = idx;
-                edits.push(`Leather Color: ${colorNames.leather[idx] || 'Selected'}`);
-            }
-        });
-    }
-
-    if(config.rightSwatches.includes('letter')){
-        document.querySelectorAll('#group-letter .swatch').forEach((sw, idx) => {
-            if(sw.classList.contains('selected')){
-                customData.letterColorIdx = idx;
-                edits.push(`Letter Color: ${colorNames.letter[idx] || 'Selected'}`);
-            }
-        });
-    }
-
-    if(config.rightSwatches.includes('bead')){
-        const names = [];
-        document.querySelectorAll('#group-bead .swatch').forEach((sw, idx) => {
-            if(sw.classList.contains('selected')){
-                customData.beadColorIdxs.push(idx);
-                names.push(colorNames.bead[idx]);
-            }
-        });
-        if(names.length) edits.push(`Bead Colors: ${names.join(', ')}`);
-    }
-
-    if(config.rightSwatches.includes('spacer')){
-        const names = [];
-        document.querySelectorAll('#group-spacer .palette-row').forEach((r, idx) => {
-            if(r.classList.contains('selected')){
-                customData.spacerRowIdxs.push(idx);
-                names.push(colorNames.spacer[idx]);
-            }
-        });
-        if(names.length) edits.push(`Spacers: ${names.join(', ')}`);
-    }
-
-    if(config.rightSwatches.includes('moon')){
-        document.querySelectorAll('#group-moon .swatch').forEach((sw, idx) => {
-            if(sw.classList.contains('selected')){
-                customData.moonColorIdx = idx;
-                edits.push(`Moon Color: ${colorNames.moon[idx] || 'Selected'}`);
-            }
-        });
-    }
-
-    if(config.hasFont){
-        const fontBtn = document.querySelector('.font-style-btn.selected');
-        if(fontBtn){
-            customData.fontStyle = fontBtn.textContent.trim();
-            edits.push(`Font Style: ${customData.fontStyle}`);
-        }
-    }
-
-    return { edits, customData };
-}
-
-if(editId){
-    document.getElementById('add-cart-btn').textContent = 'Update Cart';
-    const cart = getCart();
-    const existing = cart.find(i => i.id === editId);
-
-    if(existing && existing.customData){
-        const cd = existing.customData;
-        if(cd.letters){
-            lettersInput.value = cd.letters;
-            lettersInput.dispatchEvent(new Event('input'));
-        }
-
-        if(cd.charms && cd.charms.length){
-            const mainSel = document.getElementById('charm-select-main');
-            if(mainSel) mainSel.value = cd.charms[0];
-            for(let i = 1; i < cd.charms.length; i++){
-                document.getElementById('add-charm-btn').click();
-                const selects = document.querySelectorAll('#charm-field-wrap select');
-                if(selects[i]) selects[i].value = cd.charms[i];
-            }
-        }
-
-        if(cd.pendants && cd.pendants.length){
-            for(let i = 0; i < cd.pendants.length; i++){
-                document.getElementById('add-pendant-btn').click();
-                const selects = document.querySelectorAll('#pendant-field-wrap select');
-                if(selects[i]) selects[i].value = cd.pendants[i];
-            }
-        }
-
-        if(cd.figurines && cd.figurines.length){
-            const mainSel = document.getElementById('figurine-select-main');
-            if(mainSel) mainSel.value = cd.figurines[0];
-            for(let i = 1; i < cd.figurines.length; i++){
-                document.getElementById('add-figurine-btn').click();
-                const selects = document.querySelectorAll('#figurine-field-wrap select');
-                if(selects[i]) selects[i].value = cd.figurines[i];
-            }
-        }
-
-        if(cd.leatherColorIdx !== null && cd.leatherColorIdx !== undefined){
-            const sws = document.querySelectorAll('#group-leather .swatch');
-            if(sws[cd.leatherColorIdx]) sws[cd.leatherColorIdx].click();
-        }
-
-        if(cd.letterColorIdx !== null && cd.letterColorIdx !== undefined){
-            const sws = document.querySelectorAll('#group-letter .swatch');
-            if(sws[cd.letterColorIdx]) sws[cd.letterColorIdx].click();
-        }
-
-        if(cd.beadColorIdxs && cd.beadColorIdxs.length){
-            const sws = document.querySelectorAll('#group-bead .swatch');
-            cd.beadColorIdxs.forEach(idx => { if(sws[idx]) sws[idx].click(); });
-        }
-
-        if(cd.spacerRowIdxs && cd.spacerRowIdxs.length){
-            const rows = document.querySelectorAll('#group-spacer .palette-row');
-            cd.spacerRowIdxs.forEach(idx => { if(rows[idx]) rows[idx].click(); });
-        }
-
-        if(cd.moonColorIdx !== null && cd.moonColorIdx !== undefined){
-            const sws = document.querySelectorAll('#group-moon .swatch');
-            if(sws[cd.moonColorIdx]) sws[cd.moonColorIdx].click();
-        }
-
-        if(cd.fontStyle){
-            document.querySelectorAll('.font-style-btn').forEach(b => {
-                if(b.textContent.trim() === cd.fontStyle) b.click();
-            });
-        }
-    }
-}
-
+// Add to Cart Button Logic & Toast Triggers
 document.getElementById('add-cart-btn').addEventListener('click', () => {
-    const missing = validateRequiredFields();
-    if(missing.length){
-        showToast('Please select: ' + missing.join(', '), false);
+    const missingFields = validateRequiredFields();
+
+    if (missingFields.length > 0) {
+        showToast(`Please fill in: ${missingFields.join(', ')}`, false);
         return;
     }
 
-    const { edits, customData } = buildCustomizationData();
-    const cart = getCart();
+    // Collect custom data to push into cart
+    const edits = [];
+    if(lettersInput.value.trim()) edits.push(`Letters: ${lettersInput.value.trim()}`);
+    
+    if(config.hasCharm) {
+        const mainCharm = document.getElementById('charm-select-main').value;
+        if(mainCharm && mainCharm !== 'Select...') edits.push(`Charm: ${mainCharm}`);
+    }
+    if(config.hasFigurine) {
+        const mainFig = document.getElementById('figurine-select-main').value;
+        if(mainFig && mainFig !== 'Select...') edits.push(`Figurine: ${mainFig}`);
+    }
+    
+    const selectedLeather = document.querySelector('#group-leather .swatch.selected');
+    if(selectedLeather) edits.push(`Leather Color`);
 
-    if(editId){
-        const idx = cart.findIndex(i => i.id === editId);
-        if(idx !== -1){
-            cart[idx].price = computeTotal();
-            cart[idx].edits = edits;
-            cart[idx].customData = customData;
-        } else {
-            cart.push({
-                id: editId,
-                name: config.name,
-                price: computeTotal(),
-                qty: 1,
-                customizable: true,
-                type: type,
-                edits: edits,
-                customData: customData
-            });
-        }
+    const selectedLetter = document.querySelector('#group-letter .swatch.selected');
+    if(selectedLetter) edits.push(`Letter Color`);
+
+    const newItem = {
+        name: config.name,
+        price: computeTotal(),
+        qty: 1,
+        edidts: edits,
+        edits: edits
+    };
+
+    const cart = getCart();
+    if(editId !== null && cart[editId]) {
+        cart[editId] = newItem;
     } else {
-        cart.push({
-            id: type + '-' + Date.now(),
-            name: config.name,
-            price: computeTotal(),
-            qty: 1,
-            customizable: true,
-            type: type,
-            edits: edits,
-            customData: customData
-        });
+        cart.push(newItem);
     }
 
     saveCart(cart);
-    showToast(`${config.name} added to cart!`, true);
+    showToast("Successfully added to cart!", true);
 
     setTimeout(() => {
-        window.location.href = 'productsPage.html';
+        window.location.href = 'cartPage.html';
     }, 1200);
 });
-
-recalcTotal();
 </script>
 
 </body>

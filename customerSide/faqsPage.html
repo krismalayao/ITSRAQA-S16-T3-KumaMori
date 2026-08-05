@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="48x48" href="../images/kumamoriFavicon.png">
 <title>KumaMori - FAQs</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +20,7 @@
     --accent:#C69866;
 }
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka',sans-serif;}
-body{background:#fff;color:var(--text-brown);}
+body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
 
 .page-wrap{max-width:850px;margin:0 auto;padding:70px 40px 90px;}
 
@@ -88,6 +90,15 @@ body{background:#fff;color:var(--text-brown);}
 .faq-answer ul{margin-top:10px;padding-left:20px;}
 .faq-answer li{margin-bottom:10px;}
 .faq-answer li b{color:var(--text-brown);}
+
+@media (max-width:768px){
+    .page-wrap{padding: 40px 20px 70px;}
+    .page-title{font-size: 2rem;}
+    .page-sub{font-size: 0.92rem; margin-bottom: 30px;}
+    .faq-item{padding: 16px 20px; border-radius: 14px;}
+    .faq-question{font-size: 1rem; gap: 14px;}
+    .faq-answer{font-size: 0.9rem;}
+}
 </style>
 </head>
 <body>
