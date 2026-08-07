@@ -418,6 +418,8 @@ function saveCart(cart) {
 document.getElementById('product-name').textContent = config.name;
 document.getElementById('product-price').textContent = config.price.toFixed(2) + ' PHP';
 
+document.getElementById('total-amount').textContent = '₱' + config.price.toFixed(2);
+
 const lettersInput = document.getElementById('letters-input');
 const lettersCount = document.getElementById('letters-count');
 document.getElementById('letters-label').textContent = config.lettersMax === 1 ? 'Letter:' : `Letters (max ${config.lettersMax}):`;
