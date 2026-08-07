@@ -565,7 +565,7 @@
       </ul>
 
       <ul class="nav-menu" style="margin-top: 15px;">
-        <li class="nav-item"><a href="../publicPages/loginPage.html" class="logout-btn">Log Out</a></li>
+        <li class="nav-item"><a href="../publicPages/loginPage.html" class="logout-btn" id="logoutBtn">Log Out</a></li>
       </ul>
     </div>
   </aside>
@@ -607,593 +607,6 @@
           </tr>
         </thead>
         <tbody id="inventoryTableBody">
-          <!-- A-Z Alphabet Beads -->
-          <tr>
-            <td>Alphabet Bead - 'A'</td>
-            <td>Letters & Charms</td>
-            <td>150</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                </button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'B'</td>
-            <td>Letters & Charms</td>
-            <td>120</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'C'</td>
-            <td>Letters & Charms</td>
-            <td>110</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'D'</td>
-            <td>Letters & Charms</td>
-            <td>95</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'E'</td>
-            <td>Letters & Charms</td>
-            <td>160</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'F'</td>
-            <td>Letters & Charms</td>
-            <td>85</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'G'</td>
-            <td>Letters & Charms</td>
-            <td>90</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'H'</td>
-            <td>Letters & Charms</td>
-            <td>100</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'I'</td>
-            <td>Letters & Charms</td>
-            <td>140</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'J'</td>
-            <td>Letters & Charms</td>
-            <td>70</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'K'</td>
-            <td>Letters & Charms</td>
-            <td>80</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'L'</td>
-            <td>Letters & Charms</td>
-            <td>115</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'M'</td>
-            <td>Letters & Charms</td>
-            <td>130</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'N'</td>
-            <td>Letters & Charms</td>
-            <td>110</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'O'</td>
-            <td>Letters & Charms</td>
-            <td>125</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'P'</td>
-            <td>Letters & Charms</td>
-            <td>85</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'Q'</td>
-            <td>Letters & Charms</td>
-            <td>40</td>
-            <td>pcs</td>
-            <td>20</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'R'</td>
-            <td>Letters & Charms</td>
-            <td>135</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'S'</td>
-            <td>Letters & Charms</td>
-            <td>145</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'T'</td>
-            <td>Letters & Charms</td>
-            <td>130</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'U'</td>
-            <td>Letters & Charms</td>
-            <td>95</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'V'</td>
-            <td>Letters & Charms</td>
-            <td>65</td>
-            <td>pcs</td>
-            <td>20</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'W'</td>
-            <td>Letters & Charms</td>
-            <td>75</td>
-            <td>pcs</td>
-            <td>20</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'X'</td>
-            <td>Letters & Charms</td>
-            <td>45</td>
-            <td>pcs</td>
-            <td>20</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'Y'</td>
-            <td>Letters & Charms</td>
-            <td>90</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Alphabet Bead - 'Z'</td>
-            <td>Letters & Charms</td>
-            <td>50</td>
-            <td>pcs</td>
-            <td>20</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Different Color and Sizes of Beads -->
-          <tr>
-            <td>Glass Pastel Pink Bead (4mm)</td>
-            <td>Beads</td>
-            <td>200</td>
-            <td>pcs</td>
-            <td>50</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Glass Pastel Pink Bead (8mm)</td>
-            <td>Beads</td>
-            <td>12</td>
-            <td>pcs</td>
-            <td>20</td>
-            <td><span class="status-badge low-stock">Low Stock</span></td>
-            <td>August 02, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Glass Sky Blue Bead (6mm)</td>
-            <td>Beads</td>
-            <td>180</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Glass Lavender Bead (6mm)</td>
-            <td>Beads</td>
-            <td>95</td>
-            <td>pcs</td>
-            <td>25</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Acrylic Mint Green Bead (6mm)</td>
-            <td>Beads</td>
-            <td>210</td>
-            <td>pcs</td>
-            <td>40</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Metallic Gold Spacer Bead (3mm)</td>
-            <td>Beads</td>
-            <td>300</td>
-            <td>pcs</td>
-            <td>60</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Clear Nylon Band & Cords -->
-          <tr>
-            <td>Clear Elastic Nylon Band (0.8mm)</td>
-            <td>Straps & Cords</td>
-            <td>45</td>
-            <td>meters</td>
-            <td>10</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Clear Non-Elastic Nylon String (0.5mm)</td>
-            <td>Straps & Cords</td>
-            <td>8</td>
-            <td>meters</td>
-            <td>15</td>
-            <td><span class="status-badge low-stock">Low Stock</span></td>
-            <td>August 01, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Clasps & Hardware -->
-          <tr>
-            <td>Silver Lobster Clasp</td>
-            <td>Hardware & Clasps</td>
-            <td>0</td>
-            <td>pcs</td>
-            <td>15</td>
-            <td><span class="status-badge out-stock">Out of Stock</span></td>
-            <td>July 28, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Gold Lobster Clasp</td>
-            <td>Hardware & Clasps</td>
-            <td>35</td>
-            <td>pcs</td>
-            <td>15</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>Silver Jump Rings (6mm)</td>
-            <td>Hardware & Clasps</td>
-            <td>120</td>
-            <td>pcs</td>
-            <td>30</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 04, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Straps & Cords (Existing Row) -->
-          <tr>
-            <td>Brown Leather Strap (20cm)</td>
-            <td>Straps & Cords</td>
-            <td>45</td>
-            <td>pcs</td>
-            <td>10</td>
-            <td><span class="status-badge in-stock">In Stock</span></td>
-            <td>August 01, 2026</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                </button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-              </div>
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
@@ -1274,16 +687,86 @@
   </div>
 
   <!-- Interactive Scripts -->
+  <script src="../auth.js"></script>
   <script>
-    let activeEditingRow = null;
+    const currentAdmin = requireAdmin();
+    let activeEditingId = null; // id of the item currently being edited, or null when adding
+
+    function statusBadgeHtml(status) {
+      if (status === 'out-stock') return '<span class="status-badge out-stock">Out of Stock</span>';
+      if (status === 'low-stock') return '<span class="status-badge low-stock">Low Stock</span>';
+      return '<span class="status-badge in-stock">In Stock</span>';
+    }
+
+    function computeStatus(stock, minThreshold) {
+      if (stock === 0) return 'out-stock';
+      if (stock <= minThreshold) return 'low-stock';
+      return 'in-stock';
+    }
+
+    // Rebuilds the whole table body from whatever is currently in localStorage
+    function renderInventory() {
+      const items = getInventory();
+      const tbody = document.getElementById('inventoryTableBody');
+      tbody.innerHTML = items.map(item => `
+        <tr data-id="${item.id}">
+          <td>${item.name}</td>
+          <td>${item.category}</td>
+          <td>${item.stock}</td>
+          <td>${item.unit}</td>
+          <td>${item.minThreshold}</td>
+          <td>${statusBadgeHtml(item.status)}</td>
+          <td>${item.updated}</td>
+          <td>
+            <div class="action-btns">
+              <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              </button>
+              <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      filterTable();
+    }
+
+    // Filter and Search Logic (kept as a top-level function so it can be
+    // called again right after a re-render)
+    function filterTable() {
+      const searchInput = document.getElementById('searchInput');
+      const categoryFilter = document.getElementById('categoryFilter');
+      const query = searchInput.value.toLowerCase();
+      const category = categoryFilter.value;
+      const rows = document.querySelectorAll('#inventoryTableBody tr');
+
+      rows.forEach(row => {
+        const name = row.cells[0].textContent.toLowerCase();
+        const rowCategory = row.cells[1].textContent;
+
+        const matchesSearch = name.includes(query);
+        const matchesCategory = (category === 'All' || rowCategory === category);
+
+        row.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
+      });
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
+      if (!currentAdmin) return; // already redirecting to login
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        clearSession();
+      });
+
       // Mobile Drawer Toggle
       const menuToggle = document.getElementById('menuToggle');
       const navContainer = document.getElementById('navContainer');
       menuToggle.addEventListener('click', () => {
         navContainer.classList.toggle('open');
       });
+
+      renderInventory();
 
       // Stock Add/Edit Modal Controls
       const stockModal = document.getElementById('stockModal');
@@ -1294,7 +777,7 @@
       const stockForm = document.getElementById('stockForm');
 
       openAddModalBtn.addEventListener('click', () => {
-        activeEditingRow = null;
+        activeEditingId = null;
         modalTitle.textContent = "Add New Material Stock";
         stockForm.reset();
         stockModal.classList.add('open');
@@ -1304,83 +787,40 @@
       closeModalBtn.addEventListener('click', closeModal);
       cancelModalBtn.addEventListener('click', closeModal);
 
-      // Submit Form Logic
+      // Submit Form Logic -> always writes through to localStorage
       stockForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const name = document.getElementById('materialName').value.trim();
         const category = document.getElementById('materialCategory').value;
         const stock = parseInt(document.getElementById('stockQuantity').value);
         const unit = document.getElementById('unitMeasure').value;
         const minThreshold = parseInt(document.getElementById('minThreshold').value);
-
-        let statusBadge = '<span class="status-badge in-stock">In Stock</span>';
-        if (stock === 0) {
-          statusBadge = '<span class="status-badge out-stock">Out of Stock</span>';
-        } else if (stock <= minThreshold) {
-          statusBadge = '<span class="status-badge low-stock">Low Stock</span>';
-        }
-
+        const status = computeStatus(stock, minThreshold);
         const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-        if (activeEditingRow) {
-          // UPDATE EXISTING ROW
-          activeEditingRow.cells[0].textContent = name;
-          activeEditingRow.cells[1].textContent = category;
-          activeEditingRow.cells[2].textContent = stock;
-          activeEditingRow.cells[3].textContent = unit;
-          activeEditingRow.cells[4].textContent = minThreshold;
-          activeEditingRow.cells[5].innerHTML = statusBadge;
-          activeEditingRow.cells[6].textContent = today;
+        const items = getInventory();
+
+        if (activeEditingId !== null) {
+          // UPDATE EXISTING ITEM
+          const idx = items.findIndex(i => i.id === activeEditingId);
+          if (idx !== -1) {
+            items[idx] = { ...items[idx], name, category, stock, unit, minThreshold, status, updated: today };
+          }
         } else {
-          // ADD NEW ROW
-          const tbody = document.getElementById('inventoryTableBody');
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${name}</td>
-            <td>${category}</td>
-            <td>${stock}</td>
-            <td>${unit}</td>
-            <td>${minThreshold}</td>
-            <td>${statusBadge}</td>
-            <td>${today}</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                </button>
-                <button class="btn-icon danger" title="Delete Item" onclick="promptDelete(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.prepend(tr);
+          // ADD NEW ITEM
+          const nextId = items.length ? Math.max(...items.map(i => i.id)) + 1 : 1;
+          items.unshift({ id: nextId, name, category, stock, unit, minThreshold, status, updated: today });
         }
 
+        saveInventory(items);
+        renderInventory();
         closeModal();
       });
 
       // Filter and Search Logic
       const searchInput = document.getElementById('searchInput');
       const categoryFilter = document.getElementById('categoryFilter');
-
-      function filterTable() {
-        const query = searchInput.value.toLowerCase();
-        const category = categoryFilter.value;
-        const rows = document.querySelectorAll('#inventoryTableBody tr');
-
-        rows.forEach(row => {
-          const name = row.cells[0].textContent.toLowerCase();
-          const rowCategory = row.cells[1].textContent;
-
-          const matchesSearch = name.includes(query);
-          const matchesCategory = (category === 'All' || rowCategory === category);
-
-          row.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
-        });
-      }
-
       searchInput.addEventListener('input', filterTable);
       categoryFilter.addEventListener('change', filterTable);
 
@@ -1395,29 +835,30 @@
       cancelDeleteBtn.addEventListener('click', closeDeleteModal);
 
       confirmDeleteBtn.addEventListener('click', () => {
-        if (window.rowToDelete) {
-          window.rowToDelete.remove();
-          window.rowToDelete = null;
+        if (window.idToDelete !== null && window.idToDelete !== undefined) {
+          const items = getInventory().filter(i => i.id !== window.idToDelete);
+          saveInventory(items);
+          renderInventory();
+          window.idToDelete = null;
         }
         closeDeleteModal();
       });
     });
 
     function openEditModal(btn) {
-      activeEditingRow = btn.closest('tr');
+      const row = btn.closest('tr');
+      const id = parseInt(row.dataset.id);
+      const item = getInventory().find(i => i.id === id);
+      if (!item) return;
 
-      const name = activeEditingRow.cells[0].textContent.trim();
-      const category = activeEditingRow.cells[1].textContent.trim();
-      const stock = activeEditingRow.cells[2].textContent.trim();
-      const unit = activeEditingRow.cells[3].textContent.trim();
-      const minThreshold = activeEditingRow.cells[4].textContent.trim();
+      activeEditingId = id;
 
       document.getElementById('modalTitle').textContent = "Update Material Stock";
-      document.getElementById('materialName').value = name;
-      document.getElementById('materialCategory').value = category;
-      document.getElementById('stockQuantity').value = stock;
-      document.getElementById('unitMeasure').value = unit;
-      document.getElementById('minThreshold').value = minThreshold;
+      document.getElementById('materialName').value = item.name;
+      document.getElementById('materialCategory').value = item.category;
+      document.getElementById('stockQuantity').value = item.stock;
+      document.getElementById('unitMeasure').value = item.unit;
+      document.getElementById('minThreshold').value = item.minThreshold;
 
       document.getElementById('stockModal').classList.add('open');
     }
@@ -1425,10 +866,11 @@
     function promptDelete(btn) {
       const deleteModal = document.getElementById('deleteModal');
       const row = btn.closest('tr');
-      const itemName = row.cells[0].textContent.trim();
+      const id = parseInt(row.dataset.id);
+      const item = getInventory().find(i => i.id === id);
 
-      document.getElementById('deleteItemName').textContent = `'${itemName}'`;
-      window.rowToDelete = row;
+      document.getElementById('deleteItemName').textContent = item ? `'${item.name}'` : '';
+      window.idToDelete = id;
       deleteModal.classList.add('open');
     }
   </script>

@@ -189,8 +189,8 @@ body{
 
 <script>
 function getActiveUserKey() {
-    const session = JSON.parse(localStorage.getItem('km_session') || '{}');
-    return session.username || sessionStorage.getItem('activeUser') || 'guest';
+    const session = JSON.parse(sessionStorage.getItem('km_session') || '{}');
+    return session.id || session.email || sessionStorage.getItem('activeUser') || 'guest';
 }
 
 function fetchCart() {
@@ -304,6 +304,7 @@ function renderCart() {
                             <input type="text" value="${qty}" readonly>
                             <button onclick="changeQty(${index}, 1)">+</button>
                         </div>
+                        ${item.customState ? `<button class="edit-btn" onclick="editItem(${index})"><i class="fa-solid fa-pen"></i> Edit Customization</button>` : ''}
                         <button class="edit-btn" onclick="removeItem(${index})"><i class="fa-solid fa-trash"></i> Remove</button>
                     </div>
                     <div class="cart-item-price">₱${itemTotal.toFixed(2)}</div>
@@ -328,6 +329,13 @@ function changeQty(index, delta) {
     }
     persistCart(cart);
     renderCart();
+}
+
+function editItem(index) {
+    const cart = fetchCart();
+    const item = cart[index];
+    if (!item || !item.customState || !item.customState.type) return;
+    window.location.href = `customizePage.html?type=${encodeURIComponent(item.customState.type)}&editId=${index}`;
 }
 
 function removeItem(index) {

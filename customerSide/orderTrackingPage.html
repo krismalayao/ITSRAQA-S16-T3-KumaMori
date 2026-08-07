@@ -177,6 +177,26 @@
 
         .hidden { display: none !important; }
 
+        .btn-cancel-order {
+            width: 100%;
+            max-width: 550px;
+            background: #ffffff;
+            border: 2px solid #d9534f;
+            color: #d9534f;
+            padding: 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            transition: background 0.2s, color 0.2s;
+            margin-top: 16px;
+        }
+        .btn-cancel-order:hover {
+            background: #d9534f;
+            color: #ffffff;
+        }
+
         /* Mobile Responsiveness Media Query */
         @media (max-width: 850px) {
             .page-title { font-size: 2rem; margin: 20px 0 10px 0; }
@@ -266,6 +286,8 @@
                         <span id="order-total-price">₱0.00</span>
                     </div>
                 </div>
+
+                <button id="cancel-order-btn" class="btn-cancel-order" style="display:none;">Cancel Order</button>
             </main>
         </div>
 
@@ -283,8 +305,8 @@
     <script>
     const STATUS_MAP = {
         "Pending": 1,
-        "Order Confirmed": 2,
-        "Packed & Processed": 3,
+        "Confirmed": 2,
+        "Packed": 3,
         "Shipped": 4,
         "Delivered": 5
     };
@@ -294,7 +316,7 @@
         if (typeof getUserOrders === 'function') {
             rawOrders = getUserOrders();
         } else {
-            const session = JSON.parse(localStorage.getItem('km_session') || '{}');
+            const session = JSON.parse(sessionStorage.getItem('km_session') || '{}');
             const userId = session.id || session.email || 'guest';
             rawOrders = JSON.parse(localStorage.getItem(`km_orders_${userId}`) || '[]');
         }
@@ -358,28 +380,49 @@
     function loadOrderDetails(order) {
         document.getElementById('target-order-id').innerText = order.id || order.orderId;
 
-        const currentStep = STATUS_MAP[order.status] || 1;
+        const timelineContainer = document.getElementById('timeline-container');
         const steps = document.querySelectorAll('.timeline-step');
-        
-        steps.forEach(step => {
-            const stepNum = parseInt(step.dataset.step, 10);
-            step.classList.remove('completed', 'active');
-            if (stepNum < currentStep) {
-                step.classList.add('completed');
-            } else if (stepNum === currentStep) {
-                step.classList.add('active');
-            }
-        });
+
+        if (order.status === 'Cancelled') {
+            // Cancelled orders don't progress through the normal stages -
+            // clear all highlighting and show a simple cancelled notice instead.
+            steps.forEach(step => step.classList.remove('completed', 'active'));
+            timelineContainer.insertAdjacentHTML('afterbegin',
+                '<p id="cancelled-notice" style="color:#d9534f; font-weight:700; margin-bottom:10px;">This order was cancelled.</p>');
+        } else {
+            const existingNotice = document.getElementById('cancelled-notice');
+            if (existingNotice) existingNotice.remove();
+
+            const currentStep = STATUS_MAP[order.status] || 1;
+            steps.forEach(step => {
+                const stepNum = parseInt(step.dataset.step, 10);
+                step.classList.remove('completed', 'active');
+                if (stepNum < currentStep) {
+                    step.classList.add('completed');
+                } else if (stepNum === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+        }
 
         const itemsContainer = document.getElementById('order-items-list');
         if (order.items && Array.isArray(order.items)) {
             itemsContainer.innerHTML = order.items.map(item => {
                 const qty = item.qty || item.quantity || 1;
                 const price = parseFloat(item.price) || 0;
+
+                const customizations = Array.isArray(item.customizations) ? item.customizations : [];
+                const customHTML = customizations.length > 0
+                    ? `<div style="font-size:0.85rem; color:#8c6b54; margin:2px 0 8px 0; line-height:1.4;">${customizations.join(' &bull; ')}</div>`
+                    : '';
+
                 return `
-                    <div class="item-row">
-                        <span>${qty}x ${item.name}</span>
-                        <span>₱${(price * qty).toFixed(2)}</span>
+                    <div class="item-row" style="flex-direction:column; align-items:stretch;">
+                        <div style="display:flex; justify-content:space-between; gap:15px;">
+                            <span>${qty}x ${item.name}</span>
+                            <span>₱${(price * qty).toFixed(2)}</span>
+                        </div>
+                        ${customHTML}
                     </div>
                 `;
             }).join('');
@@ -389,6 +432,43 @@
 
         const displayTotal = typeof order.total === 'number' ? `₱${order.total.toFixed(2)}` : (order.total || '₱0.00');
         document.getElementById('order-total-price').innerText = displayTotal;
+
+        // Cancel Order is only allowed while the order hasn't started being
+        // prepared yet - once it's Packed/Shipped/Delivered (or already
+        // Cancelled), there's nothing left to cancel.
+        const cancelBtn = document.getElementById('cancel-order-btn');
+        const cancellableStatuses = ['Pending', 'Confirmed'];
+        if (cancellableStatuses.includes(order.status)) {
+            cancelBtn.style.display = 'block';
+            cancelBtn.onclick = () => cancelOrder(order.id || order.orderId);
+        } else {
+            cancelBtn.style.display = 'none';
+        }
+    }
+
+    function cancelOrder(orderId) {
+        if (!window.confirm('Cancel this order? This cannot be undone.')) return;
+
+        let orders, persist;
+        if (typeof getUserOrders === 'function' && typeof saveUserOrders === 'function') {
+            orders = getUserOrders();
+            persist = (list) => saveUserOrders(list);
+        } else {
+            const session = JSON.parse(sessionStorage.getItem('km_session') || '{}');
+            const userId = session.id || session.email || 'guest';
+            orders = JSON.parse(localStorage.getItem(`km_orders_${userId}`) || '[]');
+            persist = (list) => localStorage.setItem(`km_orders_${userId}`, JSON.stringify(list));
+        }
+
+        const index = orders.findIndex(o => (o.id || o.orderId) === orderId);
+        if (index === -1) return;
+
+        orders[index].status = 'Cancelled';
+        persist(orders);
+
+        // Refresh the whole view so the sidebar list and timeline both
+        // reflect the new status immediately.
+        location.reload();
     }
 </script>
 </body>

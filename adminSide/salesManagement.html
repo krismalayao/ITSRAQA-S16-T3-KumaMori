@@ -545,7 +545,7 @@
       </ul>
 
       <ul class="nav-menu" style="margin-top: 15px;">
-        <li class="nav-item"><a href="../publicPages/loginPage.html" class="logout-btn">Log Out</a></li>
+        <li class="nav-item"><a href="../publicPages/loginPage.html" class="logout-btn" id="logoutBtn">Log Out</a></li>
       </ul>
     </div>
   </aside>
@@ -573,7 +573,6 @@
         <option value="All">All Payments</option>
         <option value="GCash">GCash</option>
         <option value="COD">COD</option>
-        <option value="BDO">BDO</option>
       </select>
       <select id="deliveryFilter" class="filter-select">
         <option value="All">All Delivery</option>
@@ -592,144 +591,12 @@
             <th>Product</th>
             <th>Total</th>
             <th>Payment</th>
+            <th>Delivery</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody id="salesTableBody">
-          
-          <!-- Order 1 -->
-          <tr data-order-id="K071626"
-              data-customer="Kris Malayao"
-              data-email="kris@example.com"
-              data-address="Taft Ave, Malate, Manila City"
-              data-product="Plush Bear (x1)"
-              data-payment="GCash"
-              data-ref="0924-7718-26"
-              data-delivery="Delivery"
-              data-shipping="PHP 50.00"
-              data-total="PHP 699.00"
-              data-status="Pending"
-              data-customs='[{"category":"None", "name":"No customizations applied", "cost":"PHP 0.00"}]'>
-            <td>K071626</td>
-            <td>Kris M.</td>
-            <td>Plush Bear</td>
-            <td>PHP 699.00</td>
-            <td>GCash</td>
-            <td><span class="status-badge Pending">Pending</span></td>
-            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
-          </tr>
-
-          <!-- Order 2 -->
-          <tr data-order-id="K071627"
-              data-customer="Klein V."
-              data-email="klein@example.com"
-              data-address="Diliman, Quezon City"
-              data-product="Leather Strap (x1)"
-              data-payment="GCash"
-              data-ref="0811-9923-11"
-              data-delivery="Delivery"
-              data-shipping="PHP 50.00"
-              data-total="PHP 145.00"
-              data-status="Confirmed"
-              data-customs='[{"category":"Letter", "name":"Initials: K.V.", "cost":"PHP 20.00"}, {"category":"Charm", "name":"Star Charm", "cost":"PHP 15.00"}]'>
-            <td>K071627</td>
-            <td>Klein V.</td>
-            <td>Leather Strap</td>
-            <td>PHP 145.00</td>
-            <td>GCash</td>
-            <td><span class="status-badge Confirmed">Confirmed</span></td>
-            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
-          </tr>
-
-          <!-- Order 3 -->
-          <tr data-order-id="K071628"
-              data-customer="Casey G."
-              data-email="casey@example.com"
-              data-address="Poblacion, Makati City"
-              data-product="Beaded Strap (x1)"
-              data-payment="GCash"
-              data-ref="0722-1102-44"
-              data-delivery="Pickup"
-              data-shipping="PHP 0.00"
-              data-total="PHP 140.00"
-              data-status="Packed"
-              data-customs='[{"category":"Spacer", "name":"Gold Spacers x2", "cost":"PHP 10.00"}]'>
-            <td>K071628</td>
-            <td>Casey G.</td>
-            <td>Beaded Strap</td>
-            <td>PHP 140.00</td>
-            <td>GCash</td>
-            <td><span class="status-badge Packed">Packed</span></td>
-            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
-          </tr>
-
-          <!-- Order 4 -->
-          <tr data-order-id="K071629"
-              data-customer="Andrea L."
-              data-email="andrea@example.com"
-              data-address="Kapitolyo, Pasig City"
-              data-product="Charm Keyring (x1)"
-              data-payment="GCash"
-              data-ref="0988-3341-99"
-              data-delivery="Delivery"
-              data-shipping="PHP 50.00"
-              data-total="PHP 110.00"
-              data-status="Cancelled"
-              data-customs='[{"category":"Figurine", "name":"Mini Bear Figurine", "cost":"PHP 30.00"}]'>
-            <td>K071629</td>
-            <td>Andrea L.</td>
-            <td>Charm Keyring</td>
-            <td>PHP 110.00</td>
-            <td>GCash</td>
-            <td><span class="status-badge Cancelled">Cancelled</span></td>
-            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
-          </tr>
-
-          <!-- Order 5 -->
-          <tr data-order-id="K071630"
-              data-customer="Marco Santos"
-              data-email="marco.s@gmail.com"
-              data-address="Alabang, Muntinlupa City"
-              data-product="Custom Plush Bear (x2)"
-              data-payment="BDO"
-              data-ref="BDO-8839201"
-              data-delivery="Delivery"
-              data-shipping="PHP 60.00"
-              data-total="PHP 1,350.00"
-              data-status="Shipped"
-              data-customs='[{"category":"Letter", "name":"Letter Tag: M&S", "cost":"PHP 25.00"}, {"category":"Charm", "name":"Heart Charm", "cost":"PHP 15.00"}]'>
-            <td>K071630</td>
-            <td>Marco S.</td>
-            <td>Plush Bear (x2)</td>
-            <td>PHP 1,350.00</td>
-            <td>BDO</td>
-            <td><span class="status-badge Shipped">Shipped</span></td>
-            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
-          </tr>
-
-          <!-- Order 6 -->
-          <tr data-order-id="K071631"
-              data-customer="Samantha Reyes"
-              data-email="sam.reyes@yahoo.com"
-              data-address="BGC, Taguig City"
-              data-product="Beaded Strap (x1)"
-              data-payment="COD"
-              data-ref="N/A (Cash on Delivery)"
-              data-delivery="Delivery"
-              data-shipping="PHP 50.00"
-              data-total="PHP 220.00"
-              data-status="Pending"
-              data-customs='[{"category":"Figurine", "name":"Bunny Figurine", "cost":"PHP 35.00"}, {"category":"Spacer", "name":"Pearl Spacer x4", "cost":"PHP 20.00"}]'>
-            <td>K071631</td>
-            <td>Samantha R.</td>
-            <td>Beaded Strap</td>
-            <td>PHP 220.00</td>
-            <td>COD</td>
-            <td><span class="status-badge Pending">Pending</span></td>
-            <td><button class="btn-view" onclick="openOrderModal(this)">View</button></td>
-          </tr>
-
         </tbody>
       </table>
     </div>
@@ -774,20 +641,69 @@
         </div>
       </div>
 
-      <!-- Actions container (hidden for Confirmed/Packed/Shipped/Delivered/Cancelled) -->
+      <!-- Status control: lets the admin move an order to any tracking stage -->
       <div class="modal-actions" id="modalActionButtons">
-        <button type="button" class="btn-approve" id="approveOrderBtn">Approve Order</button>
-        <button type="button" class="btn-cancel-order" id="cancelOrderBtn">Cancel Order</button>
+        <select id="statusSelect" class="filter-select" style="flex:1;">
+          <option value="Pending">Pending</option>
+          <option value="Confirmed">Confirmed</option>
+          <option value="Packed">Packed</option>
+          <option value="Shipped">Shipped</option>
+          <option value="Delivered">Delivered</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+        <button type="button" class="btn-approve" id="updateStatusBtn" style="flex:none; padding:10px 24px;">Update Status</button>
       </div>
     </div>
   </div>
 
   <!-- Interactive Scripts -->
+  <script src="../auth.js"></script>
   <script>
-    let activeSelectedRow = null;
+    const currentAdmin = requireAdmin();
+    let activeOrderId = null; // order currently open in the detail modal
     let activePillFilter = 'All';
 
+    function statusBadgeHtml(status) {
+      return `<span class="status-badge ${status}">${status}</span>`;
+    }
+
+    // Builds one table row's worth of cells from an order record
+    function orderRowHtml(order) {
+      const productSummary = (order.items || [])
+        .map(i => `${i.name} (x${i.qty})`)
+        .join(', ');
+      const totalNum = typeof order.total === 'number' ? order.total : parseFloat(order.total) || 0;
+
+      return `
+        <tr data-order-id="${order.id}">
+          <td>${order.id}</td>
+          <td>${order.customerName || 'Guest'}</td>
+          <td>${productSummary || '—'}</td>
+          <td>PHP ${totalNum.toFixed(2)}</td>
+          <td>${order.paymentMethod || '—'}</td>
+          <td>${order.deliveryMethod || '—'}</td>
+          <td>${statusBadgeHtml(order.status || 'Pending')}</td>
+          <td><button class="btn-view" onclick="openOrderModal('${order.id}')">View</button></td>
+        </tr>
+      `;
+    }
+
+    // Rebuilds the whole table from whatever is currently saved across
+    // every customer's order list (see getAllOrders() in auth.js)
+    function renderSales() {
+      const orders = getAllOrders();
+      const tbody = document.getElementById('salesTableBody');
+      tbody.innerHTML = orders.map(orderRowHtml).join('');
+      applyFilters();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      if (!currentAdmin) return; // already redirecting to login
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        clearSession();
+      });
+
       // Mobile Drawer Toggle
       const menuToggle = document.getElementById('menuToggle');
       const navContainer = document.getElementById('navContainer');
@@ -795,29 +711,23 @@
         navContainer.classList.toggle('open');
       });
 
+      renderSales();
+
       // Modal Elements
       const orderModal = document.getElementById('orderModal');
       const closeModalBtn = document.getElementById('closeModalBtn');
-      const approveOrderBtn = document.getElementById('approveOrderBtn');
-      const cancelOrderBtn = document.getElementById('cancelOrderBtn');
+      const updateStatusBtn = document.getElementById('updateStatusBtn');
 
       const closeModal = () => orderModal.classList.remove('open');
       closeModalBtn.addEventListener('click', closeModal);
 
-      // Approve Action
-      approveOrderBtn.addEventListener('click', () => {
-        if (activeSelectedRow) {
-          updateOrderStatus(activeSelectedRow, 'Confirmed');
-          closeModal();
-        }
-      });
-
-      // Cancel Action
-      cancelOrderBtn.addEventListener('click', () => {
-        if (activeSelectedRow) {
-          updateOrderStatus(activeSelectedRow, 'Cancelled');
-          closeModal();
-        }
+      // Status update -> writes straight through to localStorage via auth.js
+      updateStatusBtn.addEventListener('click', () => {
+        if (!activeOrderId) return;
+        const newStatus = document.getElementById('statusSelect').value;
+        updateOrderStatus(activeOrderId, newStatus); // from auth.js
+        renderSales();
+        closeModal();
       });
 
       // Search and Filter Listeners
@@ -831,54 +741,55 @@
     });
 
     // Populate and Open Order Detail Modal
-    function openOrderModal(btn) {
-      activeSelectedRow = btn.closest('tr');
-      const data = activeSelectedRow.dataset;
+    function openOrderModal(orderId) {
+      const order = getAllOrders().find(o => o.id === orderId);
+      if (!order) return;
 
-      document.getElementById('modalOrderId').textContent = `Order #${data.orderId}`;
-      document.getElementById('modalCustomerName').textContent = `${data.customer} (${data.email})`;
-      document.getElementById('modalCustomerAddress').textContent = `Delivery Address: ${data.address}`;
-      document.getElementById('modalProduct').textContent = `${data.product} — Total: ${data.total}`;
-      document.getElementById('modalPayment').textContent = `${data.payment} (Ref: ${data.ref})`;
-      document.getElementById('modalShipping').textContent = `Method: ${data.delivery} | Fee: ${data.shipping}`;
+      activeOrderId = orderId;
 
-      // Status Badge Update
+      document.getElementById('modalOrderId').textContent = `Order #${order.id}`;
+      document.getElementById('modalCustomerName').textContent = `${order.customerName || 'Guest'}${order.customerEmail ? ' (' + order.customerEmail + ')' : ''}`;
+      document.getElementById('modalCustomerAddress').textContent = `${order.deliveryMethod === 'Pickup' ? 'Pickup Location' : 'Delivery Address'}: ${order.address || '—'}`;
+
+      const totalNum = typeof order.total === 'number' ? order.total : parseFloat(order.total) || 0;
+      const productSummary = (order.items || []).map(i => `${i.name} (x${i.qty})`).join(', ');
+      document.getElementById('modalProduct').textContent = `${productSummary || '—'} — Total: PHP ${totalNum.toFixed(2)}`;
+
+      document.getElementById('modalPayment').textContent = `Payment: ${order.paymentMethod || '—'} (Ref: ${order.paymentRef || 'N/A'})`;
+      const feeNum = typeof order.deliveryFee === 'number' ? order.deliveryFee : parseFloat(order.deliveryFee) || 0;
+      document.getElementById('modalShipping').textContent = `Delivery: ${order.deliveryMethod || '—'} | Fee: PHP ${feeNum.toFixed(2)}`;
+
+      // Status Badge + Dropdown
       const badge = document.getElementById('modalStatusBadge');
-      badge.className = `status-badge ${data.status}`;
-      badge.textContent = data.status;
+      badge.className = `status-badge ${order.status}`;
+      badge.textContent = order.status;
+      document.getElementById('statusSelect').value = order.status;
 
-      // Customizations Parser
+      // Customizations — one block per item, listing that item's edits
       const customBox = document.getElementById('modalCustomizations');
       customBox.innerHTML = '';
-      try {
-        const customs = JSON.parse(data.customs);
-        customs.forEach(c => {
-          const itemDiv = document.createElement('div');
-          itemDiv.className = 'custom-item';
-          itemDiv.innerHTML = `<span><strong>[${c.category}]</strong> ${c.name}</span><span>+${c.cost}</span>`;
-          customBox.appendChild(itemDiv);
-        });
-      } catch (e) {
-        customBox.innerHTML = '<div class="custom-item">No customization details found.</div>';
-      }
+      const itemsWithCustoms = (order.items || []).filter(i => Array.isArray(i.customizations) && i.customizations.length > 0);
 
-      // Hide Action Buttons if order is Confirmed, Cancelled, Packed, Shipped, or Delivered
-      const actionContainer = document.getElementById('modalActionButtons');
-      if (data.status === 'Pending') {
-        actionContainer.style.display = 'flex';
+      if (itemsWithCustoms.length === 0) {
+        customBox.innerHTML = '<div class="custom-item">No customizations for this order.</div>';
       } else {
-        actionContainer.style.display = 'none';
+        itemsWithCustoms.forEach(item => {
+          const heading = document.createElement('div');
+          heading.className = 'custom-item';
+          heading.innerHTML = `<span><strong>${item.name}</strong></span>`;
+          customBox.appendChild(heading);
+
+          item.customizations.forEach(edit => {
+            const line = document.createElement('div');
+            line.className = 'custom-item';
+            line.style.paddingLeft = '12px';
+            line.innerHTML = `<span>• ${edit}</span>`;
+            customBox.appendChild(line);
+          });
+        });
       }
 
       document.getElementById('orderModal').classList.add('open');
-    }
-
-    // Dynamic Status Update
-    function updateOrderStatus(row, newStatus) {
-      row.dataset.status = newStatus;
-      const statusTd = row.cells[5];
-      statusTd.innerHTML = `<span class="status-badge ${newStatus}">${newStatus}</span>`;
-      applyFilters();
     }
 
     // Pill Filtering Logic
@@ -897,12 +808,13 @@
       const rows = document.querySelectorAll('#salesTableBody tr');
 
       rows.forEach(row => {
-        const orderId = row.dataset.orderId.toLowerCase();
-        const customer = row.dataset.customer.toLowerCase();
-        const product = row.dataset.product.toLowerCase();
-        const status = row.dataset.status;
-        const payment = row.dataset.payment;
-        const delivery = row.dataset.delivery;
+        const cells = row.cells;
+        const orderId = cells[0].textContent.toLowerCase();
+        const customer = cells[1].textContent.toLowerCase();
+        const product = cells[2].textContent.toLowerCase();
+        const payment = cells[4].textContent.trim();
+        const delivery = cells[5].textContent.trim();
+        const status = cells[6].textContent.trim();
 
         const matchesSearch = orderId.includes(query) || customer.includes(query) || product.includes(query);
         const matchesPill = (activePillFilter === 'All' || status === activePillFilter);

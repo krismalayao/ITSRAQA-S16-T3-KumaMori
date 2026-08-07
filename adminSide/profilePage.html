@@ -468,7 +468,7 @@
       </ul>
 
       <ul class="nav-menu" style="margin-top: 15px;">
-        <li class="nav-item"><a href="../publicPages/loginPage.html" class="logout-btn">Log Out</a></li>
+        <li class="nav-item"><a href="../publicPages/loginPage.html" class="logout-btn" id="logoutBtn">Log Out</a></li>
       </ul>
     </div>
   </aside>
@@ -595,8 +595,15 @@
   </div>
 
   <!-- Interactive Scripts -->
+  <script src="../auth.js"></script>
   <script>
+    // Must be logged in as an admin to see this page. requireAdmin() also
+    // redirects to login and returns null if there's no valid session.
+    const currentAdmin = requireAdmin();
+
     document.addEventListener('DOMContentLoaded', () => {
+      if (!currentAdmin) return; // already redirecting
+
       // Mobile Navigation Drawer Toggle
       const menuToggle = document.getElementById('menuToggle');
       const navContainer = document.getElementById('navContainer');
@@ -604,38 +611,72 @@
         navContainer.classList.toggle('open');
       });
 
+      // Log out clears the session before leaving the page
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        clearSession();
+      });
+
+      // Populate the page with the actual logged-in admin's details
+      renderAdminDetails(currentAdmin);
+
       // Handle Edit Profile Submission
       document.getElementById('editProfileForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        const newName = document.getElementById('editName').value;
-        const newEmail = document.getElementById('editEmail').value;
-        const newPhone = document.getElementById('editPhone').value;
 
-        document.getElementById('displayFullName').textContent = newName;
-        document.getElementById('infoName').textContent = newName;
-        document.getElementById('infoEmail').textContent = newEmail;
-        document.getElementById('infoPhone').textContent = newPhone;
+        const newName = document.getElementById('editName').value.trim();
+        const newEmail = document.getElementById('editEmail').value.trim();
+        const newPhone = document.getElementById('editPhone').value.trim();
 
+        // Prevent switching to an email another account already uses
+        const users = getUsers();
+        const emailTaken = users.some(
+          u => u.id !== currentAdmin.id && u.email.toLowerCase() === newEmail.toLowerCase()
+        );
+        if (emailTaken) {
+          alert("That email is already in use by another account.");
+          return;
+        }
+
+        const updated = updateUser(currentAdmin.id, {
+          name: newName,
+          email: newEmail,
+          contact: newPhone
+        });
+
+        renderAdminDetails(updated);
         closeModal('editProfileModal');
       });
 
       // Handle Password Change Submission
       document.getElementById('changePasswordForm').addEventListener('submit', (e) => {
         e.preventDefault();
+
+        const currentPass = document.getElementById('currentPass').value;
         const newPass = document.getElementById('newPass').value;
         const confirmPass = document.getElementById('confirmPass').value;
+
+        // Re-check against the freshest saved record, not the stale copy in memory
+        const users = getUsers();
+        const freshRecord = users.find(u => u.id === currentAdmin.id);
+
+        if (currentPass !== freshRecord.password) {
+          alert("Current password is incorrect.");
+          return;
+        }
 
         if (newPass !== confirmPass) {
           alert("New password and confirm password do not match.");
           return;
         }
 
+        updateUser(currentAdmin.id, { password: newPass });
+
         alert("Password successfully updated!");
         closeModal('changePasswordModal');
         document.getElementById('changePasswordForm').reset();
       });
 
-      // Handle Photo Upload Preview
+      // Handle Photo Upload -> preview immediately AND persist to the record
       const avatarInput = document.getElementById('avatarFileInput');
       avatarInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
@@ -643,11 +684,21 @@
           const reader = new FileReader();
           reader.onload = (event) => {
             document.getElementById('displayAvatar').src = event.target.result;
+            updateUser(currentAdmin.id, { avatar: event.target.result });
           };
           reader.readAsDataURL(file);
         }
       });
     });
+
+    // Fills every on-page field from a user record
+    function renderAdminDetails(user) {
+      document.getElementById('displayAvatar').src = user.avatar || '../images/noPFP.jpg';
+      document.getElementById('displayFullName').textContent = user.name;
+      document.getElementById('infoName').textContent = user.name;
+      document.getElementById('infoEmail').textContent = user.email;
+      document.getElementById('infoPhone').textContent = user.contact || '—';
+    }
 
     // Helper functions for modals
     function openModal(modalId) {

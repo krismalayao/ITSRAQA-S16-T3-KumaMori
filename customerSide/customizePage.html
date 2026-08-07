@@ -379,14 +379,14 @@ function showToast(msg, isSuccess = false) {
 }
 
 function getActiveUserKey() {
-    const session = JSON.parse(localStorage.getItem('km_session') || '{}');
-    return session.username || sessionStorage.getItem('activeUser') || 'guest';
+    const session = JSON.parse(sessionStorage.getItem('km_session') || '{}');
+    return session.id || session.email || sessionStorage.getItem('activeUser') || 'guest';
 }
 
 function getCart() {
     if (typeof getUserCart === 'function') {
         const userCart = getUserCart();
-        if (userCart && userCart.length > 0) return userCart;
+        if (Array.isArray(userCart)) return userCart;
     }
     const userKey = getActiveUserKey();
     const keyedCart = JSON.parse(localStorage.getItem('kumamori_cart_' + userKey) || '[]');
@@ -514,6 +514,7 @@ function buildSwatchGroup(colors, whiteIndexes = [], perRow = colors.length, mul
             const idx = i + j;
             const div = document.createElement('div');
             div.className = 'swatch' + (whiteIndexes.includes(idx) ? ' white-swatch' : '');
+            div.dataset.index = idx;
 
             if(typeof c === 'object' && c.image){
                 div.classList.add('swatch-image-placeholder');
@@ -546,9 +547,10 @@ function buildSwatchGroup(colors, whiteIndexes = [], perRow = colors.length, mul
 function buildPaletteGroup(rowsOfColors){
     const container = document.createElement('div');
     container.className = 'palette-group';
-    rowsOfColors.forEach(colors => {
+    rowsOfColors.forEach((colors, idx) => {
         const row = document.createElement('div');
         row.className = 'palette-row';
+        row.dataset.index = idx;
         colors.forEach(c => {
             const sw = document.createElement('div');
             sw.className = 'palette-swatch';
@@ -624,6 +626,70 @@ if(config.hasFont){
             this.classList.add('selected');
         });
     });
+}
+
+// Prefill the form from an existing cart item when opened in edit mode
+if (editId !== null) {
+    const editCart = getCart();
+    const editItem = editCart[editId];
+    const state = editItem && editItem.customState;
+
+    if (state) {
+        if (state.letters) {
+            lettersInput.value = state.letters;
+            lettersInput.dispatchEvent(new Event('input'));
+        }
+        if (state.charmMain) {
+            const sel = document.getElementById('charm-select-main');
+            if (sel) sel.value = state.charmMain;
+        }
+        if (state.figurineMain) {
+            const sel = document.getElementById('figurine-select-main');
+            if (sel) sel.value = state.figurineMain;
+        }
+        (state.extraCharms || []).forEach(val => {
+            document.getElementById('add-charm-btn').click();
+            const boxes = document.querySelectorAll('#charm-field-wrap select');
+            boxes[boxes.length - 1].value = val;
+        });
+        (state.extraPendants || []).forEach(val => {
+            const btn = document.getElementById('add-pendant-btn');
+            if (!btn) return;
+            btn.click();
+            const boxes = document.querySelectorAll('#pendant-field-wrap select');
+            boxes[boxes.length - 1].value = val;
+        });
+        (state.extraFigurines || []).forEach(val => {
+            const btn = document.getElementById('add-figurine-btn');
+            if (!btn) return;
+            btn.click();
+            const boxes = document.querySelectorAll('#figurine-field-wrap select');
+            boxes[boxes.length - 1].value = val;
+        });
+        if (state.leatherIndex !== null && state.leatherIndex !== undefined) {
+            document.querySelector(`#group-leather .swatch[data-index="${state.leatherIndex}"]`)?.click();
+        }
+        if (state.letterIndex !== null && state.letterIndex !== undefined) {
+            document.querySelector(`#group-letter .swatch[data-index="${state.letterIndex}"]`)?.click();
+        }
+        (state.beadIndexes || []).forEach(idx => {
+            document.querySelector(`#group-bead .swatch[data-index="${idx}"]`)?.click();
+        });
+        (state.spacerIndexes || []).forEach(idx => {
+            document.querySelector(`#group-spacer .palette-row[data-index="${idx}"]`)?.click();
+        });
+        if (state.moonIndex !== null && state.moonIndex !== undefined) {
+            document.querySelector(`#group-moon .swatch[data-index="${state.moonIndex}"]`)?.click();
+        }
+        if (state.fontStyle) {
+            document.querySelectorAll('.font-style-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.textContent.trim() === state.fontStyle);
+            });
+        }
+    }
+
+    document.getElementById('add-cart-btn').textContent = 'Save Changes';
+    recalcTotal();
 }
 
 function computeTotal(){
@@ -712,12 +778,59 @@ document.getElementById('add-cart-btn').addEventListener('click', () => {
     const selectedLetter = document.querySelector('#group-letter .swatch.selected');
     if(selectedLetter) edits.push(`Letter Color`);
 
+    // Extra charm fields (added via "+ Add another charm"), excluding the main select above
+    document.querySelectorAll('#charm-field-wrap select').forEach(sel => {
+        if (sel.id === 'charm-select-main') return;
+        if (sel.value && sel.value !== 'Select...') edits.push(`Charm: ${sel.value}`);
+    });
+
+    // Pendant fields (leather keychain only, purely additive - no "main" pendant select)
+    document.querySelectorAll('#pendant-field-wrap select').forEach(sel => {
+        if (sel.value && sel.value !== 'Select...') edits.push(`Pendant: ${sel.value}`);
+    });
+
+    // Extra figurine fields (added via "+ Add another figurine"), excluding the main select above
+    document.querySelectorAll('#figurine-field-wrap select').forEach(sel => {
+        if (sel.id === 'figurine-select-main') return;
+        if (sel.value && sel.value !== 'Select...') edits.push(`Figurine: ${sel.value}`);
+    });
+
+    // Bead Color (multi-select swatches)
+    const selectedBeads = document.querySelectorAll('#group-bead .swatch.selected');
+    if (selectedBeads.length > 0) edits.push(`Bead Color (${selectedBeads.length} selected)`);
+
+    // Spacers (multi-select palette rows)
+    const selectedSpacers = document.querySelectorAll('#group-spacer .palette-row.selected');
+    if (selectedSpacers.length > 0) edits.push(`Spacers (${selectedSpacers.length} selected)`);
+
+    // Moon Color (single-select swatch)
+    const selectedMoon = document.querySelector('#group-moon .swatch.selected');
+    if (selectedMoon) edits.push('Moon Color');
+
     const newItem = {
         name: config.name,
         price: computeTotal(),
-        qty: 1,
-        edidts: edits,
-        edits: edits
+        qty: (editId !== null && getCart()[editId]) ? (getCart()[editId].qty || 1) : 1,
+        edits: edits,
+        // Structured selection state, so re-opening this item for editing can
+        // restore exactly what was picked - `edits` above is just for display.
+        customState: {
+            type: type,
+            letters: lettersInput.value.trim(),
+            charmMain: config.hasCharm ? document.getElementById('charm-select-main').value : null,
+            figurineMain: config.hasFigurine ? document.getElementById('figurine-select-main').value : null,
+            extraCharms: Array.from(document.querySelectorAll('#charm-field-wrap select'))
+                .filter(sel => sel.id !== 'charm-select-main').map(sel => sel.value),
+            extraPendants: Array.from(document.querySelectorAll('#pendant-field-wrap select')).map(sel => sel.value),
+            extraFigurines: Array.from(document.querySelectorAll('#figurine-field-wrap select'))
+                .filter(sel => sel.id !== 'figurine-select-main').map(sel => sel.value),
+            leatherIndex: (() => { const s = document.querySelector('#group-leather .swatch.selected'); return s ? parseInt(s.dataset.index, 10) : null; })(),
+            letterIndex: (() => { const s = document.querySelector('#group-letter .swatch.selected'); return s ? parseInt(s.dataset.index, 10) : null; })(),
+            beadIndexes: Array.from(document.querySelectorAll('#group-bead .swatch.selected')).map(s => parseInt(s.dataset.index, 10)),
+            spacerIndexes: Array.from(document.querySelectorAll('#group-spacer .palette-row.selected')).map(r => parseInt(r.dataset.index, 10)),
+            moonIndex: (() => { const s = document.querySelector('#group-moon .swatch.selected'); return s ? parseInt(s.dataset.index, 10) : null; })(),
+            fontStyle: (() => { const b = document.querySelector('.font-style-btn.selected'); return b ? b.textContent.trim() : null; })()
+        }
     };
 
     const cart = getCart();
@@ -728,10 +841,10 @@ document.getElementById('add-cart-btn').addEventListener('click', () => {
     }
 
     saveCart(cart);
-    showToast("Successfully added to cart!", true);
+    showToast(editId !== null ? "Changes saved!" : "Successfully added to cart!", true);
 
     setTimeout(() => {
-        window.location.href = 'cartPage.html';
+        window.location.href = 'productsPage.html';
     }, 1200);
 });
 </script>

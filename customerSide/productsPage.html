@@ -228,67 +228,15 @@ body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
 
 <script>window.CURRENT_PAGE = 'product';</script>
 <script src="navigationBar.js"></script>
+<script src="../auth.js"></script>
 
 <div class="page-wrap">
 
     <h1 class="page-title">Products</h1>
     <div class="title-divider"></div>
 
-    <div class="product-card">
-        <span class="badge">Bestseller</span>
-        <div class="product-img">
-            <img src="../images/bear.png" alt="PLACEHOLDER: Plush Bear Self-Defense Keychain">
-        </div>
-        <div class="product-info">
-            <div class="product-top">
-                <h2>Plush Bear Self-Defense Keychain</h2>
-                <span class="product-price">699.00 PHP</span>
-            </div>
-            <p>A plush companion with a hidden self-defense tool, combining comfort, style, and everyday protection.</p>
-            <button class="btn-brown" id="add-bear-btn"><i class="fa-solid fa-cart-plus"></i> Add To Cart</button>
-        </div>
-    </div>
-
-    <div class="product-card">
-        <div class="product-img">
-            <img src="../images/leather.png" alt="PLACEHOLDER: Leather Keychain">
-        </div>
-        <div class="product-info">
-            <div class="product-top">
-                <h2>Leather Keychain</h2>
-                <span class="product-price">145.00 PHP</span>
-            </div>
-            <p>Create a personalized leather keychain with your name, favorite colors, and charms for a timeless everyday accessory.</p>
-            <button class="btn-brown" onclick="window.location.href='customizePage.html?type=leather'"><i class="fa-solid fa-wand-magic-sparkles"></i> Customize</button>
-        </div>
-    </div>
-
-    <div class="product-card">
-        <div class="product-img">
-            <img src="../images/beaded.png" alt="PLACEHOLDER: Beaded Keychain">
-        </div>
-        <div class="product-info">
-            <div class="product-top">
-                <h2>Beaded Keychain</h2>
-                <span class="product-price">140.00 PHP</span>
-            </div>
-            <p>Express your personality with colorful beads, custom names, and unique designs made to match your style.</p>
-            <button class="btn-brown" onclick="window.location.href='customizePage.html?type=beaded'"><i class="fa-solid fa-wand-magic-sparkles"></i> Customize</button>
-        </div>
-    </div>
-
-    <div class="product-card">
-        <div class="product-img">
-            <img src="../images/charm.png" alt="PLACEHOLDER: Charm Keychain">
-        </div>
-        <div class="product-info">
-            <div class="product-top">
-                <h2>Charm Keychain</h2>
-                <span class="product-price">110.00 PHP</span>
-            </div>
-            <p>Mix and match adorable charms, colors, and accessories to create a one-of-a-kind keychain that's uniquely yours.</p>
-            <button class="btn-brown" onclick="window.location.href='customizePage.html?type=charm'"><i class="fa-solid fa-wand-magic-sparkles"></i> Customize</button>
-        </div>
+    <div id="productsContainer">
+        <!-- Product cards are rendered here from the admin-managed product list (see script below) -->
     </div>
 
 </div>
@@ -303,8 +251,8 @@ body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
 
 <script>
 function getActiveUserKey() {
-    const session = JSON.parse(localStorage.getItem('km_session') || '{}');
-    return session.username || sessionStorage.getItem('activeUser') || 'guest';
+    const session = JSON.parse(sessionStorage.getItem('km_session') || '{}');
+    return session.id || session.email || sessionStorage.getItem('activeUser') || 'guest';
 }
 
 function getCart(){
@@ -354,16 +302,96 @@ function addToCart(product) {
     showToast(`${product.name} added to cart!`);
 }
 
-document.getElementById('add-bear-btn').addEventListener('click', () => {
+// Known product-name keywords map to existing product photos and
+// customizePage.html types, so the original four products keep looking
+// exactly the same. Anything the admin adds beyond those falls back to a
+// generic icon placeholder and a name-based customize type.
+function inferImage(name) {
+    const n = name.toLowerCase();
+    if (n.includes('bear')) return '../images/bear.png';
+    if (n.includes('leather')) return '../images/leather.png';
+    if (n.includes('bead')) return '../images/beaded.png';
+    if (n.includes('charm')) return '../images/charm.png';
+    return null; // no matching photo -> render a placeholder icon instead
+}
+
+function inferCustomizeType(name) {
+    const n = name.toLowerCase();
+    if (n.includes('leather')) return 'leather';
+    if (n.includes('bead')) return 'beaded';
+    if (n.includes('charm')) return 'charm';
+    return n.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'custom';
+}
+
+function productCardHtml(product) {
+    const img = inferImage(product.name);
+    const imgHtml = img
+        ? `<img src="${img}" alt="${product.name}">`
+        : `<i class="fa-solid fa-gift" style="font-size:3rem;color:var(--price);"></i>`;
+
+    const outOfStock = Number(product.stock) <= 0;
+    const badgeHtml = product.name.toLowerCase().includes('bear')
+        ? `<span class="badge">Bestseller</span>`
+        : '';
+
+    const actionBtn = product.custom === 'Yes'
+        ? `<button class="btn-brown" onclick="window.location.href='customizePage.html?type=${inferCustomizeType(product.name)}'">
+             <i class="fa-solid fa-wand-magic-sparkles"></i> Customize
+           </button>`
+        : `<button class="btn-brown" data-action="add-cart" data-id="${product.id}" ${outOfStock ? 'disabled style="opacity:.5;cursor:not-allowed;"' : ''}>
+             <i class="fa-solid fa-cart-plus"></i> ${outOfStock ? 'Out of Stock' : 'Add To Cart'}
+           </button>`;
+
+    return `
+    <div class="product-card">
+        ${badgeHtml}
+        <div class="product-img">
+            ${imgHtml}
+        </div>
+        <div class="product-info">
+            <div class="product-top">
+                <h2>${product.name}</h2>
+                <span class="product-price">${Number(product.price).toFixed(2)} PHP</span>
+            </div>
+            <p>${product.description || ''}</p>
+            ${actionBtn}
+        </div>
+    </div>`;
+}
+
+function renderProductCards() {
+    const container = document.getElementById('productsContainer');
+    const products = getProducts().filter(p => p.visible === 'Shown');
+
+    if (products.length === 0) {
+        container.innerHTML = `<p style="text-align:center;color:var(--text-brown-light);">No products available right now — check back soon!</p>`;
+        return;
+    }
+
+    container.innerHTML = products.map(productCardHtml).join('');
+}
+
+// Event delegation: catches clicks on any "Add To Cart" button, including
+// ones rendered after the page first loads.
+document.getElementById('productsContainer').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action="add-cart"]');
+    if (!btn || btn.disabled) return;
+
+    const products = getProducts();
+    const product = products.find(p => String(p.id) === btn.dataset.id);
+    if (!product) return;
+
     addToCart({
-        id: 'plush-bear',
-        name: 'Plush Bear Self-Defense Keychain',
-        price: 699,
+        id: 'product-' + product.id,
+        name: product.name,
+        price: product.price,
         qty: 1,
         quantity: 1,
         customizable: false
     });
 });
+
+renderProductCards();
 </script>
 
 </body>

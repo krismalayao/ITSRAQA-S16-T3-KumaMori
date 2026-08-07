@@ -565,7 +565,7 @@
       </ul>
 
       <ul class="nav-menu" style="margin-top: 15px;">
-        <li class="nav-item"><a href="../publicPages/loginPage.html" class="logout-btn">Log Out</a></li>
+        <li class="nav-item"><a href="../publicPages/loginPage.html" class="logout-btn" id="logoutBtn">Log Out</a></li>
       </ul>
     </div>
   </aside>
@@ -607,81 +607,6 @@
           </tr>
         </thead>
         <tbody id="productsTableBody">
-          <!-- Row 1 -->
-          <tr data-description="A cute stuffed bear keychain.">
-            <td>Plush Bear</td>
-            <td>PHP 699</td>
-            <td>18</td>
-            <td><span class="visibility-badge shown">Shown</span></td>
-            <td>No</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                </button>
-                <button class="btn-icon danger" title="Remove Item" onclick="promptDelete(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Row 2 -->
-          <tr data-description="Handcrafted real leather strap.">
-            <td>Leather Keychain</td>
-            <td>PHP 145</td>
-            <td>6</td>
-            <td><span class="visibility-badge shown">Shown</span></td>
-            <td>Yes</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                </button>
-                <button class="btn-icon danger" title="Remove Item" onclick="promptDelete(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Row 3 -->
-          <tr data-description="Customizable glass bead accessory.">
-            <td>Beaded Keychain</td>
-            <td>PHP 140</td>
-            <td>22</td>
-            <td><span class="visibility-badge shown">Shown</span></td>
-            <td>Yes</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                </button>
-                <button class="btn-icon danger" title="Remove Item" onclick="promptDelete(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Row 4 -->
-          <tr data-description="Slim leather strap attachment.">
-            <td>Charm Keychain</td>
-            <td>PHP 110</td>
-            <td>3</td>
-            <td><span class="visibility-badge shown">Shown</span></td>
-            <td>Yes</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                </button>
-                <button class="btn-icon danger" title="Remove Item" onclick="promptDelete(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-              </div>
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
@@ -762,16 +687,82 @@
   </div>
 
   <!-- Interactive Scripts -->
+  <script src="../auth.js"></script>
   <script>
-    let activeEditingRow = null;
+    const currentAdmin = requireAdmin();
+    let activeEditingId = null; // id of the product currently being edited, or null when adding
+
+    function visibilityBadgeHtml(visible) {
+      return visible === 'Shown'
+        ? '<span class="visibility-badge shown">Shown</span>'
+        : '<span class="visibility-badge hidden">Hidden</span>';
+    }
+
+    // Rebuilds the whole table body from whatever is currently in localStorage
+    function renderProducts() {
+      const items = getProducts();
+      const tbody = document.getElementById('productsTableBody');
+      tbody.innerHTML = items.map(item => `
+        <tr data-id="${item.id}" data-description="${item.description.replace(/"/g, '&quot;')}">
+          <td>${item.name}</td>
+          <td>PHP ${item.price}</td>
+          <td>${item.stock}</td>
+          <td>${visibilityBadgeHtml(item.visible)}</td>
+          <td>${item.custom}</td>
+          <td>
+            <div class="action-btns">
+              <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              </button>
+              <button class="btn-icon danger" title="Remove Item" onclick="promptDelete(this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      filterTable();
+    }
+
+    // Real-time Search & Filter Functionality (top-level so it can be
+    // re-run right after a re-render)
+    function filterTable() {
+      const searchInput = document.getElementById('searchInput');
+      const customFilter = document.getElementById('customFilter');
+      const visibleFilter = document.getElementById('visibleFilter');
+      const query = searchInput.value.toLowerCase();
+      const customVal = customFilter.value;
+      const visibleVal = visibleFilter.value;
+      const rows = document.querySelectorAll('#productsTableBody tr');
+
+      rows.forEach(row => {
+        const name = row.cells[0].textContent.toLowerCase();
+        const isVisible = row.cells[3].textContent.trim();
+        const isCustom = row.cells[4].textContent.trim();
+
+        const matchesSearch = name.includes(query);
+        const matchesCustom = (customVal === 'All' || isCustom === customVal);
+        const matchesVisible = (visibleVal === 'All' || isVisible === visibleVal);
+
+        row.style.display = (matchesSearch && matchesCustom && matchesVisible) ? '' : 'none';
+      });
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
+      if (!currentAdmin) return; // already redirecting to login
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        clearSession();
+      });
+
       // Mobile Navigation Drawer Toggle
       const menuToggle = document.getElementById('menuToggle');
       const navContainer = document.getElementById('navContainer');
       menuToggle.addEventListener('click', () => {
         navContainer.classList.toggle('open');
       });
+
+      renderProducts();
 
       // Modal Elements
       const productModal = document.getElementById('productModal');
@@ -782,7 +773,7 @@
       const productForm = document.getElementById('productForm');
 
       openAddModalBtn.addEventListener('click', () => {
-        activeEditingRow = null;
+        activeEditingId = null;
         modalTitle.textContent = "Add New Product";
         productForm.reset();
         productModal.classList.add('open');
@@ -792,53 +783,31 @@
       closeModalBtn.addEventListener('click', closeModal);
       cancelModalBtn.addEventListener('click', closeModal);
 
-      // Form Submission Handler
+      // Form Submission Handler -> always writes through to localStorage
       productForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const name = document.getElementById('productName').value.trim();
-        const priceVal = parseFloat(document.getElementById('productPrice').value).toFixed(0);
-        const price = `PHP ${priceVal}`;
-        const stock = document.getElementById('productStock').value;
+        const price = parseInt(parseFloat(document.getElementById('productPrice').value));
+        const stock = parseInt(document.getElementById('productStock').value);
         const description = document.getElementById('productDescription').value.trim();
         const custom = document.getElementById('productCustom').value;
         const visible = document.getElementById('productVisible').value;
 
-        const visibilityBadge = visible === 'Shown' 
-          ? '<span class="visibility-badge shown">Shown</span>' 
-          : '<span class="visibility-badge hidden">Hidden</span>';
+        const items = getProducts();
 
-        if (activeEditingRow) {
-          activeEditingRow.cells[0].textContent = name;
-          activeEditingRow.cells[1].textContent = price;
-          activeEditingRow.cells[2].textContent = stock;
-          activeEditingRow.cells[3].innerHTML = visibilityBadge;
-          activeEditingRow.cells[4].textContent = custom;
-          activeEditingRow.dataset.description = description;
+        if (activeEditingId !== null) {
+          const idx = items.findIndex(i => i.id === activeEditingId);
+          if (idx !== -1) {
+            items[idx] = { ...items[idx], name, price, stock, description, custom, visible };
+          }
         } else {
-          const tbody = document.getElementById('productsTableBody');
-          const tr = document.createElement('tr');
-          tr.dataset.description = description;
-          tr.innerHTML = `
-            <td>${name}</td>
-            <td>${price}</td>
-            <td>${stock}</td>
-            <td>${visibilityBadge}</td>
-            <td>${custom}</td>
-            <td>
-              <div class="action-btns">
-                <button class="btn-icon" title="Edit Item" onclick="openEditModal(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                </button>
-                <button class="btn-icon danger" title="Remove Item" onclick="promptDelete(this)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.prepend(tr);
+          const nextId = items.length ? Math.max(...items.map(i => i.id)) + 1 : 1;
+          items.unshift({ id: nextId, name, price, stock, description, custom, visible });
         }
 
+        saveProducts(items);
+        renderProducts();
         closeModal();
       });
 
@@ -846,26 +815,6 @@
       const searchInput = document.getElementById('searchInput');
       const customFilter = document.getElementById('customFilter');
       const visibleFilter = document.getElementById('visibleFilter');
-
-      function filterTable() {
-        const query = searchInput.value.toLowerCase();
-        const customVal = customFilter.value;
-        const visibleVal = visibleFilter.value;
-        const rows = document.querySelectorAll('#productsTableBody tr');
-
-        rows.forEach(row => {
-          const name = row.cells[0].textContent.toLowerCase();
-          const isVisible = row.cells[3].textContent.trim();
-          const isCustom = row.cells[4].textContent.trim();
-
-          const matchesSearch = name.includes(query);
-          const matchesCustom = (customVal === 'All' || isCustom === customVal);
-          const matchesVisible = (visibleVal === 'All' || isVisible === visibleVal);
-
-          row.style.display = (matchesSearch && matchesCustom && matchesVisible) ? '' : 'none';
-        });
-      }
-
       searchInput.addEventListener('input', filterTable);
       customFilter.addEventListener('change', filterTable);
       visibleFilter.addEventListener('change', filterTable);
@@ -881,9 +830,11 @@
       cancelDeleteBtn.addEventListener('click', closeDeleteModal);
 
       confirmDeleteBtn.addEventListener('click', () => {
-        if (window.rowToDelete) {
-          window.rowToDelete.remove();
-          window.rowToDelete = null;
+        if (window.idToDelete !== null && window.idToDelete !== undefined) {
+          const items = getProducts().filter(i => i.id !== window.idToDelete);
+          saveProducts(items);
+          renderProducts();
+          window.idToDelete = null;
         }
         closeDeleteModal();
       });
@@ -891,22 +842,20 @@
 
     // Edit Modal Pre-fill Function
     function openEditModal(btn) {
-      activeEditingRow = btn.closest('tr');
+      const row = btn.closest('tr');
+      const id = parseInt(row.dataset.id);
+      const item = getProducts().find(i => i.id === id);
+      if (!item) return;
 
-      const name = activeEditingRow.cells[0].textContent.trim();
-      const rawPrice = activeEditingRow.cells[1].textContent.replace(/[^\d.]/g, '');
-      const stock = activeEditingRow.cells[2].textContent.trim();
-      const visible = activeEditingRow.cells[3].textContent.trim();
-      const custom = activeEditingRow.cells[4].textContent.trim();
-      const description = activeEditingRow.dataset.description || '';
+      activeEditingId = id;
 
       document.getElementById('modalTitle').textContent = "Edit Product";
-      document.getElementById('productName').value = name;
-      document.getElementById('productPrice').value = rawPrice;
-      document.getElementById('productStock').value = stock;
-      document.getElementById('productDescription').value = description;
-      document.getElementById('productCustom').value = custom;
-      document.getElementById('productVisible').value = visible;
+      document.getElementById('productName').value = item.name;
+      document.getElementById('productPrice').value = item.price;
+      document.getElementById('productStock').value = item.stock;
+      document.getElementById('productDescription').value = item.description;
+      document.getElementById('productCustom').value = item.custom;
+      document.getElementById('productVisible').value = item.visible;
 
       document.getElementById('productModal').classList.add('open');
     }
@@ -915,10 +864,11 @@
     function promptDelete(btn) {
       const deleteModal = document.getElementById('deleteModal');
       const row = btn.closest('tr');
-      const itemName = row.cells[0].textContent.trim();
+      const id = parseInt(row.dataset.id);
+      const item = getProducts().find(i => i.id === id);
 
-      document.getElementById('deleteItemName').textContent = `'${itemName}'`;
-      window.rowToDelete = row;
+      document.getElementById('deleteItemName').textContent = item ? `'${item.name}'` : '';
+      window.idToDelete = id;
       deleteModal.classList.add('open');
     }
   </script>

@@ -489,7 +489,7 @@ let subtotalAmount = 0;
 const SHIPPING_FEE = 60;
 
 function getActiveUserKey() {
-    const session = JSON.parse(localStorage.getItem('km_session') || '{}');
+    const session = JSON.parse(sessionStorage.getItem('km_session') || '{}');
     return session.id || session.email || sessionStorage.getItem('activeUser') || 'guest';
 }
 
@@ -635,18 +635,47 @@ function handlePlaceOrder() {
     const deliveryCost = currentDeliveryMethod === 'delivery' ? SHIPPING_FEE : 0;
     const finalTotal = subtotalAmount + deliveryCost;
 
+    // Pull whatever the navbar knows about who's logged in, so the order
+    // carries the customer's actual name/email instead of just their key.
+    const session = (typeof navGetCurrentUser === 'function') ? navGetCurrentUser() : null;
+
+    const address = currentDeliveryMethod === 'delivery'
+        ? [
+            document.getElementById('addr-street').value.trim(),
+            document.getElementById('addr-city').value.trim(),
+            document.getElementById('addr-zip').value.trim()
+          ].filter(Boolean).join(', ')
+        : 'Pickup at Kuma Mori Main Workshop';
+
+    const paymentMethodLabel = currentPaymentMethod === 'gcash' ? 'GCash' : 'COD';
+    const paymentRef = currentPaymentMethod === 'gcash'
+        ? document.getElementById('gcash-ref-number').value.trim()
+        : 'N/A (Cash on Delivery)';
+
     const newOrder = {
         id: generatedOrderId,
         orderId: generatedOrderId,
         user: activeUserKey,
+        customerName: (session && session.name) || 'Guest',
+        customerEmail: (session && session.email) || '',
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+        timestamp: Date.now(),
         status: 'Pending',
+        deliveryMethod: currentDeliveryMethod === 'delivery' ? 'Delivery' : 'Pickup',
+        address: address,
+        paymentMethod: paymentMethodLabel,
+        paymentRef: paymentRef,
         items: cartData.map(item => ({
             name: item.name,
             qty: item.qty || item.quantity || 1,
-            price: parseFloat(item.price || 0)
+            price: parseFloat(item.price || 0),
+            // Customization details from customizePage.html live on `edits`;
+            // carry them through so Sales Management can display them.
+            customizations: Array.isArray(item.edits) ? item.edits : []
         })),
-        total: '₱' + finalTotal.toFixed(2)
+        subtotal: subtotalAmount,
+        deliveryFee: deliveryCost,
+        total: finalTotal
     };
 
     let userOrders = [];

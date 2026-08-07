@@ -405,7 +405,7 @@
       </ul>
 
       <ul class="nav-menu" style="margin-top: 15px;">
-        <li class="nav-item"><a href="../publicPages/loginPage.html" class="logout-btn">Log Out</a></li>
+        <li class="nav-item"><a href="../publicPages/loginPage.html" class="logout-btn" id="logoutBtn">Log Out</a></li>
       </ul>
     </div>
   </aside>
@@ -486,14 +486,23 @@
   </main>
 
   <!-- Interactive Scripts -->
+  <script src="../auth.js"></script>
   <script>
+    const currentAdmin = requireAdmin();
+
     document.addEventListener('DOMContentLoaded', () => {
+      if (!currentAdmin) return; // already redirecting to login
+
       // Mobile Navigation Drawer Toggle
       const menuToggle = document.getElementById('menuToggle');
       const navContainer = document.getElementById('navContainer');
 
       menuToggle.addEventListener('click', () => {
         navContainer.classList.toggle('open');
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        clearSession();
       });
 
       // Chart.js Mobile Fix Configuration

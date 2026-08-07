@@ -1,3 +1,10 @@
+// Auth guard: every customer page loads this script, so checking here
+// covers all of them in one place. Runs immediately, before the page
+// body renders, so a logged-out visitor never sees page content.
+if (!JSON.parse(sessionStorage.getItem('km_session') || 'null')) {
+    window.location.href = '../publicPages/loginPage.html';
+}
+
 document.write(`
 <style>
 /* Navbar Base Styles */
@@ -472,11 +479,17 @@ function navSaveUsers(users) {
     localStorage.setItem('km_users', JSON.stringify(users));
 }
 function navGetCurrentUser() {
-    return JSON.parse(localStorage.getItem('km_session')) || null;
+    return JSON.parse(sessionStorage.getItem('km_session')) || null;
 }
 function navSetCurrentUser(user) {
-    localStorage.setItem('km_session', JSON.stringify(user));
+    sessionStorage.setItem('km_session', JSON.stringify(user));
 }
+
+// One-time cleanup: earlier versions of this app stored the session in
+// localStorage, which is shared by every visitor on this browser rather
+// than scoped to one tab/login. Purge any leftover copy so it can't keep
+// getting picked up as "the logged-in user" by mistake.
+localStorage.removeItem('km_session');
 
 /* User-Scoped Storage Functions */
 function navGetActiveUserId() {
@@ -566,7 +579,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutLink) {
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.removeItem('km_session');
+            sessionStorage.removeItem('km_session');
             window.location.href = '../publicPages/loginPage.html';
         });
     }
