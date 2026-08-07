@@ -236,7 +236,7 @@ body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
     <div class="title-divider"></div>
 
     <div id="productsContainer">
-        <!-- Product cards are rendered here from the admin-managed product list (see script below) -->
+        <!-- Product cards are rendered here from the admin-managed product list -->
     </div>
 
 </div>
@@ -302,17 +302,13 @@ function addToCart(product) {
     showToast(`${product.name} added to cart!`);
 }
 
-// Known product-name keywords map to existing product photos and
-// customizePage.html types, so the original four products keep looking
-// exactly the same. Anything the admin adds beyond those falls back to a
-// generic icon placeholder and a name-based customize type.
 function inferImage(name) {
     const n = name.toLowerCase();
     if (n.includes('bear')) return '../images/bear.png';
     if (n.includes('leather')) return '../images/leather.png';
     if (n.includes('bead')) return '../images/beaded.png';
     if (n.includes('charm')) return '../images/charm.png';
-    return null; // no matching photo -> render a placeholder icon instead
+    return null;
 }
 
 function inferCustomizeType(name) {
@@ -324,15 +320,16 @@ function inferCustomizeType(name) {
 }
 
 function productCardHtml(product) {
-    const img = inferImage(product.name);
+    const img = product.image || inferImage(product.name);
     const imgHtml = img
         ? `<img src="${img}" alt="${product.name}">`
         : `<i class="fa-solid fa-gift" style="font-size:3rem;color:var(--price);"></i>`;
 
     const outOfStock = Number(product.stock) <= 0;
-    const badgeHtml = product.name.toLowerCase().includes('bear')
-        ? `<span class="badge">Bestseller</span>`
-        : '';
+    
+    // Check if explicitly marked Bestseller = "Yes" OR fallback to bear
+    const isBestseller = product.bestseller === 'Yes' || (!product.bestseller && product.name.toLowerCase().includes('bear'));
+    const badgeHtml = isBestseller ? `<span class="badge">Bestseller</span>` : '';
 
     const actionBtn = product.custom === 'Yes'
         ? `<button class="btn-brown" onclick="window.location.href='customizePage.html?type=${inferCustomizeType(product.name)}'">
@@ -371,8 +368,6 @@ function renderProductCards() {
     container.innerHTML = products.map(productCardHtml).join('');
 }
 
-// Event delegation: catches clicks on any "Add To Cart" button, including
-// ones rendered after the page first loads.
 document.getElementById('productsContainer').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-action="add-cart"]');
     if (!btn || btn.disabled) return;

@@ -358,6 +358,8 @@
       max-width: 500px;
       padding: 30px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .modal-header {
@@ -601,6 +603,7 @@
             <th>Product</th>
             <th>Price</th>
             <th>Stock</th>
+            <th>Bestseller</th>
             <th>Visible</th>
             <th>Custom</th>
             <th style="text-align: left;">Actions</th>
@@ -642,6 +645,21 @@
             <textarea id="productDescription" placeholder="Enter product details..."></textarea>
           </div>
 
+          <!-- Product Image Upload Field -->
+          <div class="form-group full-width">
+            <label for="productImage">Product Image</label>
+            <input type="file" id="productImage" accept="image/*">
+          </div>
+
+          <!-- Bestseller Toggle -->
+          <div class="form-group">
+            <label for="productBestseller">Bestseller?</label>
+            <select id="productBestseller" required>
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+
           <div class="form-group">
             <label for="productCustom">Custom Toggle</label>
             <select id="productCustom" required>
@@ -650,7 +668,7 @@
             </select>
           </div>
 
-          <div class="form-group">
+          <div class="form-group full-width">
             <label for="productVisible">Visibility</label>
             <select id="productVisible" required>
               <option value="Shown">Shown</option>
@@ -690,7 +708,7 @@
   <script src="../auth.js"></script>
   <script>
     const currentAdmin = requireAdmin();
-    let activeEditingId = null; // id of the product currently being edited, or null when adding
+    let activeEditingId = null; 
 
     function visibilityBadgeHtml(visible) {
       return visible === 'Shown'
@@ -698,7 +716,6 @@
         : '<span class="visibility-badge hidden">Hidden</span>';
     }
 
-    // Rebuilds the whole table body from whatever is currently in localStorage
     function renderProducts() {
       const items = getProducts();
       const tbody = document.getElementById('productsTableBody');
@@ -707,6 +724,7 @@
           <td>${item.name}</td>
           <td>PHP ${item.price}</td>
           <td>${item.stock}</td>
+          <td>${item.bestseller || (item.name.toLowerCase().includes('bear') ? 'Yes' : 'No')}</td>
           <td>${visibilityBadgeHtml(item.visible)}</td>
           <td>${item.custom}</td>
           <td>
@@ -724,8 +742,6 @@
       filterTable();
     }
 
-    // Real-time Search & Filter Functionality (top-level so it can be
-    // re-run right after a re-render)
     function filterTable() {
       const searchInput = document.getElementById('searchInput');
       const customFilter = document.getElementById('customFilter');
@@ -737,8 +753,8 @@
 
       rows.forEach(row => {
         const name = row.cells[0].textContent.toLowerCase();
-        const isVisible = row.cells[3].textContent.trim();
-        const isCustom = row.cells[4].textContent.trim();
+        const isVisible = row.cells[4].textContent.trim();
+        const isCustom = row.cells[5].textContent.trim();
 
         const matchesSearch = name.includes(query);
         const matchesCustom = (customVal === 'All' || isCustom === customVal);
@@ -749,13 +765,12 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      if (!currentAdmin) return; // already redirecting to login
+      if (!currentAdmin) return;
 
       document.getElementById('logoutBtn').addEventListener('click', () => {
         clearSession();
       });
 
-      // Mobile Navigation Drawer Toggle
       const menuToggle = document.getElementById('menuToggle');
       const navContainer = document.getElementById('navContainer');
       menuToggle.addEventListener('click', () => {
@@ -764,7 +779,6 @@
 
       renderProducts();
 
-      // Modal Elements
       const productModal = document.getElementById('productModal');
       const openAddModalBtn = document.getElementById('openAddModalBtn');
       const closeModalBtn = document.getElementById('closeModalBtn');
@@ -783,27 +797,62 @@
       closeModalBtn.addEventListener('click', closeModal);
       cancelModalBtn.addEventListener('click', closeModal);
 
-      // Form Submission Handler -> always writes through to localStorage
-      productForm.addEventListener('submit', (e) => {
+      productForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const name = document.getElementById('productName').value.trim();
-        const price = parseInt(parseFloat(document.getElementById('productPrice').value));
+        const price = parseFloat(document.getElementById('productPrice').value);
         const stock = parseInt(document.getElementById('productStock').value);
         const description = document.getElementById('productDescription').value.trim();
+        const bestseller = document.getElementById('productBestseller').value;
         const custom = document.getElementById('productCustom').value;
         const visible = document.getElementById('productVisible').value;
+        const imageInput = document.getElementById('productImage');
 
         const items = getProducts();
+
+        const readFileAsDataURL = (file) => {
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (evt) => resolve(evt.target.result);
+            reader.readAsDataURL(file);
+          });
+        };
+
+        let imageBase64 = null;
+        if (imageInput.files && imageInput.files[0]) {
+          imageBase64 = await readFileAsDataURL(imageInput.files[0]);
+        }
 
         if (activeEditingId !== null) {
           const idx = items.findIndex(i => i.id === activeEditingId);
           if (idx !== -1) {
-            items[idx] = { ...items[idx], name, price, stock, description, custom, visible };
+            const existingImage = items[idx].image;
+            items[idx] = { 
+              ...items[idx], 
+              name, 
+              price, 
+              stock, 
+              description, 
+              bestseller,
+              custom, 
+              visible, 
+              image: imageBase64 || existingImage 
+            };
           }
         } else {
           const nextId = items.length ? Math.max(...items.map(i => i.id)) + 1 : 1;
-          items.unshift({ id: nextId, name, price, stock, description, custom, visible });
+          items.unshift({ 
+            id: nextId, 
+            name, 
+            price, 
+            stock, 
+            description, 
+            bestseller,
+            custom, 
+            visible, 
+            image: imageBase64 || null 
+          });
         }
 
         saveProducts(items);
@@ -811,7 +860,6 @@
         closeModal();
       });
 
-      // Real-time Search & Filter Functionality
       const searchInput = document.getElementById('searchInput');
       const customFilter = document.getElementById('customFilter');
       const visibleFilter = document.getElementById('visibleFilter');
@@ -819,7 +867,6 @@
       customFilter.addEventListener('change', filterTable);
       visibleFilter.addEventListener('change', filterTable);
 
-      // Remove Modal Controls
       const deleteModal = document.getElementById('deleteModal');
       const closeDeleteModalBtn = document.getElementById('closeDeleteModalBtn');
       const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
@@ -840,7 +887,6 @@
       });
     });
 
-    // Edit Modal Pre-fill Function
     function openEditModal(btn) {
       const row = btn.closest('tr');
       const id = parseInt(row.dataset.id);
@@ -854,13 +900,14 @@
       document.getElementById('productPrice').value = item.price;
       document.getElementById('productStock').value = item.stock;
       document.getElementById('productDescription').value = item.description;
+      document.getElementById('productBestseller').value = item.bestseller || (item.name.toLowerCase().includes('bear') ? 'Yes' : 'No');
       document.getElementById('productCustom').value = item.custom;
       document.getElementById('productVisible').value = item.visible;
+      document.getElementById('productImage').value = '';
 
       document.getElementById('productModal').classList.add('open');
     }
 
-    // Prompt Delete Confirmation Modal
     function promptDelete(btn) {
       const deleteModal = document.getElementById('deleteModal');
       const row = btn.closest('tr');
