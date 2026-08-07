@@ -844,7 +844,7 @@ document.getElementById('add-cart-btn').addEventListener('click', () => {
     showToast(editId !== null ? "Changes saved!" : "Successfully added to cart!", true);
 
     setTimeout(() => {
-        window.location.href = 'productsPage.html';
+        window.location.href = editId !== null ? 'cartPage.html' : 'productsPage.html';
     }, 1200);
 });
 </script>
