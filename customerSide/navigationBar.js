@@ -17,7 +17,8 @@ document.write(`
     background: #f9e2e6;
     height: 103px;
     box-shadow: 0 2px 10px rgba(92,50,20,0.06);
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 10;
 }
 .nav-links { display: flex; gap: 40px; }
