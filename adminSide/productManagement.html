@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
     :root {
@@ -21,6 +22,11 @@
       --text-brown: #5c3214;
       --text-muted: #8c6853;
       --highlight-active: #eed1d7;
+
+      /* Scrollbar Theme Variables */
+      --scrollbar-track: #fceee9;
+      --scrollbar-thumb: #8c6853;
+      --scrollbar-thumb-hover: #5c3214;
 
       /* Status Colors */
       --status-shown-bg: #dcfce7;
@@ -36,6 +42,32 @@
       font-family: 'Fredoka', sans-serif;
     }
 
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 10px;
+      border: 2px solid var(--scrollbar-track);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar-thumb-hover);
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+
     body {
       min-height: 100vh;
       background-color: var(--admin-bg);
@@ -43,9 +75,7 @@
       overflow-x: hidden;
     }
 
-    /* -------------------------------------------------------------------------- */
-    /* Sidebar Navigation                                                         */
-    /* -------------------------------------------------------------------------- */
+    /* Sidebar Navigation */
     .sidebar {
       position: sticky;
       top: 0;
@@ -132,9 +162,7 @@
       color: #ffffff !important;
     }
 
-    /* -------------------------------------------------------------------------- */
-    /* Main Content Area                                                          */
-    /* -------------------------------------------------------------------------- */
+    /* Main Content */
     .main-content {
       flex: 1;
       padding: 40px;
@@ -178,7 +206,7 @@
       background-color: #42220b;
     }
 
-    /* Search & Filter Controls */
+    /* Filters */
     .filter-bar {
       display: flex;
       gap: 15px;
@@ -206,9 +234,7 @@
       border-color: var(--text-brown);
     }
 
-    /* -------------------------------------------------------------------------- */
-    /* Card-Style Products Table                                                 */
-    /* -------------------------------------------------------------------------- */
+    /* Table */
     .table-container {
       width: 100%;
       overflow-x: auto;
@@ -275,7 +301,6 @@
       border-bottom-right-radius: 20px;
     }
 
-    /* Badges */
     .visibility-badge {
       padding: 6px 14px;
       border-radius: 15px;
@@ -294,7 +319,6 @@
       color: var(--status-hidden-text);
     }
 
-    /* Icon Action Buttons */
     .action-btns {
       display: flex;
       align-items: center;
@@ -329,9 +353,7 @@
       background-color: #f8d7da;
     }
 
-    /* -------------------------------------------------------------------------- */
-    /* Modal Forms Styling                                                        */
-    /* -------------------------------------------------------------------------- */
+    /* Modal Form Styling */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -424,6 +446,79 @@
       border-color: var(--text-brown);
     }
 
+    .custom-file-input {
+      display: none;
+    }
+
+    .custom-file-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border: 2px dashed var(--card-border);
+      border-radius: 16px;
+      background-color: #fdf3dd;
+      color: var(--text-brown);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .custom-file-btn:hover {
+      background-color: #fae8c4;
+      border-color: var(--text-brown);
+    }
+
+    .file-info-badge {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #f9e2e6;
+      border: 1px solid var(--card-border);
+      padding: 8px 14px;
+      border-radius: 12px;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-brown);
+    }
+
+    .file-info-badge span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 85%;
+    }
+
+    .file-info-badge button {
+      background: none;
+      border: none;
+      color: #d9534f;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .image-preview-container {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .image-preview {
+      width: 100%;
+      max-height: 180px;
+      object-fit: contain;
+      border-radius: 16px;
+      border: 2px solid var(--card-border);
+      background-color: #faf6f4;
+      padding: 8px;
+      display: none;
+    }
+
     .modal-actions {
       display: flex;
       gap: 10px;
@@ -481,7 +576,6 @@
       margin: 15px 0;
     }
 
-    /* Mobile Breakpoints */
     @media (max-width: 768px) {
       body {
         flex-direction: column;
@@ -580,7 +674,6 @@
       <button class="btn-add" id="openAddModalBtn">+ Add Product</button>
     </div>
 
-    <!-- Search & Filter Controls -->
     <div class="filter-bar">
       <input type="text" id="searchInput" class="search-input" placeholder="Search product name...">
       <select id="customFilter" class="filter-select">
@@ -595,7 +688,6 @@
       </select>
     </div>
 
-    <!-- Products Data Table -->
     <div class="table-container">
       <table class="products-table">
         <thead>
@@ -615,7 +707,7 @@
     </div>
   </main>
 
-  <!-- Add/Edit Product Modal Form -->
+  <!-- Modal Form -->
   <div class="modal-overlay" id="productModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -645,13 +737,25 @@
             <textarea id="productDescription" placeholder="Enter product details..."></textarea>
           </div>
 
-          <!-- Product Image Upload Field -->
           <div class="form-group full-width">
-            <label for="productImage">Product Image</label>
-            <input type="file" id="productImage" accept="image/*">
+            <label>Product Image (PNG or JPG)</label>
+            
+            <input type="file" id="productImage" class="custom-file-input" accept="image/png, image/jpeg">
+            <label for="productImage" class="custom-file-btn">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <span>Choose Image...</span>
+            </label>
+
+            <div id="fileInfoBadge" class="file-info-badge">
+              <span id="fileNameText">filename.png</span>
+              <button type="button" onclick="resetImagePreview()" title="Remove image">&times;</button>
+            </div>
+
+            <div class="image-preview-container">
+              <img id="imgPreview" class="image-preview" src="" alt="Image Preview">
+            </div>
           </div>
 
-          <!-- Bestseller Toggle -->
           <div class="form-group">
             <label for="productBestseller">Bestseller?</label>
             <select id="productBestseller" required>
@@ -685,7 +789,7 @@
     </div>
   </div>
 
-  <!-- Delete Confirmation Pop-up Modal -->
+  <!-- Delete Modal -->
   <div class="modal-overlay" id="deleteModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -704,11 +808,11 @@
     </div>
   </div>
 
-  <!-- Interactive Scripts -->
   <script src="../auth.js"></script>
   <script>
     const currentAdmin = requireAdmin();
     let activeEditingId = null; 
+    let isImageRemoved = false; 
 
     function visibilityBadgeHtml(visible) {
       return visible === 'Shown'
@@ -720,7 +824,7 @@
       const items = getProducts();
       const tbody = document.getElementById('productsTableBody');
       tbody.innerHTML = items.map(item => `
-        <tr data-id="${item.id}" data-description="${item.description.replace(/"/g, '&quot;')}">
+        <tr data-id="${item.id}" data-description="${(item.description || '').replace(/"/g, '&quot;')}">
           <td>${item.name}</td>
           <td>PHP ${item.price}</td>
           <td>${item.stock}</td>
@@ -764,6 +868,42 @@
       });
     }
 
+    const imageInput = document.getElementById('productImage');
+    const imgPreview = document.getElementById('imgPreview');
+    const fileInfoBadge = document.getElementById('fileInfoBadge');
+    const fileNameText = document.getElementById('fileNameText');
+
+    imageInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        if (!['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
+          alert('Please select a PNG or JPG/JPEG image file.');
+          resetImagePreview();
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imgPreview.src = e.target.result;
+          imgPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+
+        fileNameText.textContent = file.name;
+        fileInfoBadge.style.display = 'flex';
+        isImageRemoved = false;
+      }
+    });
+
+    function resetImagePreview() {
+      imageInput.value = '';
+      imgPreview.src = '';
+      imgPreview.style.display = 'none';
+      fileNameText.textContent = '';
+      fileInfoBadge.style.display = 'none';
+      isImageRemoved = true; 
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       if (!currentAdmin) return;
 
@@ -788,8 +928,11 @@
 
       openAddModalBtn.addEventListener('click', () => {
         activeEditingId = null;
+        isImageRemoved = false;
         modalTitle.textContent = "Add New Product";
         productForm.reset();
+        resetImagePreview();
+        isImageRemoved = false;
         productModal.classList.add('open');
       });
 
@@ -807,7 +950,6 @@
         const bestseller = document.getElementById('productBestseller').value;
         const custom = document.getElementById('productCustom').value;
         const visible = document.getElementById('productVisible').value;
-        const imageInput = document.getElementById('productImage');
 
         const items = getProducts();
 
@@ -828,6 +970,14 @@
           const idx = items.findIndex(i => i.id === activeEditingId);
           if (idx !== -1) {
             const existingImage = items[idx].image;
+            
+            let finalImage = existingImage;
+            if (imageBase64) {
+              finalImage = imageBase64;
+            } else if (isImageRemoved) {
+              finalImage = ""; // Explicitly deleted flag: empty string prevents future fallbacks
+            }
+
             items[idx] = { 
               ...items[idx], 
               name, 
@@ -837,7 +987,7 @@
               bestseller,
               custom, 
               visible, 
-              image: imageBase64 || existingImage 
+              image: finalImage 
             };
           }
         } else {
@@ -851,7 +1001,7 @@
             bestseller,
             custom, 
             visible, 
-            image: imageBase64 || null 
+            image: isImageRemoved ? "" : imageBase64 
           });
         }
 
@@ -894,16 +1044,51 @@
       if (!item) return;
 
       activeEditingId = id;
+      isImageRemoved = false;
 
       document.getElementById('modalTitle').textContent = "Edit Product";
       document.getElementById('productName').value = item.name;
       document.getElementById('productPrice').value = item.price;
       document.getElementById('productStock').value = item.stock;
-      document.getElementById('productDescription').value = item.description;
+      document.getElementById('productDescription').value = item.description || '';
       document.getElementById('productBestseller').value = item.bestseller || (item.name.toLowerCase().includes('bear') ? 'Yes' : 'No');
       document.getElementById('productCustom').value = item.custom;
       document.getElementById('productVisible').value = item.visible;
-      document.getElementById('productImage').value = '';
+      
+      imageInput.value = '';
+      
+      let imagePath = item.image;
+
+      // Unedited / Initial State Fallback logic
+      if (imagePath === undefined || imagePath === null) {
+        const lowerName = item.name.toLowerCase();
+        if (lowerName.includes('bear')) imagePath = '../images/bear.png';
+        else if (lowerName.includes('beaded')) imagePath = '../images/beaded.png';
+        else if (lowerName.includes('crochet')) imagePath = '../images/crochet.png';
+      }
+
+      if (imagePath && !imagePath.startsWith('data:') && !imagePath.startsWith('../images/')) {
+        imagePath = `../images/${imagePath}`;
+      }
+
+      // Render image preview ONLY if image exists and is NOT explicitly deleted ("")
+      if (imagePath && imagePath !== '') {
+        imgPreview.src = imagePath;
+        imgPreview.style.display = 'block';
+
+        const fileName = imagePath.startsWith('data:') 
+          ? 'Uploaded Image (PNG/JPG)' 
+          : imagePath.split('/').pop();
+
+        fileNameText.textContent = fileName;
+        fileInfoBadge.style.display = 'flex';
+      } else {
+        imgPreview.src = '';
+        imgPreview.style.display = 'none';
+        fileNameText.textContent = '';
+        fileInfoBadge.style.display = 'none';
+        isImageRemoved = true; 
+      }
 
       document.getElementById('productModal').classList.add('open');
     }
