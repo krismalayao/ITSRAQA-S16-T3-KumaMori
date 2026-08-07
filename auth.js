@@ -649,3 +649,26 @@ if (!localStorage.getItem('km_orders_seeded')) {
   });
   localStorage.setItem('km_orders_seeded', '1');
 }
+
+// ---------------------------------------------------------------------------
+// Password Reset (for Forgot Password OTP simulation)
+// ---------------------------------------------------------------------------
+function resetUserPassword(email, newPassword) {
+  const users = getUsers();
+  const index = users.findIndex(u => u.email.toLowerCase() === email.trim().toLowerCase());
+
+  if (index === -1) return false;
+
+  // 1. Update password in the persistent user database
+  users[index].password = newPassword;
+  saveUsers(users);
+
+  // 2. If the user being updated is currently logged in, sync their live session
+  const currentUser = getCurrentUser();
+  if (currentUser && currentUser.email.toLowerCase() === email.trim().toLowerCase()) {
+    currentUser.password = newPassword;
+    setCurrentUser(currentUser);
+  }
+
+  return true;
+}

@@ -183,6 +183,7 @@
       color: var(--text-brown);
       text-decoration: none;
       opacity: 0.9;
+      cursor: pointer;
     }
 
     .forgot-pass:hover {
@@ -208,6 +209,102 @@
 
     .submit-btn:active {
       transform: scale(0.99);
+    }
+
+    /* --- MODAL STYLES --- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(92, 50, 20, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 2000;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background-color: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 30px;
+      width: 90%;
+      max-width: 440px;
+      padding: 30px 35px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      position: relative;
+      transform: translateY(-20px);
+      transition: transform 0.3s ease;
+      text-align: center;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: translateY(0);
+    }
+
+    .close-modal-btn {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-brown);
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      color: var(--text-brown);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .modal-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-brown);
+      opacity: 0.8;
+      margin-bottom: 15px;
+    }
+
+    .demo-badge {
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      color: #856404;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .modal-step { display: none; }
+    .modal-step.active { display: block; }
+
+    .otp-input {
+      letter-spacing: 6px;
+      font-size: 1.1rem !important;
+      text-align: center;
+    }
+
+    .modal-error {
+      color: var(--error-red);
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 4px;
+      text-align: left;
+      display: block;
     }
 
     .toast-notification {
@@ -297,7 +394,7 @@
           </div>
         </div>
 
-        <a href="#" class="forgot-pass" id="forgot-password">Forgot password?</a>
+        <a class="forgot-pass" id="forgot-password">Forgot password?</a>
         <button type="submit" class="submit-btn">Log In</button>
       </form>
 
@@ -306,6 +403,64 @@
       </div>
     </section>
   </main>
+
+  <!-- FORGOT PASSWORD MODAL -->
+  <div id="forgot-modal" class="modal-overlay">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" id="close-modal">&times;</button>
+      
+      <h2 class="modal-title">Reset Password</h2>
+      <p class="modal-subtitle">Follow the steps to recover your account.</p>
+
+      <div class="demo-badge">
+        ⚠️ <strong>Prototype Mode:</strong> Testing OTP is <code>000000</code>.
+      </div>
+
+      <!-- STEP 1: Email Request -->
+      <form id="modal-step1" class="modal-step active">
+        <div class="form-group">
+          <label for="modal-email">Email Address</label>
+          <input type="email" id="modal-email" placeholder="Enter your registered email" required>
+          <span id="modal-email-error" class="modal-error"></span>
+        </div>
+        <button type="submit" class="submit-btn">Send OTP Code</button>
+      </form>
+
+      <!-- STEP 2: Verify OTP -->
+      <form id="modal-step2" class="modal-step">
+        <div class="form-group">
+          <label for="modal-otp">Enter 6-Digit OTP</label>
+          <input type="text" id="modal-otp" class="otp-input" maxlength="6" placeholder="000000" required>
+          <span id="modal-otp-error" class="modal-error"></span>
+        </div>
+        <button type="submit" class="submit-btn">Verify OTP</button>
+      </form>
+
+      <!-- STEP 3: Change Password -->
+      <form id="modal-step3" class="modal-step">
+        <div class="form-group">
+          <label for="modal-new-pass">New Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="modal-new-pass" placeholder="Enter new password" required>
+            <button type="button" class="toggle-password modal-toggle" data-target="modal-new-pass">
+              <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="modal-confirm-pass">Confirm New Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="modal-confirm-pass" placeholder="Re-type new password" required>
+            <button type="button" class="toggle-password modal-toggle" data-target="modal-confirm-pass">
+              <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </button>
+          </div>
+          <span id="modal-pass-error" class="modal-error"></span>
+        </div>
+        <button type="submit" class="submit-btn">Update Password</button>
+      </form>
+    </div>
+  </div>
 
   <div id="toast" class="toast-notification">
     <span id="toast-message">Incorrect email or password. Please try again.</span>
@@ -326,8 +481,17 @@
 
       let toastTimeout;
 
-      function showErrorToast() {
+      function showToast(message, type = 'error') {
+        const toastMessage = document.getElementById('toast-message');
+        toastMessage.textContent = message;
         clearTimeout(toastTimeout);
+        if (type === 'success') {
+          toast.style.backgroundColor = '#4CAF50';
+          toast.style.boxShadow = '0 8px 20px rgba(76,175,80,.35)';
+        } else {
+          toast.style.backgroundColor = '#d9534f';
+          toast.style.boxShadow = '0 8px 20px rgba(217,83,79,.35)';
+        }
         toast.classList.add('show');
         toastTimeout = setTimeout(() => {
           toast.classList.remove('show');
@@ -365,11 +529,131 @@
             window.location.href = '../customerSide/userLandingPage.html';
           }
         } else {
-          showErrorToast();
+          showToast('Incorrect email or password.');
+        }
+      });
+
+      // --- MODAL & FORGOT PASSWORD LOGIC ---
+      const forgotBtn = document.getElementById('forgot-password');
+      const forgotModal = document.getElementById('forgot-modal');
+      const closeModalBtn = document.getElementById('close-modal');
+
+      const modalStep1 = document.getElementById('modal-step1');
+      const modalStep2 = document.getElementById('modal-step2');
+      const modalStep3 = document.getElementById('modal-step3');
+
+      const MOCK_OTP = "000000";
+      let resetTargetEmail = "";
+
+      function resetModalState() {
+        modalStep1.reset();
+        modalStep2.reset();
+        modalStep3.reset();
+        document.getElementById('modal-email-error').textContent = '';
+        document.getElementById('modal-otp-error').textContent = '';
+        document.getElementById('modal-pass-error').textContent = '';
+
+        modalStep1.classList.add('active');
+        modalStep2.classList.remove('active');
+        modalStep3.classList.remove('active');
+      }
+
+      // Open Modal
+      forgotBtn.addEventListener('click', () => {
+        resetModalState();
+        if (emailInput.value.trim()) {
+          document.getElementById('modal-email').value = emailInput.value.trim();
+        }
+        forgotModal.classList.add('active');
+      });
+
+      // Close Modal
+      closeModalBtn.addEventListener('click', () => {
+        forgotModal.classList.remove('active');
+      });
+
+      // Close when clicking overlay backdrop
+      forgotModal.addEventListener('click', (e) => {
+        if (e.target === forgotModal) {
+          forgotModal.classList.remove('active');
+        }
+      });
+
+      // --- Bind Modal Password Toggles Immediately ---
+      document.querySelectorAll('.modal-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+          const input = document.getElementById(button.dataset.target);
+          const icon = button.querySelector('path');
+          const isPassword = input.getAttribute('type') === 'password';
+          
+          if (isPassword) {
+            input.setAttribute('type', 'text');
+            icon.setAttribute('d', eyeClosedPath);
+          } else {
+            input.setAttribute('type', 'password');
+            icon.setAttribute('d', eyeOpenPath);
+          }
+        });
+      });
+
+      // --- STEP 1: Verify Email Exists ---
+      modalStep1.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const enteredEmail = document.getElementById('modal-email').value.trim();
+        const users = getUsers();
+        const userExists = users.some(u => u.email.toLowerCase() === enteredEmail.toLowerCase());
+
+        if (!userExists) {
+          document.getElementById('modal-email-error').textContent = '✕ Email address not found.';
+          return;
+        }
+
+        resetTargetEmail = enteredEmail;
+        document.getElementById('modal-email-error').textContent = '';
+
+        modalStep1.classList.remove('active');
+        modalStep2.classList.add('active');
+      });
+
+      // --- STEP 2: Verify Static OTP ---
+      modalStep2.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const enteredOtp = document.getElementById('modal-otp').value.trim();
+
+        if (enteredOtp !== MOCK_OTP) {
+          document.getElementById('modal-otp-error').textContent = '✕ Invalid OTP. Enter 000000.';
+          return;
+        }
+
+        document.getElementById('modal-otp-error').textContent = '';
+
+        modalStep2.classList.remove('active');
+        modalStep3.classList.add('active');
+      });
+
+      // --- STEP 3: Reset Password ---
+      modalStep3.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newPassword = document.getElementById('modal-new-pass').value;
+        const confirmPassword = document.getElementById('modal-confirm-pass').value;
+
+        if (newPassword !== confirmPassword) {
+          document.getElementById('modal-pass-error').textContent = '✕ Passwords do not match.';
+          return;
+        }
+
+        const success = resetUserPassword(resetTargetEmail, newPassword);
+
+        if (success) {
+          showToast('Password changed successfully! You may now log in.', 'success');
+          forgotModal.classList.remove('active');
+          emailInput.value = resetTargetEmail;
+          passwordInput.value = newPassword;
+        } else {
+          document.getElementById('modal-pass-error').textContent = '✕ Failed to reset password.';
         }
       });
     });
   </script>
-
 </body>
 </html>
