@@ -827,7 +827,7 @@
         <tr data-id="${item.id}" data-description="${(item.description || '').replace(/"/g, '&quot;')}">
           <td>${item.name}</td>
           <td>PHP ${item.price}</td>
-          <td>${item.stock}</td>
+          <td>${(item.stock === null || item.stock === undefined) ? 'Made-to-order' : item.stock}</td>
           <td>${item.bestseller || (item.name.toLowerCase().includes('bear') ? 'Yes' : 'No')}</td>
           <td>${visibilityBadgeHtml(item.visible)}</td>
           <td>${item.custom}</td>
@@ -1049,7 +1049,7 @@
       document.getElementById('modalTitle').textContent = "Edit Product";
       document.getElementById('productName').value = item.name;
       document.getElementById('productPrice').value = item.price;
-      document.getElementById('productStock').value = item.stock;
+      document.getElementById('productStock').value = (item.stock === null || item.stock === undefined) ? '' : item.stock;
       document.getElementById('productDescription').value = item.description || '';
       document.getElementById('productBestseller').value = item.bestseller || (item.name.toLowerCase().includes('bear') ? 'Yes' : 'No');
       document.getElementById('productCustom').value = item.custom;

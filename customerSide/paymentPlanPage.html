@@ -671,7 +671,11 @@ function handlePlaceOrder() {
             price: parseFloat(item.price || 0),
             // Customization details from customizePage.html live on `edits`;
             // carry them through so Sales Management can display them.
-            customizations: Array.isArray(item.edits) ? item.edits : []
+            customizations: Array.isArray(item.edits) ? item.edits : [],
+            // Structured selection data - needed by deductStockForOrder()/
+            // adjustMaterialsForItem() in auth.js to know exactly what to
+            // deduct from inventory when this order is marked Confirmed.
+            customState: item.customState || null
         })),
         subtotal: subtotalAmount,
         deliveryFee: deliveryCost,

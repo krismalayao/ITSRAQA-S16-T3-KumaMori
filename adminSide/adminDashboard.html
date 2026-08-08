@@ -418,26 +418,26 @@
     <section class="kpi-grid">
       <div class="kpi-card">
         <span class="kpi-title">Total Sales</span>
-        <span class="kpi-value">PHP 18.4k</span>
-        <span class="kpi-subtitle positive">+12% this month</span>
+        <span class="kpi-value" id="kpiTotalSales">PHP 0</span>
+        <span class="kpi-subtitle" id="kpiTotalSalesSub">&nbsp;</span>
       </div>
 
       <div class="kpi-card">
         <span class="kpi-title">Orders</span>
-        <span class="kpi-value">43</span>
-        <span class="kpi-subtitle">5 pending</span>
+        <span class="kpi-value" id="kpiOrders">0</span>
+        <span class="kpi-subtitle" id="kpiOrdersSub">0 pending</span>
       </div>
 
       <div class="kpi-card">
         <span class="kpi-title">Low Stock</span>
-        <span class="kpi-value">2</span>
-        <span class="kpi-subtitle" style="color: #d9534f;">Needs restock</span>
+        <span class="kpi-value" id="kpiLowStock">0</span>
+        <span class="kpi-subtitle" id="kpiLowStockSub" style="color: #d9534f;">Needs restock</span>
       </div>
 
       <div class="kpi-card">
         <span class="kpi-title">Top Product</span>
-        <span class="kpi-value" style="font-size: 1.2rem;">Plush Bear</span>
-        <span class="kpi-subtitle">PHP 699 item</span>
+        <span class="kpi-value" id="kpiTopProduct" style="font-size: 1.2rem;">—</span>
+        <span class="kpi-subtitle" id="kpiTopProductSub">&nbsp;</span>
       </div>
     </section>
 
@@ -454,32 +454,8 @@
       <!-- Order Status Progress Overview -->
       <div class="chart-card">
         <h2 class="chart-title">Order Status</h2>
-        <div class="status-list">
-
-          <div class="status-item">
-            <span class="status-label">Approved</span>
-            <div class="status-bar-bg">
-              <div class="status-bar-fill approved" style="width: 70%;"></div>
-            </div>
-            <span class="status-count">30 Orders</span>
-          </div>
-
-          <div class="status-item">
-            <span class="status-label">Pending</span>
-            <div class="status-bar-bg">
-              <div class="status-bar-fill pending" style="width: 40%;"></div>
-            </div>
-            <span class="status-count">5 Orders</span>
-          </div>
-
-          <div class="status-item">
-            <span class="status-label">Canceled</span>
-            <div class="status-bar-bg">
-              <div class="status-bar-fill canceled" style="width: 25%;"></div>
-            </div>
-            <span class="status-count">7 Orders</span>
-          </div>
-
+        <div class="status-list" id="statusList">
+          <!-- populated from getAllOrders() -->
         </div>
       </div>
     </section>
@@ -505,25 +481,80 @@
         clearSession();
       });
 
-      // Chart.js Mobile Fix Configuration
+      renderAnalytics();
+    });
+
+    function renderAnalytics() {
+      const orders = getAllOrders();
+      const inventory = getInventory();
+      const liveOrders = orders.filter(o => o.status !== 'Cancelled');
+
+      // KPI: Total Sales (excludes cancelled orders)
+      const totalSales = liveOrders.reduce((sum, o) => sum + (typeof o.total === 'number' ? o.total : parseFloat(o.total) || 0), 0);
+      document.getElementById('kpiTotalSales').textContent = 'PHP ' + totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 });
+      document.getElementById('kpiTotalSalesSub').textContent = `${liveOrders.length} completed order${liveOrders.length === 1 ? '' : 's'}`;
+
+      // KPI: Orders + pending count
+      const pendingCount = orders.filter(o => o.status === 'Pending').length;
+      document.getElementById('kpiOrders').textContent = orders.length;
+      document.getElementById('kpiOrdersSub').textContent = `${pendingCount} pending`;
+
+      // KPI: Low Stock (low-stock + out-stock items)
+      const lowStockItems = inventory.filter(i => i.status === 'low-stock' || i.status === 'out-stock');
+      document.getElementById('kpiLowStock').textContent = lowStockItems.length;
+      document.getElementById('kpiLowStockSub').textContent = lowStockItems.length > 0 ? 'Needs restock' : 'All stocked';
+
+      // KPI: Top Product (by units sold across live orders)
+      const unitsSold = {};
+      liveOrders.forEach(o => (o.items || []).forEach(item => {
+        unitsSold[item.name] = (unitsSold[item.name] || 0) + (item.qty || 1);
+      }));
+      const topEntry = Object.entries(unitsSold).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById('kpiTopProduct').textContent = topEntry ? topEntry[0] : '—';
+      document.getElementById('kpiTopProductSub').textContent = topEntry ? `${topEntry[1]} sold` : 'No sales yet';
+
+      // Order Status bars
+      const statusCounts = { Pending: 0, Confirmed: 0, Packed: 0, Shipped: 0, Delivered: 0, Cancelled: 0 };
+      orders.forEach(o => { if (statusCounts[o.status] !== undefined) statusCounts[o.status]++; });
+      const maxCount = Math.max(1, ...Object.values(statusCounts));
+      const statusColorClass = { Pending: 'pending', Confirmed: 'approved', Packed: 'approved', Shipped: 'approved', Delivered: 'approved', Cancelled: 'canceled' };
+
+      document.getElementById('statusList').innerHTML = Object.entries(statusCounts).map(([label, count]) => `
+        <div class="status-item">
+          <span class="status-label">${label}</span>
+          <div class="status-bar-bg">
+            <div class="status-bar-fill ${statusColorClass[label]}" style="width: ${Math.round((count / maxCount) * 100)}%;"></div>
+          </div>
+          <span class="status-count">${count} Order${count === 1 ? '' : 's'}</span>
+        </div>
+      `).join('');
+
+      // Daily Sales chart - last 7 calendar days, using each order's date
+      const dayLabels = [];
+      const dayTotals = [];
+      const today = new Date('2026-08-08'); // matches the site's current date context
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        dayLabels.push(d.toLocaleDateString('en-US', { weekday: 'short' }));
+        const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+        const total = liveOrders
+          .filter(o => o.date === dateStr)
+          .reduce((sum, o) => sum + (typeof o.total === 'number' ? o.total : parseFloat(o.total) || 0), 0);
+        dayTotals.push(total);
+      }
+
       const ctx = document.getElementById('dailySalesChart').getContext('2d');
+      const maxDay = dayTotals.indexOf(Math.max(...dayTotals));
 
       new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          labels: dayLabels,
           datasets: [{
             label: 'Sales (PHP)',
-            data: [2800, 3400, 1900, 3100, 4800, 3600, 2200],
-            backgroundColor: [
-              '#c48b78',
-              '#c48b78',
-              '#c48b78',
-              '#c48b78',
-              '#5c3214',
-              '#c48b78',
-              '#c48b78'
-            ],
+            data: dayTotals,
+            backgroundColor: dayTotals.map((_, i) => i === maxDay ? '#5c3214' : '#c48b78'),
             borderRadius: 8,
             borderSkipped: false
           }]
@@ -547,7 +578,7 @@
           }
         }
       });
-    });
+    }
   </script>
 </body>
 </html>

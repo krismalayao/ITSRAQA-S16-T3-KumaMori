@@ -641,18 +641,13 @@
         </div>
       </div>
 
-      <!-- Status control: lets the admin move an order to any tracking stage -->
+      <!-- Status control: lets the admin move an order forward one stage at a
+           time (options are rebuilt per-order by populateStatusOptions()) -->
       <div class="modal-actions" id="modalActionButtons">
-        <select id="statusSelect" class="filter-select" style="flex:1;">
-          <option value="Pending">Pending</option>
-          <option value="Confirmed">Confirmed</option>
-          <option value="Packed">Packed</option>
-          <option value="Shipped">Shipped</option>
-          <option value="Delivered">Delivered</option>
-          <option value="Cancelled">Cancelled</option>
-        </select>
+        <select id="statusSelect" class="filter-select" style="flex:1;"></select>
         <button type="button" class="btn-approve" id="updateStatusBtn" style="flex:none; padding:10px 24px;">Update Status</button>
       </div>
+      <p id="modalStatusNote" style="font-size:0.82rem; opacity:0.7; margin-top:8px; display:none;">This order is in a final state and can no longer be updated.</p>
     </div>
   </div>
 
@@ -665,6 +660,25 @@
 
     function statusBadgeHtml(status) {
       return `<span class="status-badge ${status}">${status}</span>`;
+    }
+
+    // Rebuilds the status dropdown so it only ever offers this order's
+    // current status plus the stages still ahead of it (or Cancelled) -
+    // enforced by getNextAllowedStatuses() in auth.js. Locks the control
+    // entirely once an order is Delivered or Cancelled.
+    function populateStatusOptions(currentStatus) {
+      const select = document.getElementById('statusSelect');
+      const updateBtn = document.getElementById('updateStatusBtn');
+      const note = document.getElementById('modalStatusNote');
+      const allowed = getNextAllowedStatuses(currentStatus); // from auth.js
+
+      select.innerHTML = allowed.map(s => `<option value="${s}">${s}</option>`).join('');
+      select.value = currentStatus;
+
+      const isFinal = allowed.length === 1 && allowed[0] === currentStatus;
+      select.disabled = isFinal;
+      updateBtn.disabled = isFinal;
+      note.style.display = isFinal ? 'block' : 'none';
     }
 
     // Builds one table row's worth of cells from an order record
@@ -725,7 +739,8 @@
       updateStatusBtn.addEventListener('click', () => {
         if (!activeOrderId) return;
         const newStatus = document.getElementById('statusSelect').value;
-        updateOrderStatus(activeOrderId, newStatus); // from auth.js
+        const updated = updateOrderStatus(activeOrderId, newStatus); // from auth.js
+        if (!updated) return; // transition wasn't allowed (e.g. tried to go backward)
         renderSales();
         closeModal();
       });
@@ -763,7 +778,7 @@
       const badge = document.getElementById('modalStatusBadge');
       badge.className = `status-badge ${order.status}`;
       badge.textContent = order.status;
-      document.getElementById('statusSelect').value = order.status;
+      populateStatusOptions(order.status || 'Pending');
 
       // Customizations — one block per item, listing that item's edits
       const customBox = document.getElementById('modalCustomizations');
