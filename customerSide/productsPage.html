@@ -325,7 +325,7 @@ function productCardHtml(product) {
         ? `<img src="${img}" alt="${product.name}">`
         : `<i class="fa-solid fa-gift" style="font-size:3rem;color:var(--price);"></i>`;
 
-    const outOfStock = Number(product.stock) <= 0;
+    const outOfStock = (product.stock !== null && product.stock !== undefined) && Number(product.stock) <= 0;
     
     // Check if explicitly marked Bestseller = "Yes" OR fallback to bear
     const isBestseller = product.bestseller === 'Yes' || (!product.bestseller && product.name.toLowerCase().includes('bear'));

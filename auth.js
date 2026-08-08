@@ -353,63 +353,463 @@ const defaultInventory = [
     "status": "in-stock"
   },
   {
-    "name": "Glass Pastel Pink Bead (4mm)",
-    "category": "Beads",
-    "stock": 200,
+    "name": "Leather Strap - Pink (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
     "unit": "pcs",
-    "minThreshold": 50,
+    "minThreshold": 10,
     "updated": "August 04, 2026",
     "id": 27,
     "status": "in-stock"
   },
   {
-    "name": "Glass Pastel Pink Bead (8mm)",
-    "category": "Beads",
-    "stock": 12,
+    "name": "Leather Strap - Orange (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
     "unit": "pcs",
-    "minThreshold": 20,
-    "updated": "August 02, 2026",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
     "id": 28,
-    "status": "low-stock"
+    "status": "in-stock"
   },
   {
-    "name": "Glass Sky Blue Bead (6mm)",
-    "category": "Beads",
-    "stock": 180,
+    "name": "Leather Strap - Yellow (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
     "unit": "pcs",
-    "minThreshold": 30,
+    "minThreshold": 10,
     "updated": "August 04, 2026",
     "id": 29,
     "status": "in-stock"
   },
   {
-    "name": "Glass Lavender Bead (6mm)",
-    "category": "Beads",
-    "stock": 95,
+    "name": "Leather Strap - Green (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
     "unit": "pcs",
-    "minThreshold": 25,
+    "minThreshold": 10,
     "updated": "August 04, 2026",
     "id": 30,
     "status": "in-stock"
   },
   {
-    "name": "Acrylic Mint Green Bead (6mm)",
-    "category": "Beads",
-    "stock": 210,
+    "name": "Leather Strap - Blue (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
     "unit": "pcs",
-    "minThreshold": 40,
+    "minThreshold": 10,
     "updated": "August 04, 2026",
     "id": 31,
     "status": "in-stock"
   },
   {
-    "name": "Metallic Gold Spacer Bead (3mm)",
-    "category": "Beads",
-    "stock": 300,
+    "name": "Leather Strap - Purple (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
     "unit": "pcs",
-    "minThreshold": 60,
+    "minThreshold": 10,
     "updated": "August 04, 2026",
     "id": 32,
+    "status": "in-stock"
+  },
+  {
+    "name": "Leather Strap - White (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 33,
+    "status": "in-stock"
+  },
+  {
+    "name": "Leather Strap - Light Grey (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 34,
+    "status": "in-stock"
+  },
+  {
+    "name": "Leather Strap - Dark Grey (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 35,
+    "status": "in-stock"
+  },
+  {
+    "name": "Leather Strap - Black (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 36,
+    "status": "in-stock"
+  },
+  {
+    "name": "Leather Strap - Brown (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 37,
+    "status": "in-stock"
+  },
+  {
+    "name": "Leather Strap - Beige (20cm)",
+    "category": "Leather Straps",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 38,
+    "status": "in-stock"
+  },
+  {
+    "name": "Letter Bead - Peach",
+    "category": "Letter Accents",
+    "stock": 60,
+    "unit": "pcs",
+    "minThreshold": 15,
+    "updated": "August 04, 2026",
+    "id": 39,
+    "status": "in-stock"
+  },
+  {
+    "name": "Letter Bead - Light Yellow",
+    "category": "Letter Accents",
+    "stock": 60,
+    "unit": "pcs",
+    "minThreshold": 15,
+    "updated": "August 04, 2026",
+    "id": 40,
+    "status": "in-stock"
+  },
+  {
+    "name": "Letter Bead - Light Blue",
+    "category": "Letter Accents",
+    "stock": 60,
+    "unit": "pcs",
+    "minThreshold": 15,
+    "updated": "August 04, 2026",
+    "id": 41,
+    "status": "in-stock"
+  },
+  {
+    "name": "Letter Bead - Light Lavender",
+    "category": "Letter Accents",
+    "stock": 60,
+    "unit": "pcs",
+    "minThreshold": 15,
+    "updated": "August 04, 2026",
+    "id": 42,
+    "status": "in-stock"
+  },
+  {
+    "name": "Letter Bead - Gold",
+    "category": "Letter Accents",
+    "stock": 60,
+    "unit": "pcs",
+    "minThreshold": 15,
+    "updated": "August 04, 2026",
+    "id": 43,
+    "status": "in-stock"
+  },
+  {
+    "name": "Letter Bead - Silver",
+    "category": "Letter Accents",
+    "stock": 60,
+    "unit": "pcs",
+    "minThreshold": 15,
+    "updated": "August 04, 2026",
+    "id": 44,
+    "status": "in-stock"
+  },
+  {
+    "name": "Glass Bead - Pink",
+    "category": "Beads",
+    "stock": 150,
+    "unit": "pcs",
+    "minThreshold": 30,
+    "updated": "August 04, 2026",
+    "id": 45,
+    "status": "in-stock"
+  },
+  {
+    "name": "Glass Bead - Yellow",
+    "category": "Beads",
+    "stock": 150,
+    "unit": "pcs",
+    "minThreshold": 30,
+    "updated": "August 04, 2026",
+    "id": 46,
+    "status": "in-stock"
+  },
+  {
+    "name": "Glass Bead - Blue",
+    "category": "Beads",
+    "stock": 150,
+    "unit": "pcs",
+    "minThreshold": 30,
+    "updated": "August 04, 2026",
+    "id": 47,
+    "status": "in-stock"
+  },
+  {
+    "name": "Glass Bead - Purple",
+    "category": "Beads",
+    "stock": 150,
+    "unit": "pcs",
+    "minThreshold": 30,
+    "updated": "August 04, 2026",
+    "id": 48,
+    "status": "in-stock"
+  },
+  {
+    "name": "Glass Bead - Pastel Pink",
+    "category": "Beads",
+    "stock": 150,
+    "unit": "pcs",
+    "minThreshold": 30,
+    "updated": "August 04, 2026",
+    "id": 49,
+    "status": "in-stock"
+  },
+  {
+    "name": "Glass Bead - White",
+    "category": "Beads",
+    "stock": 150,
+    "unit": "pcs",
+    "minThreshold": 30,
+    "updated": "August 04, 2026",
+    "id": 50,
+    "status": "in-stock"
+  },
+  {
+    "name": "Glass Bead - Black",
+    "category": "Beads",
+    "stock": 150,
+    "unit": "pcs",
+    "minThreshold": 30,
+    "updated": "August 04, 2026",
+    "id": 51,
+    "status": "in-stock"
+  },
+  {
+    "name": "Spacer Set - Pastel Palette",
+    "category": "Spacers",
+    "stock": 50,
+    "unit": "sets",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 52,
+    "status": "in-stock"
+  },
+  {
+    "name": "Spacer Set - Soft Palette",
+    "category": "Spacers",
+    "stock": 50,
+    "unit": "sets",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 53,
+    "status": "in-stock"
+  },
+  {
+    "name": "Spacer Set - Warm Palette",
+    "category": "Spacers",
+    "stock": 50,
+    "unit": "sets",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 54,
+    "status": "in-stock"
+  },
+  {
+    "name": "Moon Charm - Blush",
+    "category": "Moon Charms",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 55,
+    "status": "in-stock"
+  },
+  {
+    "name": "Moon Charm - Cream",
+    "category": "Moon Charms",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 56,
+    "status": "in-stock"
+  },
+  {
+    "name": "Moon Charm - Rose",
+    "category": "Moon Charms",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 57,
+    "status": "in-stock"
+  },
+  {
+    "name": "Moon Charm - Lilac",
+    "category": "Moon Charms",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 58,
+    "status": "in-stock"
+  },
+  {
+    "name": "Moon Charm - Mint",
+    "category": "Moon Charms",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 59,
+    "status": "in-stock"
+  },
+  {
+    "name": "Moon Charm - Sky Blue",
+    "category": "Moon Charms",
+    "stock": 40,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 60,
+    "status": "in-stock"
+  },
+  {
+    "name": "Charm - Star",
+    "category": "Charms",
+    "stock": 45,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 61,
+    "status": "in-stock"
+  },
+  {
+    "name": "Charm - Heart",
+    "category": "Charms",
+    "stock": 45,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 62,
+    "status": "in-stock"
+  },
+  {
+    "name": "Charm - Moon",
+    "category": "Charms",
+    "stock": 45,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 63,
+    "status": "in-stock"
+  },
+  {
+    "name": "Charm - Flower",
+    "category": "Charms",
+    "stock": 45,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 64,
+    "status": "in-stock"
+  },
+  {
+    "name": "Figurine - Bear",
+    "category": "Figurines",
+    "stock": 45,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 65,
+    "status": "in-stock"
+  },
+  {
+    "name": "Figurine - Star",
+    "category": "Figurines",
+    "stock": 45,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 66,
+    "status": "in-stock"
+  },
+  {
+    "name": "Figurine - Heart",
+    "category": "Figurines",
+    "stock": 45,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 67,
+    "status": "in-stock"
+  },
+  {
+    "name": "Figurine - Cloud",
+    "category": "Figurines",
+    "stock": 45,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 68,
+    "status": "in-stock"
+  },
+  {
+    "name": "Pendant - Bear Paw",
+    "category": "Pendants",
+    "stock": 35,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 69,
+    "status": "in-stock"
+  },
+  {
+    "name": "Pendant - Bell",
+    "category": "Pendants",
+    "stock": 35,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 70,
+    "status": "in-stock"
+  },
+  {
+    "name": "Pendant - Ribbon",
+    "category": "Pendants",
+    "stock": 35,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 71,
+    "status": "in-stock"
+  },
+  {
+    "name": "Pendant - Cloud",
+    "category": "Pendants",
+    "stock": 35,
+    "unit": "pcs",
+    "minThreshold": 10,
+    "updated": "August 04, 2026",
+    "id": 72,
     "status": "in-stock"
   },
   {
@@ -419,7 +819,7 @@ const defaultInventory = [
     "unit": "meters",
     "minThreshold": 10,
     "updated": "August 04, 2026",
-    "id": 33,
+    "id": 73,
     "status": "in-stock"
   },
   {
@@ -428,8 +828,8 @@ const defaultInventory = [
     "stock": 8,
     "unit": "meters",
     "minThreshold": 15,
-    "updated": "August 01, 2026",
-    "id": 34,
+    "updated": "August 04, 2026",
+    "id": 74,
     "status": "low-stock"
   },
   {
@@ -438,8 +838,8 @@ const defaultInventory = [
     "stock": 0,
     "unit": "pcs",
     "minThreshold": 15,
-    "updated": "July 28, 2026",
-    "id": 35,
+    "updated": "August 04, 2026",
+    "id": 75,
     "status": "out-stock"
   },
   {
@@ -449,7 +849,7 @@ const defaultInventory = [
     "unit": "pcs",
     "minThreshold": 15,
     "updated": "August 04, 2026",
-    "id": 36,
+    "id": 76,
     "status": "in-stock"
   },
   {
@@ -459,17 +859,7 @@ const defaultInventory = [
     "unit": "pcs",
     "minThreshold": 30,
     "updated": "August 04, 2026",
-    "id": 37,
-    "status": "in-stock"
-  },
-  {
-    "name": "Brown Leather Strap (20cm)",
-    "category": "Straps & Cords",
-    "stock": 45,
-    "unit": "pcs",
-    "minThreshold": 10,
-    "updated": "August 01, 2026",
-    "id": 38,
+    "id": 77,
     "status": "in-stock"
   }
 ];
@@ -501,7 +891,7 @@ const defaultProducts = [
   {
     "name": "Leather Keychain",
     "price": 145,
-    "stock": 6,
+    "stock": null,
     "visible": "Shown",
     "custom": "Yes",
     "description": "Create a personalized leather keychain with your name, favorite colors, and charms for a timeless everyday accessory.",
@@ -510,7 +900,7 @@ const defaultProducts = [
   {
     "name": "Beaded Keychain",
     "price": 140,
-    "stock": 22,
+    "stock": null,
     "visible": "Shown",
     "custom": "Yes",
     "description": "Express your personality with colorful beads, custom names, and unique designs made to match your style.",
@@ -519,7 +909,7 @@ const defaultProducts = [
   {
     "name": "Charm Keychain",
     "price": 110,
-    "stock": 3,
+    "stock": null,
     "visible": "Shown",
     "custom": "Yes",
     "description": "Mix and match adorable charms, colors, and accessories to create a one-of-a-kind keychain that's uniquely yours.",
@@ -543,6 +933,120 @@ function saveProducts(items) {
 // helpers let the admin side read and update across every customer's list
 // from one place, without changing how orders are stored per-customer.
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Material deduction — approving an order (status -> Confirmed) consumes the
+// actual inventory materials the customer picked on the Customize page.
+// These color/palette names must stay in sync with customizePage.html's
+// colorNames object - they're duplicated here since the two files can't
+// share a JS module in this setup.
+// ---------------------------------------------------------------------------
+const CUSTOMIZATION_COLOR_NAMES = {
+  leather: ['Pink', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'White', 'Light Grey', 'Dark Grey', 'Black', 'Brown', 'Beige'],
+  letter: ['Peach', 'Light Yellow', 'Light Blue', 'Light Lavender', 'Gold', 'Silver'],
+  bead: ['Pink', 'Yellow', 'Blue', 'Purple', 'Pastel Pink', 'White', 'Black'],
+  spacer: ['Pastel Palette', 'Soft Palette', 'Warm Palette'],
+  moon: ['Blush', 'Cream', 'Rose', 'Lilac', 'Mint', 'Sky Blue']
+};
+
+function adjustMaterialsForItem(item, sign) {
+  const state = item.customState;
+  if (!state) return; // no structured selection data (e.g. legacy/dummy orders) - nothing precise to adjust
+
+  const inventory = getInventory();
+  const adjust = (name, qty) => {
+    const idx = inventory.findIndex(i => i.name === name);
+    if (idx === -1) return;
+    inventory[idx].stock = Math.max(0, inventory[idx].stock + sign * qty);
+    inventory[idx].status = inventory[idx].stock === 0
+      ? 'out-stock'
+      : (inventory[idx].stock <= inventory[idx].minThreshold ? 'low-stock' : 'in-stock');
+    inventory[idx].updated = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  };
+  const qty = item.qty || 1;
+  const adjustLetters = () => {
+    if (!state.letters) return;
+    for (const ch of state.letters.toUpperCase()) {
+      if (/[A-Z]/.test(ch)) adjust(`Alphabet Bead - '${ch}'`, qty);
+    }
+  };
+
+  if (item.name === 'Leather Keychain') {
+    if (state.leatherIndex != null) {
+      const c = CUSTOMIZATION_COLOR_NAMES.leather[state.leatherIndex];
+      if (c) adjust(`Leather Strap - ${c} (20cm)`, qty);
+    }
+    if (state.letterIndex != null) {
+      const c = CUSTOMIZATION_COLOR_NAMES.letter[state.letterIndex];
+      if (c) adjust(`Letter Bead - ${c}`, qty);
+    }
+    adjust('Gold Lobster Clasp', qty); // generic assembly hardware, no color option on the form
+    if (state.charmMain) adjust(`Charm - ${state.charmMain}`, qty);
+    (state.extraCharms || []).forEach(c => adjust(`Charm - ${c}`, qty));
+    (state.extraPendants || []).forEach(p => adjust(`Pendant - ${p}`, qty));
+    adjustLetters();
+  } else if (item.name === 'Beaded Keychain' || item.name === 'Charm Keychain') {
+    adjust('Clear Elastic Nylon Band (0.8mm)', qty); // base cord/string every beaded/charm piece is strung on
+    adjust('Silver Jump Rings (6mm)', qty);
+    adjustLetters();
+    if (state.figurineMain) adjust(`Figurine - ${state.figurineMain}`, qty);
+    (state.extraFigurines || []).forEach(f => adjust(`Figurine - ${f}`, qty));
+    (state.beadIndexes || []).forEach(idx => {
+      const c = CUSTOMIZATION_COLOR_NAMES.bead[idx];
+      if (c) adjust(`Glass Bead - ${c}`, qty);
+    });
+    (state.spacerIndexes || []).forEach(idx => {
+      const p = CUSTOMIZATION_COLOR_NAMES.spacer[idx];
+      if (p) adjust(`Spacer Set - ${p}`, qty);
+    });
+    if (state.moonIndex != null) {
+      const c = CUSTOMIZATION_COLOR_NAMES.moon[state.moonIndex];
+      if (c) adjust(`Moon Charm - ${c}`, qty);
+    }
+  }
+
+  saveInventory(inventory);
+}
+
+function deductMaterialsForItem(item) { adjustMaterialsForItem(item, -1); }
+function restockMaterialsForItem(item) { adjustMaterialsForItem(item, 1); }
+
+// Plain (non-customizable) products, e.g. Plush Bear, deduct/restock straight
+// from the storefront product catalog stock instead of inventory materials.
+function adjustProductStockForItem(item, sign) {
+  if (item.customState) return; // made-to-order customizations use inventory materials instead
+  const products = getProducts();
+  const idx = products.findIndex(p => p.name === item.name);
+  if (idx === -1 || products[idx].stock === null || products[idx].stock === undefined) return; // made-to-order product, nothing to track
+  const qty = item.qty || 1;
+  products[idx].stock = Math.max(0, (Number(products[idx].stock) || 0) + sign * qty);
+  saveProducts(products);
+}
+
+function deductProductStockForItem(item) { adjustProductStockForItem(item, -1); }
+function restockProductStockForItem(item) { adjustProductStockForItem(item, 1); }
+
+// Routes each order item to the right place: made-to-order customizations
+// consume inventory materials, plain stocked products consume product stock.
+function deductStockForOrder(order) {
+  (order.items || []).forEach(item => {
+    if (item.customState) {
+      deductMaterialsForItem(item);
+    } else {
+      deductProductStockForItem(item);
+    }
+  });
+}
+
+function restockStockForOrder(order) {
+  (order.items || []).forEach(item => {
+    if (item.customState) {
+      restockMaterialsForItem(item);
+    } else {
+      restockProductStockForItem(item);
+    }
+  });
+}
+
 function getAllOrders() {
   const orders = [];
   for (let i = 0; i < localStorage.length; i++) {
@@ -558,6 +1062,24 @@ function getAllOrders() {
   return orders;
 }
 
+// ---------------------------------------------------------------------------
+// Order status flow — statuses move forward only:
+// Pending -> Confirmed -> Packed -> Shipped -> Delivered.
+// Cancelled can be reached from any non-final state. Delivered and Cancelled
+// are final: once there, an order can no longer be changed at all, and an
+// order can never move backward (e.g. Confirmed can't go back to Pending).
+// ---------------------------------------------------------------------------
+const ORDER_STATUS_FLOW = ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Delivered'];
+
+function getNextAllowedStatuses(currentStatus) {
+  if (currentStatus === 'Cancelled' || currentStatus === 'Delivered') {
+    return [currentStatus]; // final states - no further changes allowed
+  }
+  const idx = ORDER_STATUS_FLOW.indexOf(currentStatus);
+  const forward = idx === -1 ? ORDER_STATUS_FLOW : ORDER_STATUS_FLOW.slice(idx);
+  return [...forward, 'Cancelled'];
+}
+
 function updateOrderStatus(orderId, newStatus) {
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
@@ -565,9 +1087,29 @@ function updateOrderStatus(orderId, newStatus) {
       const list = JSON.parse(localStorage.getItem(key)) || [];
       const index = list.findIndex(o => (o.id || o.orderId) === orderId);
       if (index !== -1) {
-        list[index].status = newStatus;
+        const order = list[index];
+        const currentStatus = order.status || 'Pending';
+
+        // Reject backward or otherwise disallowed transitions (e.g. Confirmed -> Pending)
+        if (!getNextAllowedStatuses(currentStatus).includes(newStatus)) {
+          return null;
+        }
+
+        // Stock/materials are deducted exactly once, the moment an order first becomes Confirmed
+        if (newStatus === 'Confirmed' && !order.materialsDeducted) {
+          deductStockForOrder(order);
+          order.materialsDeducted = true;
+        }
+
+        // If an order that already consumed stock gets Cancelled, give it back
+        if (newStatus === 'Cancelled' && order.materialsDeducted) {
+          restockStockForOrder(order);
+          order.materialsDeducted = false;
+        }
+
+        order.status = newStatus;
         localStorage.setItem(key, JSON.stringify(list));
-        return list[index];
+        return order;
       }
     }
   }
@@ -599,7 +1141,11 @@ if (!localStorage.getItem('km_orders_seeded')) {
         status: "Confirmed",
         deliveryMethod: "Delivery", address: "Diliman, Quezon City",
         paymentMethod: "GCash", paymentRef: "0811-9923-1100",
-        items: [{ name: "Leather Keychain", qty: 1, price: 180, customizations: ["Letters: K.V.", "Charm: Star", "Leather Color", "Letter Color"] }],
+        items: [{
+          name: "Leather Keychain", qty: 1, price: 180,
+          customizations: ["Letters: K.V.", "Charm: Star", "Leather Color: Brown", "Letter Color: Gold"],
+          customState: { letters: "K.V.", charmMain: "Star", figurineMain: null, extraCharms: [], extraPendants: [], extraFigurines: [], leatherIndex: 10, letterIndex: 4, beadIndexes: [], spacerIndexes: [], moonIndex: null }
+        }],
         subtotal: 180, deliveryFee: 50, total: 230
       }
     ],
@@ -611,7 +1157,11 @@ if (!localStorage.getItem('km_orders_seeded')) {
         status: "Packed",
         deliveryMethod: "Pickup", address: "Pickup at Kuma Mori Main Workshop",
         paymentMethod: "GCash", paymentRef: "0722-1102-4400",
-        items: [{ name: "Beaded Keychain", qty: 1, price: 150, customizations: ["Letters: CG", "Figurine: Bear"] }],
+        items: [{
+          name: "Beaded Keychain", qty: 1, price: 150,
+          customizations: ["Letters: CG", "Figurine: Bear"],
+          customState: { letters: "CG", charmMain: null, figurineMain: "Bear", extraCharms: [], extraPendants: [], extraFigurines: [], leatherIndex: null, letterIndex: null, beadIndexes: [], spacerIndexes: [], moonIndex: null }
+        }],
         subtotal: 150, deliveryFee: 0, total: 150
       }
     ],
@@ -623,7 +1173,11 @@ if (!localStorage.getItem('km_orders_seeded')) {
         status: "Cancelled",
         deliveryMethod: "Delivery", address: "Kapitolyo, Pasig City",
         paymentMethod: "GCash", paymentRef: "0988-3341-9900",
-        items: [{ name: "Charm Keychain", qty: 1, price: 140, customizations: ["Figurine: Heart"] }],
+        items: [{
+          name: "Charm Keychain", qty: 1, price: 140,
+          customizations: ["Figurine: Heart"],
+          customState: { letters: "", charmMain: null, figurineMain: "Heart", extraCharms: [], extraPendants: [], extraFigurines: [], leatherIndex: null, letterIndex: null, beadIndexes: [], spacerIndexes: [], moonIndex: null }
+        }],
         subtotal: 140, deliveryFee: 50, total: 190
       }
     ],
@@ -647,7 +1201,11 @@ if (!localStorage.getItem('km_orders_seeded')) {
         status: "Pending",
         deliveryMethod: "Delivery", address: "BGC, Taguig City",
         paymentMethod: "COD", paymentRef: "N/A (Cash on Delivery)",
-        items: [{ name: "Beaded Keychain", qty: 1, price: 150, customizations: ["Letters: SR", "Figurine: Cloud"] }],
+        items: [{
+          name: "Beaded Keychain", qty: 1, price: 150,
+          customizations: ["Letters: SR", "Figurine: Cloud"],
+          customState: { letters: "SR", charmMain: null, figurineMain: "Cloud", extraCharms: [], extraPendants: [], extraFigurines: [], leatherIndex: null, letterIndex: null, beadIndexes: [], spacerIndexes: [], moonIndex: null }
+        }],
         subtotal: 150, deliveryFee: 50, total: 200
       }
     ]

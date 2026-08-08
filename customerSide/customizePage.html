@@ -782,10 +782,10 @@ document.getElementById('add-cart-btn').addEventListener('click', () => {
     }
     
     const selectedLeather = document.querySelector('#group-leather .swatch.selected');
-    if(selectedLeather) edits.push(`Leather Color`);
+    if(selectedLeather) edits.push(`Leather Color: ${colorNames.leather[parseInt(selectedLeather.dataset.index, 10)]}`);
 
     const selectedLetter = document.querySelector('#group-letter .swatch.selected');
-    if(selectedLetter) edits.push(`Letter Color`);
+    if(selectedLetter) edits.push(`Letter Color: ${colorNames.letter[parseInt(selectedLetter.dataset.index, 10)]}`);
 
     // Extra charm fields (added via "+ Add another charm"), excluding the main select above
     document.querySelectorAll('#charm-field-wrap select').forEach(sel => {
@@ -806,15 +806,21 @@ document.getElementById('add-cart-btn').addEventListener('click', () => {
 
     // Bead Color (multi-select swatches)
     const selectedBeads = document.querySelectorAll('#group-bead .swatch.selected');
-    if (selectedBeads.length > 0) edits.push(`Bead Color (${selectedBeads.length} selected)`);
+    if (selectedBeads.length > 0) {
+        const beadNames = Array.from(selectedBeads).map(s => colorNames.bead[parseInt(s.dataset.index, 10)]);
+        edits.push(`Bead Colors: ${beadNames.join(', ')}`);
+    }
 
     // Spacers (multi-select palette rows)
     const selectedSpacers = document.querySelectorAll('#group-spacer .palette-row.selected');
-    if (selectedSpacers.length > 0) edits.push(`Spacers (${selectedSpacers.length} selected)`);
+    if (selectedSpacers.length > 0) {
+        const spacerNames = Array.from(selectedSpacers).map(r => colorNames.spacer[parseInt(r.dataset.index, 10)]);
+        edits.push(`Spacers: ${spacerNames.join(', ')}`);
+    }
 
     // Moon Color (single-select swatch)
     const selectedMoon = document.querySelector('#group-moon .swatch.selected');
-    if (selectedMoon) edits.push('Moon Color');
+    if (selectedMoon) edits.push(`Moon Color: ${colorNames.moon[parseInt(selectedMoon.dataset.index, 10)]}`);
 
     const newItem = {
         name: config.name,
