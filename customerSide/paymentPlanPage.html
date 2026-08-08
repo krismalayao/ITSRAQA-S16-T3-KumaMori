@@ -75,6 +75,52 @@ body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
     margin-bottom:35px;border-radius:2px;opacity:0.85;
 }
 
+/* Session Timer Banner */
+.timer-banner {
+    background-color: var(--bg-soft);
+    border: 1.5px solid var(--card-border);
+    border-radius: 20px;
+    padding: 14px 24px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+    color: var(--text-brown);
+}
+
+.timer-banner.warning {
+    background-color: #fef2f2;
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+.timer-clock {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* Payment Mismatch Alert Box */
+.mismatch-alert-box {
+    background-color: #fef2f2;
+    border: 2px solid #ef4444;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 30px;
+    color: #991b1b;
+}
+
+.mismatch-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+}
+
+.mismatch-text { font-size: 0.95rem; color: #7f1d1d; line-height: 1.4; }
+
 .pill-card{
     background:#fff;border-radius:30px;
     box-shadow:0 8px 24px rgba(92,50,20,0.08);
@@ -205,7 +251,7 @@ body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
 }
 
 .gcash-account-info p {
-    white-space: normal; /* Fixed overflow issue */
+    white-space: normal;
     word-break: break-word;
 }
 
@@ -335,6 +381,11 @@ body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
     .toast-notification.show {
         transform: translate(-50%, 0);
     }
+    .timer-banner {
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-start;
+    }
 }
 </style>
 </head>
@@ -346,13 +397,28 @@ body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
 <div class="page-wrap">
     
     <div class="page-header">
-        <a href="cartPage.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        <a href="cartPage.html" id="back-nav-btn" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
         <h1 class="page-title">Payment Plan</h1>
     </div>
 
     <div class="divider"></div>
 
-    <div class="pill-card">
+    <!-- Session Countdown Timer Banner -->
+    <div id="checkout-timer-banner" class="timer-banner">
+        <span><i class="fa-regular fa-clock" style="margin-right: 8px;"></i> Checkout Session Expires In:</span>
+        <span id="timer-clock" class="timer-clock">00:05</span>
+    </div>
+
+    <!-- Payment Mismatch Warning Box (Hidden by default unless editing an order) -->
+    <div id="mismatch-banner" class="mismatch-alert-box" style="display: none;">
+        <div class="mismatch-header">
+            <i class="fa-solid fa-circle-exclamation" style="color:#ef4444;"></i>
+            <span>Payment Issue Detected</span>
+        </div>
+        <p id="mismatch-note-text" class="mismatch-text"></p>
+    </div>
+
+    <div class="pill-card" id="delivery-selector-card">
         <span class="pill-title">Delivery Method</span>
         <div class="pill-options">
             <button type="button" class="pill-btn" id="btn-pickup" onclick="setDeliveryMethod('pickup')">
@@ -436,7 +502,7 @@ body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
         </div>
     </div>
 
-    <div class="content-card">
+    <div class="content-card" id="summary-card">
         <h2 class="card-header-title">Order Summary</h2>
         <div class="order-summary-list" id="summary-items-list"></div>
         <div class="summary-item">
@@ -468,14 +534,26 @@ body{background:#fff;color:var(--text-brown);overflow-x:hidden;}
     <span id="toast-message">Please fill in all required fields.</span>
 </div>
 
+<!-- Order Success Modal -->
 <div class="modal-overlay" id="success-modal">
     <div class="modal-card">
         <div class="modal-icon">
             <i class="fa-solid fa-check"></i>
         </div>
-        <h2 class="modal-title">Order Placed!</h2>
-        <p class="modal-desc">Thank you for ordering with Kuma Mori! We have received your order and are preparing your items with love.</p>
+        <h2 class="modal-title" id="modal-title-text">Order Placed!</h2>
+        <p class="modal-desc" id="modal-desc-text">Thank you for ordering with Kuma Mori! We have received your order and are preparing your items with love.</p>
         <button class="btn-place-order" style="width:100%;" onclick="finishOrder()">Track My Order</button>
+    </div>
+</div>
+
+<!-- Timeout Modal -->
+<div class="modal-overlay" id="timeout-modal">
+    <div class="modal-card">
+        <div class="modal-icon" style="background:#fef2f2; color:#ef4444;">
+            <i class="fa-solid fa-hourglass-end"></i>
+        </div>
+        <h2 class="modal-title">Time is Up!</h2>
+        <p class="modal-desc" style="margin-bottom:0;">You may checkout the product again after redirecting you to your cart...</p>
     </div>
 </div>
 
@@ -487,6 +565,64 @@ let currentPaymentMethod = 'gcash';
 let cartData = [];
 let subtotalAmount = 0;
 const SHIPPING_FEE = 60;
+let existingOrderId = null;
+
+// ==========================================
+// SESSION COUNTDOWN TIMER & REDIRECT LOGIC
+// ==========================================
+const CHECKOUT_DURATION_SEC = 10 * 60; // Set to 10 minutes
+let countdownTimer = null;
+
+function startSessionTimer() {
+    let startTime = Date.now();
+    sessionStorage.setItem('km_checkout_start_time', startTime);
+
+    function updateClock() {
+        const elapsedSec = Math.floor((Date.now() - parseInt(startTime, 10)) / 1000);
+        const remainingSec = CHECKOUT_DURATION_SEC - elapsedSec;
+
+        const banner = document.getElementById('checkout-timer-banner');
+        const clockEl = document.getElementById('timer-clock');
+
+        if (remainingSec <= 0) {
+            clearInterval(countdownTimer);
+            if (clockEl) clockEl.textContent = "00:00";
+            
+            // Invalidate checkout session
+            clearSessionTimer();
+
+            // Display timeout modal
+            const timeoutModal = document.getElementById('timeout-modal');
+            if (timeoutModal) {
+                timeoutModal.classList.add('active');
+            }
+
+            // Redirect to Cart page after 2.5 seconds
+            setTimeout(() => {
+                window.location.href = 'cartPage.html';
+            }, 2500);
+            return;
+        }
+
+        const mins = Math.floor(remainingSec / 60);
+        const secs = remainingSec % 60;
+        const formattedTime = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+        if (clockEl) clockEl.textContent = formattedTime;
+
+        if (remainingSec <= 120 && banner) {
+            banner.classList.add('warning');
+        }
+    }
+
+    updateClock();
+    countdownTimer = setInterval(updateClock, 1000);
+}
+
+function clearSessionTimer() {
+    if (countdownTimer) clearInterval(countdownTimer);
+    sessionStorage.removeItem('km_checkout_start_time');
+}
 
 function getActiveUserKey() {
     const session = JSON.parse(sessionStorage.getItem('km_session') || '{}');
@@ -596,11 +732,120 @@ function updateTotals() {
     document.getElementById('bar-total-val').textContent = '₱' + finalTotal.toFixed(2);
 }
 
+function checkOrderEditMode() {
+    const urlParams = new URLSearchParams(window.location.search);
+    existingOrderId = urlParams.get('order');
+
+    if (!existingOrderId) {
+        loadCart();
+        return;
+    }
+
+    const timerBanner = document.getElementById('checkout-timer-banner');
+    if (timerBanner) timerBanner.style.display = 'none';
+
+    const backBtn = document.getElementById('back-nav-btn');
+    backBtn.href = `orderTrackingPage.html?order=${existingOrderId}`;
+
+    const placeBtn = document.getElementById('place-order-btn');
+    placeBtn.innerText = 'Submit Updated Reference';
+
+    let orders = [];
+    if (typeof getUserOrders === 'function') {
+        orders = getUserOrders();
+    } else {
+        const activeUserKey = getActiveUserKey();
+        orders = JSON.parse(localStorage.getItem(`km_orders_${activeUserKey}`) || '[]');
+    }
+
+    const targetOrder = orders.find(o => (o.id || o.orderId) === existingOrderId);
+    if (!targetOrder) return;
+
+    const adminNote = targetOrder.adminNote || targetOrder.paymentNote || targetOrder.note;
+    if (targetOrder.status === 'Payment Failed' || adminNote) {
+        const banner = document.getElementById('mismatch-banner');
+        const noteText = document.getElementById('mismatch-note-text');
+        noteText.innerText = adminNote || 'The reference number provided did not match our records. Please re-check and submit.';
+        banner.style.display = 'block';
+    }
+
+    setPaymentMethod('gcash');
+    document.getElementById('btn-cod').style.display = 'none';
+
+    if (targetOrder.paymentRef && targetOrder.paymentRef !== 'N/A (Cash on Delivery)') {
+        document.getElementById('gcash-ref-number').value = targetOrder.paymentRef;
+    }
+
+    if (targetOrder.items && Array.isArray(targetOrder.items)) {
+        cartData = targetOrder.items;
+        subtotalAmount = targetOrder.subtotal || targetOrder.total || 0;
+        
+        const summaryList = document.getElementById('summary-items-list');
+        summaryList.innerHTML = cartData.map(item => `
+            <div class="summary-item">
+                <span>${item.name} (${item.qty || item.quantity || 1}x)</span>
+                <span>₱${((parseFloat(item.price) || 0) * (item.qty || item.quantity || 1)).toFixed(2)}</span>
+            </div>
+        `).join('');
+
+        if (targetOrder.deliveryMethod === 'Pickup') {
+            setDeliveryMethod('pickup');
+        } else {
+            setDeliveryMethod('delivery');
+        }
+
+        document.getElementById('delivery-selector-card').style.display = 'none';
+        document.getElementById('address-card').style.display = 'none';
+        document.getElementById('pickup-card').style.display = 'none';
+
+        updateTotals();
+    }
+}
+
 function handlePlaceOrder() {
     const inputs = document.querySelectorAll('.input-field');
     inputs.forEach(input => input.classList.remove('invalid'));
 
     let hasError = false;
+
+    if (existingOrderId) {
+        const refInput = document.getElementById('gcash-ref-number');
+        const refVal = refInput.value.trim();
+        if (!refVal) {
+            refInput.classList.add('invalid');
+            showErrorToast('Please provide a valid GCash Reference Number.');
+            return;
+        }
+
+        let orders = [];
+        const activeUserKey = getActiveUserKey();
+
+        if (typeof getUserOrders === 'function') {
+            orders = getUserOrders();
+        } else {
+            orders = JSON.parse(localStorage.getItem(`km_orders_${activeUserKey}`) || '[]');
+        }
+
+        const idx = orders.findIndex(o => (o.id || o.orderId) === existingOrderId);
+        if (idx !== -1) {
+            orders[idx].status = 'Pending';
+            orders[idx].paymentRef = refVal;
+            orders[idx].adminNote = '';
+            orders[idx].paymentNote = '';
+
+            if (typeof saveUserOrders === 'function') {
+                saveUserOrders(orders);
+            } else {
+                localStorage.setItem(`km_orders_${activeUserKey}`, JSON.stringify(orders));
+            }
+
+            document.getElementById('modal-title-text').innerText = 'Reference Updated!';
+            document.getElementById('modal-desc-text').innerText = 'Your reference number has been updated. We will verify your payment shortly.';
+            sessionStorage.setItem('kumamori_latest_order', existingOrderId);
+            document.getElementById('success-modal').classList.add('active');
+        }
+        return;
+    }
 
     if (currentDeliveryMethod === 'delivery') {
         const streetInput = document.getElementById('addr-street');
@@ -630,13 +875,13 @@ function handlePlaceOrder() {
         return;
     }
 
+    clearSessionTimer();
+
     const activeUserKey = getActiveUserKey();
     const generatedOrderId = 'K' + Math.floor(100000 + Math.random() * 900000);
     const deliveryCost = currentDeliveryMethod === 'delivery' ? SHIPPING_FEE : 0;
     const finalTotal = subtotalAmount + deliveryCost;
 
-    // Pull whatever the navbar knows about who's logged in, so the order
-    // carries the customer's actual name/email instead of just their key.
     const session = (typeof navGetCurrentUser === 'function') ? navGetCurrentUser() : null;
 
     const address = currentDeliveryMethod === 'delivery'
@@ -669,12 +914,7 @@ function handlePlaceOrder() {
             name: item.name,
             qty: item.qty || item.quantity || 1,
             price: parseFloat(item.price || 0),
-            // Customization details from customizePage.html live on `edits`;
-            // carry them through so Sales Management can display them.
             customizations: Array.isArray(item.edits) ? item.edits : [],
-            // Structured selection data - needed by deductStockForOrder()/
-            // adjustMaterialsForItem() in auth.js to know exactly what to
-            // deduct from inventory when this order is marked Confirmed.
             customState: item.customState || null
         })),
         subtotal: subtotalAmount,
@@ -722,7 +962,11 @@ document.querySelectorAll('.input-field').forEach(input => {
     });
 });
 
-loadCart();
+checkOrderEditMode();
+
+if (!existingOrderId) {
+    startSessionTimer();
+}
 </script>
 
 </body>

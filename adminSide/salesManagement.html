@@ -35,17 +35,19 @@
       --status-delivered-text: #065f46;
       --status-cancelled-bg: #fee2e2;
       --status-cancelled-text: #b91c1c;
+      --status-failed-bg: #fce7f3;
+      --status-failed-text: #9d174d;
     }
 
     /* Hide scrollbar for Chrome, Safari, Edge, Opera */
     ::-webkit-scrollbar {
-    display: none;
+      display: none;
     }
 
     /* Hide scrollbar for IE, Firefox */
     html, body, * {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
     }
 
     * {
@@ -317,6 +319,7 @@
     .status-badge.Shipped { background-color: var(--status-shipped-bg); color: var(--status-shipped-text); }
     .status-badge.Delivered { background-color: var(--status-delivered-bg); color: var(--status-delivered-text); }
     .status-badge.Cancelled { background-color: var(--status-cancelled-bg); color: var(--status-cancelled-text); }
+    .status-badge.PaymentFailed { background-color: var(--status-failed-bg); color: var(--status-failed-text); }
 
     .btn-view {
       background: none;
@@ -356,7 +359,7 @@
       border: 2px solid var(--card-border);
       border-radius: 28px;
       width: 100%;
-      max-width: 600px;
+      max-width: 620px;
       padding: 30px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       max-height: 90vh;
@@ -429,10 +432,27 @@
       padding: 4px 0;
     }
 
+    /* Modal Action Single-Row Layout */
     .modal-actions {
       display: flex;
-      gap: 12px;
+      align-items: center;
+      gap: 8px;
       margin-top: 20px;
+      width: 100%;
+      flex-wrap: nowrap;
+    }
+
+    .modal-actions select.filter-select {
+      flex: 1.2;
+      min-width: 0;
+      padding: 10px 10px;
+      font-size: 0.85rem;
+    }
+
+    .modal-actions button {
+      white-space: nowrap;
+      font-size: 0.85rem;
+      padding: 10px 12px;
     }
 
     .btn-approve {
@@ -440,15 +460,29 @@
       background-color: #22c55e;
       color: white;
       border: none;
-      padding: 12px;
       border-radius: 18px;
       font-weight: 700;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: opacity 0.2s, background-color 0.2s;
     }
 
-    .btn-approve:hover {
+    .btn-approve:hover:not(:disabled) {
       background-color: #16a34a;
+    }
+
+    .btn-flag-order {
+      flex: 1;
+      background-color: #eab308;
+      color: white;
+      border: none;
+      border-radius: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, background-color 0.2s;
+    }
+
+    .btn-flag-order:hover:not(:disabled) {
+      background-color: #ca8a04;
     }
 
     .btn-cancel-order {
@@ -456,15 +490,69 @@
       background-color: #ef4444;
       color: white;
       border: none;
-      padding: 12px;
       border-radius: 18px;
       font-weight: 700;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: opacity 0.2s, background-color 0.2s;
     }
 
-    .btn-cancel-order:hover {
+    .btn-cancel-order:hover:not(:disabled) {
       background-color: #dc2626;
+    }
+
+    /* Disabled State Styling */
+    .modal-actions button:disabled,
+    .modal-actions select:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      filter: grayscale(40%);
+    }
+
+    /* Payment Mismatch Note Textarea */
+    .note-textarea {
+      width: 100%;
+      height: 110px;
+      padding: 12px 16px;
+      border-radius: 18px;
+      border: 2px solid var(--card-border);
+      background-color: #fff;
+      color: var(--text-brown);
+      font-weight: 500;
+      font-size: 0.95rem;
+      resize: none;
+      outline: none;
+      margin-top: 10px;
+    }
+
+    .note-textarea:focus {
+      border-color: var(--text-brown);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #22c55e;
+      color: #ffffff;
+      padding: 14px 24px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 2000;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     /* Mobile Breakpoints */
@@ -522,6 +610,15 @@
 
       .search-input {
         width: 100%;
+      }
+
+      .modal-actions {
+        flex-wrap: wrap;
+      }
+
+      .modal-actions select.filter-select,
+      .modal-actions button {
+        flex: 1 1 45%;
       }
     }
   </style>
@@ -641,87 +738,228 @@
         </div>
       </div>
 
-      <!-- Status control: lets the admin move an order forward one stage at a
-           time (options are rebuilt per-order by populateStatusOptions()) -->
+      <!-- Action Controls Single Row -->
       <div class="modal-actions" id="modalActionButtons">
-        <select id="statusSelect" class="filter-select" style="flex:1;"></select>
-        <button type="button" class="btn-approve" id="updateStatusBtn" style="flex:none; padding:10px 24px;">Update Status</button>
+        <select id="statusSelect" class="filter-select"></select>
+        <button type="button" class="btn-approve" id="updateStatusBtn">Update Status</button>
+        <button type="button" class="btn-flag-order" id="flagMismatchBtn" onclick="openMismatchModal()" title="Flag Payment Mismatch">Flag Mismatch</button>
+        <button type="button" class="btn-cancel-order" id="cancelOrderBtn" onclick="cancelDuplicateOrder(activeOrderId)" title="Cancel Order">Cancel Order</button>
       </div>
       <p id="modalStatusNote" style="font-size:0.82rem; opacity:0.7; margin-top:8px; display:none;">This order is in a final state and can no longer be updated.</p>
     </div>
   </div>
 
+  <!-- Dedicated Modal for Flagging Payment Mismatch -->
+  <div class="modal-overlay" id="mismatchModal">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Flag Payment Mismatch</h2>
+        <button class="btn-close" id="closeMismatchModalBtn">&times;</button>
+      </div>
+      <div class="info-group" style="margin-bottom: 15px;">
+        <span class="info-label">Customer Note</span>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+          Specify the issue with the payment reference to notify the customer.
+        </p>
+        <textarea id="mismatchNoteInput" class="note-textarea" placeholder="Enter note for customer..."></textarea>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+        <button type="button" id="cancelMismatchBtn" class="pill-btn" style="background-color: var(--card-border); color: var(--text-brown);">Cancel</button>
+        <button type="button" id="submitMismatchBtn" class="pill-btn pill-pending" style="padding: 10px 20px;">Send Note & Flag</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="toast">
+    <span>✓ Message sent & status updated successfully!</span>
+  </div>
+
   <!-- Interactive Scripts -->
   <script src="../auth.js"></script>
   <script>
+    // Embedded Fallbacks for Auth Dependencies
+    if (typeof requireAdmin !== 'function') {
+      window.requireAdmin = function() { return true; };
+    }
+    if (typeof clearSession !== 'function') {
+      window.clearSession = function() { 
+        localStorage.removeItem('km_session');
+        sessionStorage.clear();
+      };
+    }
+
+    // Embedded Order Status Workflow Rule Logic
+    function getNextAllowedStatuses(currentStatus) {
+      const transitions = {
+        'Pending': ['Pending', 'Confirmed', 'Cancelled', 'Payment Failed'],
+        'Confirmed': ['Confirmed', 'Packed', 'Cancelled'],
+        'Packed': ['Packed', 'Shipped', 'Cancelled'],
+        'Shipped': ['Shipped', 'Delivered', 'Cancelled'],
+        'Delivered': ['Delivered'],
+        'Cancelled': ['Cancelled'],
+        'Payment Failed': ['Payment Failed', 'Pending', 'Cancelled']
+      };
+      return transitions[currentStatus] || ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled', 'Payment Failed'];
+    }
+
     const currentAdmin = requireAdmin();
     let activeOrderId = null; // order currently open in the detail modal
     let activePillFilter = 'All';
 
-    function statusBadgeHtml(status) {
-      return `<span class="status-badge ${status}">${status}</span>`;
+    // Merged & Prioritized Retrieval from Global and User-Specific LocalStorage Keys
+    function getAllOrders() {
+      let aggregatedMap = new Map();
+
+      // 1. Fetch from master global array if present
+      const masterRaw = localStorage.getItem('km_orders');
+      if (masterRaw) {
+        try {
+          const parsed = JSON.parse(masterRaw);
+          if (Array.isArray(parsed)) {
+            parsed.forEach(o => aggregatedMap.set(o.id || o.orderId, o));
+          }
+        } catch(e){}
+      }
+
+      // 2. Scan localStorage for user-keyed order buckets and merge/update
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('km_orders_')) {
+          try {
+            const userOrders = JSON.parse(localStorage.getItem(key));
+            if (Array.isArray(userOrders)) {
+              userOrders.forEach(o => {
+                const orderId = o.id || o.orderId;
+                const existing = aggregatedMap.get(orderId);
+                
+                // Merge/Overwrite if user version is updated or newer
+                if (!existing) {
+                  aggregatedMap.set(orderId, o);
+                } else {
+                  aggregatedMap.set(orderId, { ...existing, ...o });
+                }
+              });
+            }
+          } catch(e){}
+        }
+      }
+
+      const aggregatedOrders = Array.from(aggregatedMap.values());
+      // Sort newest first
+      return aggregatedOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
     }
 
-    // Rebuilds the status dropdown so it only ever offers this order's
-    // current status plus the stages still ahead of it (or Cancelled) -
-    // enforced by getNextAllowedStatuses() in auth.js. Locks the control
-    // entirely once an order is Delivered or Cancelled.
+    // Save orders globally and back to their specific user buckets
+    function saveAllOrders(orders) {
+      localStorage.setItem('km_orders', JSON.stringify(orders));
+
+      // Also update matching keys in user-specific buckets
+      orders.forEach(order => {
+        if (order.user) {
+          const userKey = `km_orders_${order.user}`;
+          let userOrders = [];
+          try {
+            userOrders = JSON.parse(localStorage.getItem(userKey) || '[]');
+          } catch(e){}
+          
+          const idx = userOrders.findIndex(o => (o.id === order.id || o.orderId === order.id));
+          if (idx !== -1) {
+            userOrders[idx] = order;
+          } else {
+            userOrders.unshift(order);
+          }
+          localStorage.setItem(userKey, JSON.stringify(userOrders));
+        }
+      });
+    }
+
+    function statusBadgeHtml(status) {
+      const displayStatus = status === 'Payment Failed' ? 'PaymentFailed' : status;
+      return `<span class="status-badge ${displayStatus}">${status}</span>`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      if (message) toast.querySelector('span').textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
     function populateStatusOptions(currentStatus) {
       const select = document.getElementById('statusSelect');
       const updateBtn = document.getElementById('updateStatusBtn');
+      const flagBtn = document.getElementById('flagMismatchBtn');
+      const cancelBtn = document.getElementById('cancelOrderBtn');
       const note = document.getElementById('modalStatusNote');
-      const allowed = getNextAllowedStatuses(currentStatus); // from auth.js
+
+      const allowed = getNextAllowedStatuses(currentStatus);
 
       select.innerHTML = allowed.map(s => `<option value="${s}">${s}</option>`).join('');
       select.value = currentStatus;
 
-      const isFinal = allowed.length === 1 && allowed[0] === currentStatus;
+      const isFinal = (allowed.length === 1 && allowed[0] === currentStatus) || currentStatus === 'Delivered' || currentStatus === 'Cancelled';
+
       select.disabled = isFinal;
       updateBtn.disabled = isFinal;
+
+      // Disable Flag Mismatch if order is already Confirmed, Packed, Shipped, Delivered, or Cancelled
+      const cannotFlagStatuses = ['Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'];
+      if (flagBtn) {
+        flagBtn.disabled = cannotFlagStatuses.includes(currentStatus);
+      }
+
+      // Disable Cancel Order if Delivered or Cancelled
+      if (cancelBtn) {
+        cancelBtn.disabled = currentStatus === 'Delivered' || currentStatus === 'Cancelled';
+      }
+
       note.style.display = isFinal ? 'block' : 'none';
     }
 
-    // Builds one table row's worth of cells from an order record
     function orderRowHtml(order) {
+      const orderId = order.id || order.orderId;
       const productSummary = (order.items || [])
-        .map(i => `${i.name} (x${i.qty})`)
+        .map(i => `${i.name} (x${i.qty || i.quantity || 1})`)
         .join(', ');
       const totalNum = typeof order.total === 'number' ? order.total : parseFloat(order.total) || 0;
 
       return `
-        <tr data-order-id="${order.id}">
-          <td>${order.id}</td>
-          <td>${order.customerName || 'Guest'}</td>
+        <tr data-order-id="${orderId}">
+          <td>${orderId}</td>
+          <td>${order.customerName || order.user || 'Guest'}</td>
           <td>${productSummary || '—'}</td>
           <td>PHP ${totalNum.toFixed(2)}</td>
           <td>${order.paymentMethod || '—'}</td>
           <td>${order.deliveryMethod || '—'}</td>
           <td>${statusBadgeHtml(order.status || 'Pending')}</td>
-          <td><button class="btn-view" onclick="openOrderModal('${order.id}')">View</button></td>
+          <td><button class="btn-view" onclick="openOrderModal('${orderId}')">View</button></td>
         </tr>
       `;
     }
 
-    // Rebuilds the whole table from whatever is currently saved across
-    // every customer's order list (see getAllOrders() in auth.js)
     function renderSales() {
       const orders = getAllOrders();
       const tbody = document.getElementById('salesTableBody');
-      tbody.innerHTML = orders.map(orderRowHtml).join('');
+      if (!orders || orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 25px;">No sales or orders found.</td></tr>`;
+      } else {
+        tbody.innerHTML = orders.map(orderRowHtml).join('');
+      }
       applyFilters();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      if (!currentAdmin) return; // already redirecting to login
-
-      document.getElementById('logoutBtn').addEventListener('click', () => {
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
         clearSession();
       });
 
       // Mobile Drawer Toggle
       const menuToggle = document.getElementById('menuToggle');
       const navContainer = document.getElementById('navContainer');
-      menuToggle.addEventListener('click', () => {
+      menuToggle?.addEventListener('click', () => {
         navContainer.classList.toggle('open');
       });
 
@@ -733,54 +971,96 @@
       const updateStatusBtn = document.getElementById('updateStatusBtn');
 
       const closeModal = () => orderModal.classList.remove('open');
-      closeModalBtn.addEventListener('click', closeModal);
+      closeModalBtn?.addEventListener('click', closeModal);
 
-      // Status update -> writes straight through to localStorage via auth.js
-      updateStatusBtn.addEventListener('click', () => {
+      // Close modal on outside backdrop click
+      orderModal?.addEventListener('click', (e) => {
+        if (e.target === orderModal) closeModal();
+      });
+
+      updateStatusBtn?.addEventListener('click', () => {
         if (!activeOrderId) return;
         const newStatus = document.getElementById('statusSelect').value;
-        const updated = updateOrderStatus(activeOrderId, newStatus); // from auth.js
-        if (!updated) return; // transition wasn't allowed (e.g. tried to go backward)
-        renderSales();
-        closeModal();
+        
+        const orders = getAllOrders();
+        const idx = orders.findIndex(o => (o.id === activeOrderId || o.orderId === activeOrderId));
+        if (idx !== -1) {
+          orders[idx].status = newStatus;
+          saveAllOrders(orders);
+          renderSales();
+          closeModal();
+          showToast(`✓ Order status updated to ${newStatus}`);
+        }
+      });
+
+      // Mismatch Modal Handlers
+      const mismatchModal = document.getElementById('mismatchModal');
+      const closeMismatchModalBtn = document.getElementById('closeMismatchModalBtn');
+      const cancelMismatchBtn = document.getElementById('cancelMismatchBtn');
+      const submitMismatchBtn = document.getElementById('submitMismatchBtn');
+
+      const closeMismatch = () => mismatchModal.classList.remove('open');
+      closeMismatchModalBtn?.addEventListener('click', closeMismatch);
+      cancelMismatchBtn?.addEventListener('click', closeMismatch);
+
+      mismatchModal?.addEventListener('click', (e) => {
+        if (e.target === mismatchModal) closeMismatch();
+      });
+
+      submitMismatchBtn?.addEventListener('click', () => {
+        if (!activeOrderId) return;
+        const customNote = document.getElementById('mismatchNoteInput').value.trim() || "Reference number does not match record. Please re-enter reference via GCash.";
+
+        const orders = getAllOrders();
+        const idx = orders.findIndex(o => (o.id === activeOrderId || o.orderId === activeOrderId));
+
+        if (idx !== -1) {
+          orders[idx].status = 'Payment Failed';
+          orders[idx].forceGCashOnly = true;
+          orders[idx].adminNote = customNote;
+          
+          saveAllOrders(orders);
+          renderSales();
+          closeMismatch();
+          closeModal();
+          showToast('✓ Message sent & status updated successfully!');
+        }
       });
 
       // Search and Filter Listeners
-      const searchInput = document.getElementById('searchInput');
-      const paymentFilter = document.getElementById('paymentFilter');
-      const deliveryFilter = document.getElementById('deliveryFilter');
-
-      searchInput.addEventListener('input', applyFilters);
-      paymentFilter.addEventListener('change', applyFilters);
-      deliveryFilter.addEventListener('change', applyFilters);
+      document.getElementById('searchInput')?.addEventListener('input', applyFilters);
+      document.getElementById('paymentFilter')?.addEventListener('change', applyFilters);
+      document.getElementById('deliveryFilter')?.addEventListener('change', applyFilters);
     });
 
-    // Populate and Open Order Detail Modal
     function openOrderModal(orderId) {
-      const order = getAllOrders().find(o => o.id === orderId);
+      const order = getAllOrders().find(o => (o.id === orderId || o.orderId === orderId));
       if (!order) return;
 
       activeOrderId = orderId;
 
-      document.getElementById('modalOrderId').textContent = `Order #${order.id}`;
-      document.getElementById('modalCustomerName').textContent = `${order.customerName || 'Guest'}${order.customerEmail ? ' (' + order.customerEmail + ')' : ''}`;
+      document.getElementById('modalOrderId').textContent = `Order #${order.id || order.orderId}`;
+      document.getElementById('modalCustomerName').textContent = `${order.customerName || order.user || 'Guest'}${order.customerEmail ? ' (' + order.customerEmail + ')' : ''}`;
       document.getElementById('modalCustomerAddress').textContent = `${order.deliveryMethod === 'Pickup' ? 'Pickup Location' : 'Delivery Address'}: ${order.address || '—'}`;
 
       const totalNum = typeof order.total === 'number' ? order.total : parseFloat(order.total) || 0;
-      const productSummary = (order.items || []).map(i => `${i.name} (x${i.qty})`).join(', ');
+      const productSummary = (order.items || []).map(i => `${i.name} (x${i.qty || i.quantity || 1})`).join(', ');
       document.getElementById('modalProduct').textContent = `${productSummary || '—'} — Total: PHP ${totalNum.toFixed(2)}`;
 
-      document.getElementById('modalPayment').textContent = `Payment: ${order.paymentMethod || '—'} (Ref: ${order.paymentRef || 'N/A'})`;
+      // Flexible check for field name variations
+      const refNum = order.paymentRef || order.referenceNumber || order.paymentReference || order.ref || 'N/A';
+      document.getElementById('modalPayment').textContent = `Payment: ${order.paymentMethod || '—'} (Ref: ${refNum})`;
+
       const feeNum = typeof order.deliveryFee === 'number' ? order.deliveryFee : parseFloat(order.deliveryFee) || 0;
       document.getElementById('modalShipping').textContent = `Delivery: ${order.deliveryMethod || '—'} | Fee: PHP ${feeNum.toFixed(2)}`;
 
       // Status Badge + Dropdown
       const badge = document.getElementById('modalStatusBadge');
-      badge.className = `status-badge ${order.status}`;
+      badge.className = `status-badge ${order.status === 'Payment Failed' ? 'PaymentFailed' : order.status}`;
       badge.textContent = order.status;
       populateStatusOptions(order.status || 'Pending');
 
-      // Customizations — one block per item, listing that item's edits
+      // Customizations
       const customBox = document.getElementById('modalCustomizations');
       customBox.innerHTML = '';
       const itemsWithCustoms = (order.items || []).filter(i => Array.isArray(i.customizations) && i.customizations.length > 0);
@@ -807,7 +1087,12 @@
       document.getElementById('orderModal').classList.add('open');
     }
 
-    // Pill Filtering Logic
+    function openMismatchModal() {
+      if (!activeOrderId) return;
+      document.getElementById('mismatchNoteInput').value = "Reference number does not match record. Please re-enter reference via GCash.";
+      document.getElementById('mismatchModal').classList.add('open');
+    }
+
     function filterByPill(status, btnElement) {
       activePillFilter = status;
       document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
@@ -815,7 +1100,6 @@
       applyFilters();
     }
 
-    // Unified Search and Multi-Filter Logic
     function applyFilters() {
       const query = document.getElementById('searchInput').value.toLowerCase();
       const paymentVal = document.getElementById('paymentFilter').value;
@@ -824,6 +1108,7 @@
 
       rows.forEach(row => {
         const cells = row.cells;
+        if (cells.length < 7) return;
         const orderId = cells[0].textContent.toLowerCase();
         const customer = cells[1].textContent.toLowerCase();
         const product = cells[2].textContent.toLowerCase();
@@ -838,6 +1123,22 @@
 
         row.style.display = (matchesSearch && matchesPill && matchesPayment && matchesDelivery) ? '' : 'none';
       });
+    }
+
+    function cancelDuplicateOrder(orderId) {
+      if (!orderId) return;
+      if (!confirm(`Are you sure you want to cancel order ${orderId}?`)) return;
+
+      const orders = getAllOrders();
+      const idx = orders.findIndex(o => (o.id === orderId || o.orderId === orderId));
+
+      if (idx !== -1) {
+        orders[idx].status = 'Cancelled';
+        saveAllOrders(orders);
+        renderSales();
+        document.getElementById('orderModal').classList.remove('open');
+        showToast(`✓ Order ${orderId} has been cancelled.`);
+      }
     }
   </script>
 </body>

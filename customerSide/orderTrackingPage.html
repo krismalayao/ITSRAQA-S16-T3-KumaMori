@@ -103,6 +103,48 @@
 
         .order-number-badge span { font-weight: 500; margin-left: 8px; }
 
+        /* Payment Warning Banner Card */
+        .payment-warning-card {
+            width: 100%;
+            max-width: 550px;
+            background-color: #fef2f2;
+            border: 2px solid #ef4444;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            color: #991b1b;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1);
+        }
+
+        .payment-warning-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .payment-warning-msg {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #7f1d1d;
+        }
+
+        .btn-fix-payment {
+            display: inline-block;
+            margin-top: 12px;
+            background: #ef4444;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .btn-fix-payment:hover { background: #dc2626; }
+
         .tracking-card {
             background: #ffffff;
             border-radius: 24px;
@@ -197,7 +239,6 @@
             color: #ffffff;
         }
 
-        /* Mobile Responsiveness Media Query */
         @media (max-width: 850px) {
             .page-title { font-size: 2rem; margin: 20px 0 10px 0; }
             .orders-container {
@@ -205,16 +246,9 @@
                 padding: 0 15px;
                 gap: 20px;
             }
-            .sidebar {
-                width: 100%;
-            }
-            .tracking-card {
-                padding: 25px 20px;
-            }
-            .order-number-badge {
-                padding: 10px 20px;
-                font-size: 1.1rem;
-            }
+            .sidebar { width: 100%; }
+            .tracking-card { padding: 25px 20px; }
+            .order-number-badge { padding: 10px 20px; font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -236,6 +270,16 @@
             <main class="main-tracking-panel">
                 <div class="order-number-badge">
                     Order Number: <span id="target-order-id">--</span>
+                </div>
+
+                <!-- Reference Mismatch / Payment Warning Notice -->
+                <div id="payment-warning-card" class="payment-warning-card hidden">
+                    <div class="payment-warning-header">
+                        <i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i>
+                        <span>Payment Issue Detected</span>
+                    </div>
+                    <p id="payment-warning-message" class="payment-warning-msg"></p>
+                    <a href="#" id="btn-repay-link" class="btn-fix-payment">Update Reference Number</a>
                 </div>
 
                 <div class="tracking-card">
@@ -378,21 +422,42 @@
     });
 
     function loadOrderDetails(order) {
-        document.getElementById('target-order-id').innerText = order.id || order.orderId;
+        const orderId = order.id || order.orderId;
+        document.getElementById('target-order-id').innerText = orderId;
 
+        // --- PAYMENT WARNING / MISMATCH NOTE LOGIC ---
+        const warningCard = document.getElementById('payment-warning-card');
+        const warningMsg = document.getElementById('payment-warning-message');
+        const repayLink = document.getElementById('btn-repay-link');
+        
+        const noteText = order.adminNote || order.paymentNote || order.note;
+
+        if ((order.status === 'Payment Failed' || order.status === 'Pending') && noteText) {
+            warningMsg.innerText = noteText;
+            repayLink.href = `paymentPlanPage.html?order=${orderId}`;
+            warningCard.classList.remove('hidden');
+        } else {
+            warningCard.classList.add('hidden');
+        }
+
+        // --- TIMELINE STATUS LOGIC ---
         const timelineContainer = document.getElementById('timeline-container');
         const steps = document.querySelectorAll('.timeline-step');
 
-        if (order.status === 'Cancelled') {
-            // Cancelled orders don't progress through the normal stages -
-            // clear all highlighting and show a simple cancelled notice instead.
-            steps.forEach(step => step.classList.remove('completed', 'active'));
-            timelineContainer.insertAdjacentHTML('afterbegin',
-                '<p id="cancelled-notice" style="color:#d9534f; font-weight:700; margin-bottom:10px;">This order was cancelled.</p>');
-        } else {
-            const existingNotice = document.getElementById('cancelled-notice');
-            if (existingNotice) existingNotice.remove();
+        const existingNotice = document.getElementById('cancelled-notice');
+        if (existingNotice) existingNotice.remove();
 
+        if (order.status === 'Cancelled' || order.status === 'Payment Failed') {
+            steps.forEach(step => step.classList.remove('completed', 'active'));
+
+            const statusColor = order.status === 'Payment Failed' ? '#ef4444' : '#d9534f';
+            const statusText = order.status === 'Payment Failed' 
+                ? 'Payment verification failed. Please check the note above to resolve.' 
+                : 'This order was cancelled.';
+
+            timelineContainer.insertAdjacentHTML('afterbegin',
+                `<p id="cancelled-notice" style="color:${statusColor}; font-weight:700; margin-bottom:15px; text-align:center;">${statusText}</p>`);
+        } else {
             const currentStep = STATUS_MAP[order.status] || 1;
             steps.forEach(step => {
                 const stepNum = parseInt(step.dataset.step, 10);
@@ -405,6 +470,7 @@
             });
         }
 
+        // --- ITEMS SUMMARY LOGIC ---
         const itemsContainer = document.getElementById('order-items-list');
         if (order.items && Array.isArray(order.items)) {
             itemsContainer.innerHTML = order.items.map(item => {
@@ -433,14 +499,12 @@
         const displayTotal = typeof order.total === 'number' ? `₱${order.total.toFixed(2)}` : (order.total || '₱0.00');
         document.getElementById('order-total-price').innerText = displayTotal;
 
-        // Cancel Order is only allowed while the order hasn't started being
-        // prepared yet - once it's Packed/Shipped/Delivered (or already
-        // Cancelled), there's nothing left to cancel.
+        // --- CANCEL BUTTON LOGIC ---
         const cancelBtn = document.getElementById('cancel-order-btn');
         const cancellableStatuses = ['Pending', 'Confirmed'];
         if (cancellableStatuses.includes(order.status)) {
             cancelBtn.style.display = 'block';
-            cancelBtn.onclick = () => cancelOrder(order.id || order.orderId);
+            cancelBtn.onclick = () => cancelOrder(orderId);
         } else {
             cancelBtn.style.display = 'none';
         }
@@ -466,8 +530,6 @@
         orders[index].status = 'Cancelled';
         persist(orders);
 
-        // Refresh the whole view so the sidebar list and timeline both
-        // reflect the new status immediately.
         location.reload();
     }
 </script>
