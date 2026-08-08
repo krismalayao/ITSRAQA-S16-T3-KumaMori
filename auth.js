@@ -733,7 +733,7 @@ const defaultInventory = [
     "status": "in-stock"
   },
   {
-    "name": "Figurine - Bear",
+    "name": "Plush Bear",
     "category": "Figurines",
     "stock": 45,
     "unit": "pcs",
