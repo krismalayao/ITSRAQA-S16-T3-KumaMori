@@ -792,7 +792,10 @@
     // Embedded Order Status Workflow Rule Logic
     function getNextAllowedStatuses(currentStatus) {
       const transitions = {
-        'Pending': ['Pending', 'Confirmed', 'Cancelled', 'Payment Failed'],
+        // 'Payment Failed' is intentionally NOT selectable here - it can only
+        // be entered via the Flag Mismatch button/flagOrderMismatch(), never
+        // picked manually from the status dropdown.
+        'Pending': ['Pending', 'Confirmed', 'Cancelled'],
         'Confirmed': ['Confirmed', 'Packed', 'Cancelled'],
         'Packed': ['Packed', 'Shipped', 'Cancelled'],
         'Shipped': ['Shipped', 'Delivered', 'Cancelled'],
@@ -800,7 +803,7 @@
         'Cancelled': ['Cancelled'],
         'Payment Failed': ['Payment Failed', 'Pending', 'Cancelled']
       };
-      return transitions[currentStatus] || ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled', 'Payment Failed'];
+      return transitions[currentStatus] || ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'];
     }
 
     const currentAdmin = requireAdmin();
@@ -808,71 +811,10 @@
     let activePillFilter = 'All';
 
     // Merged & Prioritized Retrieval from Global and User-Specific LocalStorage Keys
-    function getAllOrders() {
-      let aggregatedMap = new Map();
+    // getAllOrders() and updateOrderStatus() come from auth.js - they read/write
+    // the same per-customer km_orders_<key> buckets every other page uses, and
+    // updateOrderStatus() is what triggers material deduction on Confirmed.
 
-      // 1. Fetch from master global array if present
-      const masterRaw = localStorage.getItem('km_orders');
-      if (masterRaw) {
-        try {
-          const parsed = JSON.parse(masterRaw);
-          if (Array.isArray(parsed)) {
-            parsed.forEach(o => aggregatedMap.set(o.id || o.orderId, o));
-          }
-        } catch(e){}
-      }
-
-      // 2. Scan localStorage for user-keyed order buckets and merge/update
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('km_orders_')) {
-          try {
-            const userOrders = JSON.parse(localStorage.getItem(key));
-            if (Array.isArray(userOrders)) {
-              userOrders.forEach(o => {
-                const orderId = o.id || o.orderId;
-                const existing = aggregatedMap.get(orderId);
-                
-                // Merge/Overwrite if user version is updated or newer
-                if (!existing) {
-                  aggregatedMap.set(orderId, o);
-                } else {
-                  aggregatedMap.set(orderId, { ...existing, ...o });
-                }
-              });
-            }
-          } catch(e){}
-        }
-      }
-
-      const aggregatedOrders = Array.from(aggregatedMap.values());
-      // Sort newest first
-      return aggregatedOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-    }
-
-    // Save orders globally and back to their specific user buckets
-    function saveAllOrders(orders) {
-      localStorage.setItem('km_orders', JSON.stringify(orders));
-
-      // Also update matching keys in user-specific buckets
-      orders.forEach(order => {
-        if (order.user) {
-          const userKey = `km_orders_${order.user}`;
-          let userOrders = [];
-          try {
-            userOrders = JSON.parse(localStorage.getItem(userKey) || '[]');
-          } catch(e){}
-          
-          const idx = userOrders.findIndex(o => (o.id === order.id || o.orderId === order.id));
-          if (idx !== -1) {
-            userOrders[idx] = order;
-          } else {
-            userOrders.unshift(order);
-          }
-          localStorage.setItem(userKey, JSON.stringify(userOrders));
-        }
-      });
-    }
 
     function statusBadgeHtml(status) {
       const displayStatus = status === 'Payment Failed' ? 'PaymentFailed' : status;
@@ -888,7 +830,8 @@
       }, 3500);
     }
 
-    function populateStatusOptions(currentStatus) {
+    function populateStatusOptions(order) {
+      const currentStatus = order.status || 'Pending';
       const select = document.getElementById('statusSelect');
       const updateBtn = document.getElementById('updateStatusBtn');
       const flagBtn = document.getElementById('flagMismatchBtn');
@@ -905,9 +848,13 @@
       select.disabled = isFinal;
       updateBtn.disabled = isFinal;
 
-      // Disable Flag Mismatch if order is already Confirmed, Packed, Shipped, Delivered, or Cancelled
+      // Flag Mismatch only makes sense for GCash orders (COD has no reference
+      // number to mismatch) - hide it entirely rather than just disabling it
+      // for COD, and still gate it on status like before for GCash orders.
+      const isGcash = (order.paymentMethod || '').toLowerCase() === 'gcash';
       const cannotFlagStatuses = ['Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'];
       if (flagBtn) {
+        flagBtn.style.display = isGcash ? '' : 'none';
         flagBtn.disabled = cannotFlagStatuses.includes(currentStatus);
       }
 
@@ -981,12 +928,9 @@
       updateStatusBtn?.addEventListener('click', () => {
         if (!activeOrderId) return;
         const newStatus = document.getElementById('statusSelect').value;
-        
-        const orders = getAllOrders();
-        const idx = orders.findIndex(o => (o.id === activeOrderId || o.orderId === activeOrderId));
-        if (idx !== -1) {
-          orders[idx].status = newStatus;
-          saveAllOrders(orders);
+
+        const updated = updateOrderStatus(activeOrderId, newStatus); // from auth.js - also handles material deduction
+        if (updated) {
           renderSales();
           closeModal();
           showToast(`✓ Order status updated to ${newStatus}`);
@@ -1011,15 +955,8 @@
         if (!activeOrderId) return;
         const customNote = document.getElementById('mismatchNoteInput').value.trim() || "Reference number does not match record. Please re-enter reference via GCash.";
 
-        const orders = getAllOrders();
-        const idx = orders.findIndex(o => (o.id === activeOrderId || o.orderId === activeOrderId));
-
-        if (idx !== -1) {
-          orders[idx].status = 'Payment Failed';
-          orders[idx].forceGCashOnly = true;
-          orders[idx].adminNote = customNote;
-          
-          saveAllOrders(orders);
+        const updated = flagOrderMismatch(activeOrderId, customNote); // from auth.js
+        if (updated) {
           renderSales();
           closeMismatch();
           closeModal();
@@ -1058,7 +995,7 @@
       const badge = document.getElementById('modalStatusBadge');
       badge.className = `status-badge ${order.status === 'Payment Failed' ? 'PaymentFailed' : order.status}`;
       badge.textContent = order.status;
-      populateStatusOptions(order.status || 'Pending');
+      populateStatusOptions(order);
 
       // Customizations
       const customBox = document.getElementById('modalCustomizations');
@@ -1089,6 +1026,8 @@
 
     function openMismatchModal() {
       if (!activeOrderId) return;
+      const order = getAllOrders().find(o => (o.id === activeOrderId || o.orderId === activeOrderId));
+      if (!order || (order.paymentMethod || '').toLowerCase() !== 'gcash') return; // COD orders have no reference to mismatch
       document.getElementById('mismatchNoteInput').value = "Reference number does not match record. Please re-enter reference via GCash.";
       document.getElementById('mismatchModal').classList.add('open');
     }
@@ -1129,12 +1068,8 @@
       if (!orderId) return;
       if (!confirm(`Are you sure you want to cancel order ${orderId}?`)) return;
 
-      const orders = getAllOrders();
-      const idx = orders.findIndex(o => (o.id === orderId || o.orderId === orderId));
-
-      if (idx !== -1) {
-        orders[idx].status = 'Cancelled';
-        saveAllOrders(orders);
+      const updated = updateOrderStatus(orderId, 'Cancelled'); // from auth.js
+      if (updated) {
         renderSales();
         document.getElementById('orderModal').classList.remove('open');
         showToast(`✓ Order ${orderId} has been cancelled.`);

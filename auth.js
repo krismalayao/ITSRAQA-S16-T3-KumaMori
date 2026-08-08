@@ -14,16 +14,7 @@ const defaultUsers = [
     name: "Kris Malayao",
     email: "kris@email.com",
     password: "secretpassword",
-    contact: "+63 999 999 9999",
-    role: "customer",
-    avatar: "../images/noPFP.jpg"
-  },
-  {
-    id: 3,
-    name: "John Doe",
-    email: "john@email.com",
-    password: "secretpassword",
-    contact: "+63 123 456 7890",
+    contact: "",
     role: "customer",
     avatar: "../images/noPFP.jpg"
   }
@@ -733,7 +724,7 @@ const defaultInventory = [
     "status": "in-stock"
   },
   {
-    "name": "Plush Bear",
+    "name": "Figurine - Bear",
     "category": "Figurines",
     "stock": 45,
     "unit": "pcs",
@@ -948,101 +939,80 @@ const CUSTOMIZATION_COLOR_NAMES = {
   moon: ['Blush', 'Cream', 'Rose', 'Lilac', 'Mint', 'Sky Blue']
 };
 
-function adjustMaterialsForItem(item, sign) {
+function deductMaterialsForItem(item) {
   const state = item.customState;
-  if (!state) return; // no structured selection data (e.g. legacy/dummy orders) - nothing precise to adjust
+  if (!state) return; // no structured selection data (e.g. legacy/dummy orders) - nothing precise to deduct
 
   const inventory = getInventory();
-  const adjust = (name, qty) => {
+  const deduct = (name, qty) => {
     const idx = inventory.findIndex(i => i.name === name);
     if (idx === -1) return;
-    inventory[idx].stock = Math.max(0, inventory[idx].stock + sign * qty);
+    inventory[idx].stock = Math.max(0, inventory[idx].stock - qty);
     inventory[idx].status = inventory[idx].stock === 0
       ? 'out-stock'
       : (inventory[idx].stock <= inventory[idx].minThreshold ? 'low-stock' : 'in-stock');
     inventory[idx].updated = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   };
   const qty = item.qty || 1;
-  const adjustLetters = () => {
+  const deductLetters = () => {
     if (!state.letters) return;
     for (const ch of state.letters.toUpperCase()) {
-      if (/[A-Z]/.test(ch)) adjust(`Alphabet Bead - '${ch}'`, qty);
+      if (/[A-Z]/.test(ch)) deduct(`Alphabet Bead - '${ch}'`, qty);
     }
   };
 
   if (item.name === 'Leather Keychain') {
     if (state.leatherIndex != null) {
       const c = CUSTOMIZATION_COLOR_NAMES.leather[state.leatherIndex];
-      if (c) adjust(`Leather Strap - ${c} (20cm)`, qty);
+      if (c) deduct(`Leather Strap - ${c} (20cm)`, qty);
     }
     if (state.letterIndex != null) {
       const c = CUSTOMIZATION_COLOR_NAMES.letter[state.letterIndex];
-      if (c) adjust(`Letter Bead - ${c}`, qty);
+      if (c) deduct(`Letter Bead - ${c}`, qty);
     }
-    adjust('Gold Lobster Clasp', qty); // generic assembly hardware, no color option on the form
-    if (state.charmMain) adjust(`Charm - ${state.charmMain}`, qty);
-    (state.extraCharms || []).forEach(c => adjust(`Charm - ${c}`, qty));
-    (state.extraPendants || []).forEach(p => adjust(`Pendant - ${p}`, qty));
-    adjustLetters();
+    deduct('Gold Lobster Clasp', qty); // generic assembly hardware, no color option on the form
+    if (state.charmMain) deduct(`Charm - ${state.charmMain}`, qty);
+    (state.extraCharms || []).forEach(c => deduct(`Charm - ${c}`, qty));
+    (state.extraPendants || []).forEach(p => deduct(`Pendant - ${p}`, qty));
+    deductLetters();
   } else if (item.name === 'Beaded Keychain' || item.name === 'Charm Keychain') {
-    adjust('Clear Elastic Nylon Band (0.8mm)', qty); // base cord/string every beaded/charm piece is strung on
-    adjust('Silver Jump Rings (6mm)', qty);
-    adjustLetters();
-    if (state.figurineMain) adjust(`Figurine - ${state.figurineMain}`, qty);
-    (state.extraFigurines || []).forEach(f => adjust(`Figurine - ${f}`, qty));
+    deduct('Clear Elastic Nylon Band (0.8mm)', qty); // base cord every beaded/charm piece is strung on
+    deduct('Silver Jump Rings (6mm)', qty);
+    deductLetters();
+    if (state.figurineMain) deduct(`Figurine - ${state.figurineMain}`, qty);
+    (state.extraFigurines || []).forEach(f => deduct(`Figurine - ${f}`, qty));
     (state.beadIndexes || []).forEach(idx => {
       const c = CUSTOMIZATION_COLOR_NAMES.bead[idx];
-      if (c) adjust(`Glass Bead - ${c}`, qty);
+      if (c) deduct(`Glass Bead - ${c}`, qty);
     });
     (state.spacerIndexes || []).forEach(idx => {
       const p = CUSTOMIZATION_COLOR_NAMES.spacer[idx];
-      if (p) adjust(`Spacer Set - ${p}`, qty);
+      if (p) deduct(`Spacer Set - ${p}`, qty);
     });
     if (state.moonIndex != null) {
       const c = CUSTOMIZATION_COLOR_NAMES.moon[state.moonIndex];
-      if (c) adjust(`Moon Charm - ${c}`, qty);
+      if (c) deduct(`Moon Charm - ${c}`, qty);
     }
   }
 
   saveInventory(inventory);
 }
 
-function deductMaterialsForItem(item) { adjustMaterialsForItem(item, -1); }
-function restockMaterialsForItem(item) { adjustMaterialsForItem(item, 1); }
-
-// Plain (non-customizable) products, e.g. Plush Bear, deduct/restock straight
-// from the storefront product catalog stock instead of inventory materials.
-function adjustProductStockForItem(item, sign) {
-  if (item.customState) return; // made-to-order customizations use inventory materials instead
-  const products = getProducts();
-  const idx = products.findIndex(p => p.name === item.name);
-  if (idx === -1 || products[idx].stock === null || products[idx].stock === undefined) return; // made-to-order product, nothing to track
-  const qty = item.qty || 1;
-  products[idx].stock = Math.max(0, (Number(products[idx].stock) || 0) + sign * qty);
-  saveProducts(products);
-}
-
-function deductProductStockForItem(item) { adjustProductStockForItem(item, -1); }
-function restockProductStockForItem(item) { adjustProductStockForItem(item, 1); }
-
-// Routes each order item to the right place: made-to-order customizations
-// consume inventory materials, plain stocked products consume product stock.
-function deductStockForOrder(order) {
+function deductMaterialsForOrder(order) {
   (order.items || []).forEach(item => {
     if (item.customState) {
+      // Customizable item (Leather/Beaded/Charm Keychain) - deduct the
+      // actual materials the customer picked, from Inventory Management.
       deductMaterialsForItem(item);
     } else {
-      deductProductStockForItem(item);
-    }
-  });
-}
-
-function restockStockForOrder(order) {
-  (order.items || []).forEach(item => {
-    if (item.customState) {
-      restockMaterialsForItem(item);
-    } else {
-      restockProductStockForItem(item);
+      // Non-customizable item (e.g. Plush Bear) - deduct directly from its
+      // own stock count in Product Management instead.
+      const products = getProducts();
+      const idx = products.findIndex(p => p.name === item.name);
+      if (idx !== -1 && products[idx].stock !== null && products[idx].stock !== undefined) {
+        products[idx].stock = Math.max(0, products[idx].stock - (item.qty || 1));
+        saveProducts(products);
+      }
     }
   });
 }
@@ -1062,24 +1032,6 @@ function getAllOrders() {
   return orders;
 }
 
-// ---------------------------------------------------------------------------
-// Order status flow — statuses move forward only:
-// Pending -> Confirmed -> Packed -> Shipped -> Delivered.
-// Cancelled can be reached from any non-final state. Delivered and Cancelled
-// are final: once there, an order can no longer be changed at all, and an
-// order can never move backward (e.g. Confirmed can't go back to Pending).
-// ---------------------------------------------------------------------------
-const ORDER_STATUS_FLOW = ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Delivered'];
-
-function getNextAllowedStatuses(currentStatus) {
-  if (currentStatus === 'Cancelled' || currentStatus === 'Delivered') {
-    return [currentStatus]; // final states - no further changes allowed
-  }
-  const idx = ORDER_STATUS_FLOW.indexOf(currentStatus);
-  const forward = idx === -1 ? ORDER_STATUS_FLOW : ORDER_STATUS_FLOW.slice(idx);
-  return [...forward, 'Cancelled'];
-}
-
 function updateOrderStatus(orderId, newStatus) {
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
@@ -1087,33 +1039,47 @@ function updateOrderStatus(orderId, newStatus) {
       const list = JSON.parse(localStorage.getItem(key)) || [];
       const index = list.findIndex(o => (o.id || o.orderId) === orderId);
       if (index !== -1) {
-        const order = list[index];
-        const currentStatus = order.status || 'Pending';
-
-        // Reject backward or otherwise disallowed transitions (e.g. Confirmed -> Pending)
-        if (!getNextAllowedStatuses(currentStatus).includes(newStatus)) {
-          return null;
+        list[index].status = newStatus;
+        // Materials are deducted exactly once, only when the admin marks
+        // the order Confirmed (never on Pending or any other status).
+        if (newStatus === 'Confirmed' && !list[index].materialsDeducted) {
+          deductMaterialsForOrder(list[index]);
+          list[index].materialsDeducted = true;
         }
-
-        // Stock/materials are deducted exactly once, the moment an order first becomes Confirmed
-        if (newStatus === 'Confirmed' && !order.materialsDeducted) {
-          deductStockForOrder(order);
-          order.materialsDeducted = true;
-        }
-
-        // If an order that already consumed stock gets Cancelled, give it back
-        if (newStatus === 'Cancelled' && order.materialsDeducted) {
-          restockStockForOrder(order);
-          order.materialsDeducted = false;
-        }
-
-        order.status = newStatus;
         localStorage.setItem(key, JSON.stringify(list));
-        return order;
+        return list[index];
       }
     }
   }
   return null;
+}
+
+// Admin flags a GCash reference that doesn't match their records. Sends the
+// order back to the customer as 'Payment Failed' with a note explaining why,
+// so they can resubmit a corrected reference via paymentPlanPage.html.
+function flagOrderMismatch(orderId, note) {
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.indexOf('km_orders_') === 0 && key !== 'km_orders_seeded') {
+      const list = JSON.parse(localStorage.getItem(key)) || [];
+      const index = list.findIndex(o => (o.id || o.orderId) === orderId);
+      if (index !== -1) {
+        list[index].status = 'Payment Failed';
+        list[index].adminNote = note;
+        list[index].forceGCashOnly = true;
+        localStorage.setItem(key, JSON.stringify(list));
+        return list[index];
+      }
+    }
+  }
+  return null;
+}
+
+// True if this customer already has an order sitting in Pending - used to
+// block placing a second order until the first one is Confirmed (or beyond).
+function hasActiveOrder(userKey) {
+  const orders = JSON.parse(localStorage.getItem('km_orders_' + userKey) || '[]');
+  return orders.some(o => o.status === 'Pending');
 }
 
 // One-time dummy order seed so Sales Management has real, working sample
@@ -1138,13 +1104,18 @@ if (!localStorage.getItem('km_orders_seeded')) {
         id: "K071627", orderId: "K071627",
         customerName: "Klein Velasquez", customerEmail: "klein@example.com",
         date: "Aug 03, 2026", timestamp: 5,
-        status: "Confirmed",
+        status: "Pending",
         deliveryMethod: "Delivery", address: "Diliman, Quezon City",
         paymentMethod: "GCash", paymentRef: "0811-9923-1100",
         items: [{
           name: "Leather Keychain", qty: 1, price: 180,
-          customizations: ["Letters: K.V.", "Charm: Star", "Leather Color: Brown", "Letter Color: Gold"],
-          customState: { letters: "K.V.", charmMain: "Star", figurineMain: null, extraCharms: [], extraPendants: [], extraFigurines: [], leatherIndex: 10, letterIndex: 4, beadIndexes: [], spacerIndexes: [], moonIndex: null }
+          customizations: ["Letters: K.V.", "Charm: Star", "Leather Color: Black", "Letter Color: Gold"],
+          customState: {
+            leatherIndex: 9, letterIndex: 4, charmMain: "Star",
+            extraCharms: [], extraPendants: [], extraFigurines: [],
+            beadIndexes: [], spacerIndexes: [], moonIndex: null,
+            letters: "K.V.", figurineMain: null
+          }
         }],
         subtotal: 180, deliveryFee: 50, total: 230
       }
@@ -1154,13 +1125,18 @@ if (!localStorage.getItem('km_orders_seeded')) {
         id: "K071628", orderId: "K071628",
         customerName: "Casey Guevarra", customerEmail: "casey@example.com",
         date: "Aug 02, 2026", timestamp: 4,
-        status: "Packed",
+        status: "Pending",
         deliveryMethod: "Pickup", address: "Pickup at Kuma Mori Main Workshop",
         paymentMethod: "GCash", paymentRef: "0722-1102-4400",
         items: [{
           name: "Beaded Keychain", qty: 1, price: 150,
-          customizations: ["Letters: CG", "Figurine: Bear"],
-          customState: { letters: "CG", charmMain: null, figurineMain: "Bear", extraCharms: [], extraPendants: [], extraFigurines: [], leatherIndex: null, letterIndex: null, beadIndexes: [], spacerIndexes: [], moonIndex: null }
+          customizations: ["Letters: CG", "Figurine: Bear", "Bead Colors: Pink, Purple", "Spacers: Warm Palette"],
+          customState: {
+            leatherIndex: null, letterIndex: null, charmMain: null,
+            extraCharms: [], extraPendants: [], extraFigurines: [],
+            beadIndexes: [0, 3], spacerIndexes: [2], moonIndex: null,
+            letters: "CG", figurineMain: "Bear"
+          }
         }],
         subtotal: 150, deliveryFee: 0, total: 150
       }
@@ -1175,8 +1151,13 @@ if (!localStorage.getItem('km_orders_seeded')) {
         paymentMethod: "GCash", paymentRef: "0988-3341-9900",
         items: [{
           name: "Charm Keychain", qty: 1, price: 140,
-          customizations: ["Figurine: Heart"],
-          customState: { letters: "", charmMain: null, figurineMain: "Heart", extraCharms: [], extraPendants: [], extraFigurines: [], leatherIndex: null, letterIndex: null, beadIndexes: [], spacerIndexes: [], moonIndex: null }
+          customizations: ["Figurine: Heart", "Bead Colors: White", "Spacers: Pastel Palette", "Moon Color: Lilac"],
+          customState: {
+            leatherIndex: null, letterIndex: null, charmMain: null,
+            extraCharms: [], extraPendants: [], extraFigurines: [],
+            beadIndexes: [5], spacerIndexes: [0], moonIndex: 3,
+            letters: "", figurineMain: "Heart"
+          }
         }],
         subtotal: 140, deliveryFee: 50, total: 190
       }
@@ -1203,8 +1184,13 @@ if (!localStorage.getItem('km_orders_seeded')) {
         paymentMethod: "COD", paymentRef: "N/A (Cash on Delivery)",
         items: [{
           name: "Beaded Keychain", qty: 1, price: 150,
-          customizations: ["Letters: SR", "Figurine: Cloud"],
-          customState: { letters: "SR", charmMain: null, figurineMain: "Cloud", extraCharms: [], extraPendants: [], extraFigurines: [], leatherIndex: null, letterIndex: null, beadIndexes: [], spacerIndexes: [], moonIndex: null }
+          customizations: ["Letters: SR", "Figurine: Cloud", "Bead Colors: Black", "Spacers: Soft Palette"],
+          customState: {
+            leatherIndex: null, letterIndex: null, charmMain: null,
+            extraCharms: [], extraPendants: [], extraFigurines: [],
+            beadIndexes: [6], spacerIndexes: [1], moonIndex: null,
+            letters: "SR", figurineMain: "Cloud"
+          }
         }],
         subtotal: 150, deliveryFee: 50, total: 200
       }
