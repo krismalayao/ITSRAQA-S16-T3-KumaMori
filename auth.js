@@ -14,7 +14,16 @@ const defaultUsers = [
     name: "Kris Malayao",
     email: "kris@email.com",
     password: "secretpassword",
-    contact: "",
+    contact: "+63 999 999 9999",
+    role: "customer",
+    avatar: "../images/noPFP.jpg"
+  },
+  {
+    id: 3,
+    name: "John Doe",
+    email: "john@email.com",
+    password: "secretpassword",
+    contact: "+63 123 456 7890",
     role: "customer",
     avatar: "../images/noPFP.jpg"
   }
