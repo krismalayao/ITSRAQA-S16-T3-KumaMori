@@ -1017,6 +1017,85 @@ function deductMaterialsForOrder(order) {
   });
 }
 
+// Mirror of deductMaterialsForItem - adds the same materials back to
+// Inventory Management instead of subtracting them. Used when a Confirmed
+// order (whose materials were already deducted) gets Cancelled.
+function restockMaterialsForItem(item) {
+  const state = item.customState;
+  if (!state) return; // no structured selection data - nothing precise to restock
+
+  const inventory = getInventory();
+  const restock = (name, qty) => {
+    const idx = inventory.findIndex(i => i.name === name);
+    if (idx === -1) return;
+    inventory[idx].stock = inventory[idx].stock + qty;
+    inventory[idx].status = inventory[idx].stock === 0
+      ? 'out-stock'
+      : (inventory[idx].stock <= inventory[idx].minThreshold ? 'low-stock' : 'in-stock');
+    inventory[idx].updated = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  };
+  const qty = item.qty || 1;
+  const restockLetters = () => {
+    if (!state.letters) return;
+    for (const ch of state.letters.toUpperCase()) {
+      if (/[A-Z]/.test(ch)) restock(`Alphabet Bead - '${ch}'`, qty);
+    }
+  };
+
+  if (item.name === 'Leather Keychain') {
+    if (state.leatherIndex != null) {
+      const c = CUSTOMIZATION_COLOR_NAMES.leather[state.leatherIndex];
+      if (c) restock(`Leather Strap - ${c} (20cm)`, qty);
+    }
+    if (state.letterIndex != null) {
+      const c = CUSTOMIZATION_COLOR_NAMES.letter[state.letterIndex];
+      if (c) restock(`Letter Bead - ${c}`, qty);
+    }
+    restock('Gold Lobster Clasp', qty);
+    if (state.charmMain) restock(`Charm - ${state.charmMain}`, qty);
+    (state.extraCharms || []).forEach(c => restock(`Charm - ${c}`, qty));
+    (state.extraPendants || []).forEach(p => restock(`Pendant - ${p}`, qty));
+    restockLetters();
+  } else if (item.name === 'Beaded Keychain' || item.name === 'Charm Keychain') {
+    restock('Clear Elastic Nylon Band (0.8mm)', qty);
+    restock('Silver Jump Rings (6mm)', qty);
+    restockLetters();
+    if (state.figurineMain) restock(`Figurine - ${state.figurineMain}`, qty);
+    (state.extraFigurines || []).forEach(f => restock(`Figurine - ${f}`, qty));
+    (state.beadIndexes || []).forEach(idx => {
+      const c = CUSTOMIZATION_COLOR_NAMES.bead[idx];
+      if (c) restock(`Glass Bead - ${c}`, qty);
+    });
+    (state.spacerIndexes || []).forEach(idx => {
+      const p = CUSTOMIZATION_COLOR_NAMES.spacer[idx];
+      if (p) restock(`Spacer Set - ${p}`, qty);
+    });
+    if (state.moonIndex != null) {
+      const c = CUSTOMIZATION_COLOR_NAMES.moon[state.moonIndex];
+      if (c) restock(`Moon Charm - ${c}`, qty);
+    }
+  }
+
+  saveInventory(inventory);
+}
+
+// Mirror of deductMaterialsForOrder - restocks every item in the order,
+// routing to inventory materials or product stock the same way deduction does.
+function restockMaterialsForOrder(order) {
+  (order.items || []).forEach(item => {
+    if (item.customState) {
+      restockMaterialsForItem(item);
+    } else {
+      const products = getProducts();
+      const idx = products.findIndex(p => p.name === item.name);
+      if (idx !== -1 && products[idx].stock !== null && products[idx].stock !== undefined) {
+        products[idx].stock = products[idx].stock + (item.qty || 1);
+        saveProducts(products);
+      }
+    }
+  });
+}
+
 function getAllOrders() {
   const orders = [];
   for (let i = 0; i < localStorage.length; i++) {
@@ -1045,6 +1124,15 @@ function updateOrderStatus(orderId, newStatus) {
         if (newStatus === 'Confirmed' && !list[index].materialsDeducted) {
           deductMaterialsForOrder(list[index]);
           list[index].materialsDeducted = true;
+        }
+        // Cancelling an order that had already been Confirmed gives back
+        // whatever was deducted. Cancelling straight from Pending never
+        // deducted anything in the first place, so there's nothing to
+        // restock - this only fires for orders that actually reached
+        // Confirmed at some point.
+        if (newStatus === 'Cancelled' && list[index].materialsDeducted) {
+          restockMaterialsForOrder(list[index]);
+          list[index].materialsDeducted = false;
         }
         localStorage.setItem(key, JSON.stringify(list));
         return list[index];

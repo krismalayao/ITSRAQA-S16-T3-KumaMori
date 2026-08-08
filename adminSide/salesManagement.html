@@ -389,6 +389,19 @@
       cursor: pointer;
     }
 
+    .cancel-confirm-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background-color: #fce7ea;
+      color: #e8607a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
     .order-info-section {
       display: flex;
       flex-direction: column;
@@ -770,6 +783,23 @@
     </div>
   </div>
 
+  <!-- Dedicated Modal for Confirming Order Cancellation -->
+  <div class="modal-overlay" id="cancelConfirmModal">
+    <div class="modal-card" style="max-width: 420px; text-align: center;">
+      <div class="cancel-confirm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <h2 class="modal-title" style="margin-bottom: 8px;">Cancel this order?</h2>
+      <p id="cancelConfirmOrderId" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 4px;"></p>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">
+        This can't be undone. If the order was already Confirmed, any deducted stock will be returned automatically.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 10px;">
+        <button type="button" id="dismissCancelConfirmBtn" class="pill-btn" style="background-color: var(--card-border); color: var(--text-brown);">Keep Order</button>
+        <button type="button" id="confirmCancelBtn" class="pill-btn" style="background-color:#e8607a; color:#fff; padding: 10px 20px;">Yes, Cancel It</button>
+      </div>
+    </div>
+  </div>
+
+
   <!-- Toast Notification -->
   <div id="toastNotification" class="toast">
     <span>✓ Message sent & status updated successfully!</span>
@@ -792,23 +822,25 @@
     // Embedded Order Status Workflow Rule Logic
     function getNextAllowedStatuses(currentStatus) {
       const transitions = {
-        // 'Payment Failed' is intentionally NOT selectable here - it can only
-        // be entered via the Flag Mismatch button/flagOrderMismatch(), never
-        // picked manually from the status dropdown.
-        'Pending': ['Pending', 'Confirmed', 'Cancelled'],
-        'Confirmed': ['Confirmed', 'Packed', 'Cancelled'],
-        'Packed': ['Packed', 'Shipped', 'Cancelled'],
-        'Shipped': ['Shipped', 'Delivered', 'Cancelled'],
+        // 'Cancelled' is intentionally NOT in any of these - cancelling only
+        // happens through the dedicated Cancel Order button (cancelDuplicateOrder),
+        // never picked from this dropdown. 'Payment Failed' is likewise only
+        // reachable via the Flag Mismatch button/flagOrderMismatch().
+        'Pending': ['Pending', 'Confirmed'],
+        'Confirmed': ['Confirmed', 'Packed'],
+        'Packed': ['Packed', 'Shipped'],
+        'Shipped': ['Shipped', 'Delivered'],
         'Delivered': ['Delivered'],
         'Cancelled': ['Cancelled'],
-        'Payment Failed': ['Payment Failed', 'Pending', 'Cancelled']
+        'Payment Failed': ['Payment Failed', 'Pending']
       };
-      return transitions[currentStatus] || ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Cancelled'];
+      return transitions[currentStatus] || ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Delivered'];
     }
 
     const currentAdmin = requireAdmin();
     let activeOrderId = null; // order currently open in the detail modal
     let activePillFilter = 'All';
+    let pendingCancelOrderId = null; // order awaiting confirmation in cancelConfirmModal
 
     // Merged & Prioritized Retrieval from Global and User-Specific LocalStorage Keys
     // getAllOrders() and updateOrderStatus() come from auth.js - they read/write
@@ -858,9 +890,11 @@
         flagBtn.disabled = cannotFlagStatuses.includes(currentStatus);
       }
 
-      // Disable Cancel Order if Delivered or Cancelled
+      // Cancel Order is only available while the order hasn't moved past
+      // Confirmed yet (Pending or Confirmed) - once it's Packed/Shipped/
+      // Delivered, or already Cancelled, cancelling is no longer offered.
       if (cancelBtn) {
-        cancelBtn.disabled = currentStatus === 'Delivered' || currentStatus === 'Cancelled';
+        cancelBtn.disabled = !['Pending', 'Confirmed'].includes(currentStatus);
       }
 
       note.style.display = isFinal ? 'block' : 'none';
@@ -961,6 +995,34 @@
           closeMismatch();
           closeModal();
           showToast('✓ Message sent & status updated successfully!');
+        }
+      });
+
+      // Cancel Confirmation Modal Handlers
+      const cancelConfirmModal = document.getElementById('cancelConfirmModal');
+      const dismissCancelConfirmBtn = document.getElementById('dismissCancelConfirmBtn');
+      const confirmCancelBtn = document.getElementById('confirmCancelBtn');
+
+      const closeCancelConfirm = () => {
+        cancelConfirmModal.classList.remove('open');
+        pendingCancelOrderId = null;
+      };
+      dismissCancelConfirmBtn?.addEventListener('click', closeCancelConfirm);
+
+      cancelConfirmModal?.addEventListener('click', (e) => {
+        if (e.target === cancelConfirmModal) closeCancelConfirm();
+      });
+
+      confirmCancelBtn?.addEventListener('click', () => {
+        if (!pendingCancelOrderId) return;
+        const orderId = pendingCancelOrderId;
+
+        const updated = updateOrderStatus(orderId, 'Cancelled'); // from auth.js - restocks if it had been Confirmed
+        closeCancelConfirm();
+        if (updated) {
+          renderSales();
+          closeModal();
+          showToast(`✓ Order ${orderId} has been cancelled.`);
         }
       });
 
@@ -1066,14 +1128,9 @@
 
     function cancelDuplicateOrder(orderId) {
       if (!orderId) return;
-      if (!confirm(`Are you sure you want to cancel order ${orderId}?`)) return;
-
-      const updated = updateOrderStatus(orderId, 'Cancelled'); // from auth.js
-      if (updated) {
-        renderSales();
-        document.getElementById('orderModal').classList.remove('open');
-        showToast(`✓ Order ${orderId} has been cancelled.`);
-      }
+      pendingCancelOrderId = orderId;
+      document.getElementById('cancelConfirmOrderId').textContent = `Order #${orderId}`;
+      document.getElementById('cancelConfirmModal').classList.add('open');
     }
   </script>
 </body>
