@@ -250,12 +250,58 @@
             .tracking-card { padding: 25px 20px; }
             .order-number-badge { padding: 10px 20px; font-size: 1.1rem; }
         }
+        /* Themed Cancel Confirmation Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(92, 50, 20, 0.35);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .cancel-modal-card {
+            background: #fff;
+            border: 2px solid #f9e2e6;
+            border-radius: 24px;
+            padding: 32px 28px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(92,50,20,0.2);
+        }
+        .cancel-modal-icon {
+            width: 56px; height: 56px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            background: #fce7ea;
+            color: #e8607a;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+        }
+        .cancel-modal-card h3 { color: #5c3214; font-size: 1.2rem; margin-bottom: 8px; }
+        .cancel-modal-card p { color: #8c6b54; font-size: 0.9rem; margin-bottom: 22px; line-height: 1.4; }
+        .cancel-modal-actions { display: flex; gap: 10px; justify-content: center; }
+        .cancel-modal-actions button {
+            flex: 1;
+            padding: 11px;
+            border-radius: 16px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+        }
+        #keepOrderBtn { background: #f9e2e6; color: #5c3214; }
+        #confirmCancelOrderBtn { background: #e8607a; color: #fff; }
     </style>
 </head>
 <body>
 
     <script>window.CURRENT_PAGE = 'orders';</script>
     <script src="navigationBar.js"></script>
+    <script src="../auth.js"></script>
 
     <div class="page-wrap">
         <h1 class="page-title">Order Tracking</h1>
@@ -340,6 +386,20 @@
                 <h2>No Active Orders</h2>
                 <p>You haven't placed any orders yet.</p>
                 <a href="productsPage.html" class="btn-shop">Order Now</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Themed Cancel Confirmation Modal -->
+    <div class="modal-overlay" id="cancelConfirmModal">
+        <div class="cancel-modal-card">
+            <div class="cancel-modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3>Cancel this order?</h3>
+            <p>This can't be undone. If it was already Confirmed, deducted stock will be returned automatically.</p>
+            <div class="cancel-modal-actions">
+                <button type="button" id="keepOrderBtn">Keep Order</button>
+                <button type="button" id="confirmCancelOrderBtn">Yes, Cancel It</button>
             </div>
         </div>
     </div>
@@ -510,28 +570,33 @@
         }
     }
 
+    let pendingCancelOrderId = null;
+
     function cancelOrder(orderId) {
-        if (!window.confirm('Cancel this order? This cannot be undone.')) return;
-
-        let orders, persist;
-        if (typeof getUserOrders === 'function' && typeof saveUserOrders === 'function') {
-            orders = getUserOrders();
-            persist = (list) => saveUserOrders(list);
-        } else {
-            const session = JSON.parse(sessionStorage.getItem('km_session') || '{}');
-            const userId = session.id || session.email || 'guest';
-            orders = JSON.parse(localStorage.getItem(`km_orders_${userId}`) || '[]');
-            persist = (list) => localStorage.setItem(`km_orders_${userId}`, JSON.stringify(list));
-        }
-
-        const index = orders.findIndex(o => (o.id || o.orderId) === orderId);
-        if (index === -1) return;
-
-        orders[index].status = 'Cancelled';
-        persist(orders);
-
-        location.reload();
+        pendingCancelOrderId = orderId;
+        document.getElementById('cancelConfirmModal').classList.add('open');
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const cancelModal = document.getElementById('cancelConfirmModal');
+        document.getElementById('keepOrderBtn')?.addEventListener('click', () => {
+            pendingCancelOrderId = null;
+            cancelModal.classList.remove('open');
+        });
+        cancelModal?.addEventListener('click', (e) => {
+            if (e.target === cancelModal) {
+                pendingCancelOrderId = null;
+                cancelModal.classList.remove('open');
+            }
+        });
+        document.getElementById('confirmCancelOrderBtn')?.addEventListener('click', () => {
+            if (!pendingCancelOrderId) return;
+            // updateOrderStatus (auth.js) also restocks inventory/product stock
+            // automatically if this order had already been Confirmed.
+            updateOrderStatus(pendingCancelOrderId, 'Cancelled');
+            location.reload();
+        });
+    });
 </script>
 <script src="../simulatedChatBot.js"></script>
 </body>
